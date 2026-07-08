@@ -317,12 +317,18 @@ browser API exists at all (`qrcode`/`jsQR` for QR tools, `marked`/
   `vendor-react`, `vendor-router`, `vendor-ui` (Base UI + cmdk + lucide),
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk.
-- **Hosting:** Cloudflare Pages, static output from `dist/`. Client-side
-  routing requires the host to fall back to `index.html` for unmatched paths
-  (standard Cloudflare Pages SPA behavior).
-- **No CI pipeline exists yet.** See [testing.md](../testing/testing.md) for
-  the current (manual) verification process and what automated CI should
-  eventually run.
+- **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
+  `dist/`. Client-side routing requires the host to fall back to
+  `index.html` for unmatched paths (standard Cloudflare Pages SPA
+  behavior). Production domain: `shadyshard.spacesdrive.cc` (custom
+  domain) plus the default `shadyshard.pages.dev`.
+- **CI/CD:** GitHub Actions. Every push and pull request runs the full
+  quality gate (typecheck, lint, format, unit/component tests, dependency
+  audit, secret scan, build + SEO/sitemap/metadata/HTML/bundle-size
+  validation, Playwright e2e across four browser projects, Lighthouse CI);
+  a push to `main` additionally deploys to Cloudflare Pages via
+  `cloudflare/wrangler-action`, gated on that same check suite passing.
+  Full detail, job-by-job: [ci-cd/ci-cd.md](../ci-cd/ci-cd.md).
 
 ## 12. Performance baseline
 
@@ -366,11 +372,16 @@ forgotten:
   every doubling of catalog size, and treat splitting metadata out of the
   eager bundle (e.g., a generated static JSON index fetched lazily) as the
   fix if it becomes a real problem before 500 tools.
-- **No automated test suite.** Acceptable for a small hand-verified catalog;
-  becomes a real liability once dozens of contributors are adding tools in
-  parallel. See [testing.md](../testing/testing.md). This is now a bigger
-  gap than when first written -- 50 tools were verified by hand in one
-  session, which does not scale to 500.
+- **Automated test coverage is deliberately shallow by tool count, not by
+  layer.** Vitest + React Testing Library + Playwright now cover the
+  shared registry, shared components, and a representative tool per
+  interaction shape (see [testing.md § Test coverage
+  philosophy](../testing/testing.md#test-coverage-philosophy)), enforced
+  in CI on every push. This protects shared infrastructure from silent
+  regression, but individual tool logic still relies on the manual
+  verification each tool received when it was built -- a real gap if a
+  future refactor touches many tools' internals at once rather than shared
+  code. Revisit if that becomes a recurring pattern.
 
 Record any decision that changes one of the above in
 [decisions.md](decisions.md), and update the relevant section of this file
