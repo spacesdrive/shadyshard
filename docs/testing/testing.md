@@ -1,20 +1,66 @@
 # Testing
 
-## Current state: no automated test suite
+## Automated test suite
 
-Honestly, as of this writing there is no unit/integration/e2e test
-framework installed. This is an acceptable trade-off for a small,
-hand-verified catalog (see
-[ARCHITECTURE.md §13](../architecture/ARCHITECTURE.md#13-scalability-notes-for-500-tools)),
-and is not acceptable indefinitely -- it becomes a real liability once
-multiple contributors are adding tools in parallel without a shared safety
-net. Do not treat this section as permission to skip verification; it means
-verification is currently manual and must be done thoroughly every time,
-per the checklist below.
+Three layers, all run in CI on every push and PR (see
+[ci-cd/ci-cd.md](../ci-cd/ci-cd.md#ci-workflow-ciyml)) and enforced locally
+by the pre-commit hook (typecheck) and available via `npm test`/
+`npm run test:e2e`:
 
-If/when a test framework is introduced, this document is where its
-conventions get documented, and the "no automated test suite" framing above
-must be updated in the same change.
+- **Unit tests** (`src/**/*.test.ts`, `vitest run`) -- pure logic with no
+  DOM. `lib/tool-registry.test.ts` is the most valuable test in the suite:
+  it asserts registry invariants (unique slugs, unique descriptions, every
+  tool resolves to a real category, every `relatedTools` override points
+  at a real slug) that protect the tool-registry abstraction the "500+
+  tools" scalability story depends on. `lib/secure-random.test.ts` and
+  `lib/password-strength.test.ts` cover the two shared crypto/heuristic
+  utilities.
+- **Component tests** (`src/**/*.test.tsx`, Vitest + React Testing
+  Library) -- render a component and interact with it via
+  `@testing-library/user-event`, asserting on rendered output and
+  accessible roles rather than implementation details.
+  `components/tool/CopyButton.test.tsx` and
+  `tools/word-counter/index.test.tsx` are the reference examples.
+- **End-to-end tests** (`e2e/*.spec.ts`, Playwright, run against a real
+  production build via `playwright.config.ts`'s `webServer`) --
+  `navigation.spec.ts`, `search.spec.ts`, `tool-functionality.spec.ts`,
+  `accessibility.spec.ts` (axe-core, asserts zero serious/critical WCAG
+  violations on a representative page set), `console.spec.ts` (asserts
+  zero console/page errors on the same set). Runs across four Playwright
+  projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`.
+
+This intentionally does not cover every one of the 50 tools individually
+-- see [Test coverage philosophy](#test-coverage-philosophy). It
+complements, rather than replaces, the manual
+[Chrome DevTools verification](#chrome-devtools-verification) process
+below: the automated suite is the regression safety net for shared
+infrastructure; DevTools MCP verification is how a specific tool actually
+gets exercised and confirmed correct while it's being built.
+
+### Test coverage philosophy
+
+Write a test for shared infrastructure (the registry, `CopyButton`,
+`DownloadButton`, `FileDropZone`, `lib/` utilities used by multiple tools)
+and for one or two representative tools per major interaction shape (a
+live-transform text tool, a form-validation tool), not for every tool
+individually. A bug in one tool's own logic is caught by manually
+exercising that tool during its own development (the
+[Verify locally](../engineering/tool-development.md#4-verify-locally) step
+in tool-development.md already requires this); a bug in the shared
+registry or a shared component silently breaks many tools at once, which
+is exactly what automated tests are for. Do not add a dedicated test file
+for every new tool as a matter of course -- that scales linearly with tool
+count for very little incremental protection.
+
+### Running tests locally
+
+| Command                 | Does                                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| `npm test`              | Runs the Vitest suite once (`vitest run`).                      |
+| `npm run test:watch`    | Vitest in watch mode.                                           |
+| `npm run test:coverage` | Vitest with a v8 coverage report (`coverage/`).                 |
+| `npm run test:e2e`      | Full Playwright suite; builds and serves automatically.         |
+| `npm run test:e2e:ui`   | Playwright's interactive UI mode, for debugging a failing spec. |
 
 ## Pre-completion checklist
 
@@ -23,29 +69,39 @@ Before considering any change complete:
 1. **`npx tsc -b`** -- zero TypeScript errors.
 2. **`npm run build`** -- succeeds, including the `prebuild` SEO generation
    step. Check the chunk size report for anything unexpectedly large (see
-   [performance.md](../performance/performance.md#vendor-chunking)).
-3. **No console errors or warnings** in the browser for any page touched by
+   [performance.md](../performance/performance.md#vendor-chunking)), or
+   run `npm run size` for an explicit pass/fail against budget.
+3. **`npm test`** -- the Vitest suite passes. Add a test per
+   [Test coverage philosophy](#test-coverage-philosophy) if the change
+   touches shared infrastructure.
+4. **No console errors or warnings** in the browser for any page touched by
    the change (see [Chrome DevTools
-   verification](#chrome-devtools-verification) below).
-4. **Responsive check** at a mobile viewport (390×844 used historically)
+   verification](#chrome-devtools-verification) below, or
+   `e2e/console.spec.ts` for the automated equivalent).
+5. **Responsive check** at a mobile viewport (390×844 used historically)
    for any UI change.
-5. **Accessibility check** -- accessibility tree snapshot reviewed, no
+6. **Accessibility check** -- accessibility tree snapshot reviewed, no
    missing labels/landmarks; see
-   [accessibility.md](../accessibility/accessibility.md).
-6. **SEO check** for any new page or tool -- unique title/description,
+   [accessibility.md](../accessibility/accessibility.md). `npm run test:e2e`
+   includes an automated axe-core pass over a representative page set.
+7. **SEO check** for any new page or tool -- unique title/description,
    structured data present, sitemap entry generated; see
-   [seo-standards.md](../seo/seo-standards.md).
-7. **Functional check** -- actually exercise the feature (type real input
+   [seo-standards.md](../seo/seo-standards.md). `npm run validate:metadata`
+   and `npm run validate:sitemap` check this automatically.
+8. **Functional check** -- actually exercise the feature (type real input
    into a tool, click every button, follow every link) rather than
    confirming it merely renders. A component that renders without error can
    still be functionally broken; only interacting with it proves it works.
-8. **Documentation check** -- see [Documentation
+9. **Documentation check** -- see [Documentation
    Maintenance](../index.md#documentation-maintenance): does this change
    require updating `ARCHITECTURE.md`, a decision log entry, or any other
    doc?
 
 A task is not done until all of the above pass, not just until the code
-compiles.
+compiles. Pushing runs the same checks (plus the full cross-browser
+Playwright matrix and a Lighthouse CI gate) automatically in
+[CI](../ci-cd/ci-cd.md#ci-workflow-ciyml) -- treat a red CI run the same as
+a locally failing check, not something to merge past.
 
 ## Chrome DevTools verification
 
@@ -87,8 +143,11 @@ preview`) for performance/Lighthouse numbers -- **never** trust
 
 ## What "done" looks like
 
-A change is verified, not just built, when: it typechecks, it builds, it
-renders without console errors, its accessibility tree is clean, it works
-when actually interacted with (not just rendered), and, for anything
-SEO/performance-relevant, Lighthouse confirms no regression against the
-baseline in [performance.md](../performance/performance.md#baseline).
+A change is verified, not just built, when: it typechecks, it builds, the
+automated test suite passes, it renders without console errors, its
+accessibility tree is clean, it works when actually interacted with (not
+just rendered), and, for anything SEO/performance-relevant, Lighthouse
+confirms no regression against the baseline in
+[performance.md](../performance/performance.md#baseline). For a change
+that's about to be pushed, "done" also means CI is green -- see
+[ci-cd/ci-cd.md](../ci-cd/ci-cd.md).
