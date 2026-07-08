@@ -9,6 +9,9 @@ import {
   Ruler,
   QrCode,
   Clock,
+  Paintbrush,
+  Search,
+  Globe,
 } from "lucide-react"
 import type { ToolCategory } from "@/types/tool"
 
@@ -72,6 +75,31 @@ export const categories: ToolCategory[] = [
     title: "Time & Date",
     description: "Convert timestamps, time zones, and durations.",
     icon: Clock,
+  },
+  {
+    slug: "css",
+    title: "CSS Generators",
+    description: "Generate and preview CSS for shadows, borders, grids, and flexbox.",
+    icon: Paintbrush,
+  },
+  {
+    slug: "seo",
+    title: "SEO Tools",
+    description:
+      "Generate meta tags, sitemaps, and preview how pages appear in search and social.",
+    icon: Search,
+  },
+  {
+    slug: "qr",
+    title: "QR Code Tools",
+    description: "Generate and scan QR codes.",
+    icon: QrCode,
+  },
+  {
+    slug: "browser",
+    title: "Browser & System Info",
+    description: "Inspect your browser, device, and clipboard.",
+    icon: Globe,
   },
 ]
 
