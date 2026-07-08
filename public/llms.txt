@@ -1,0 +1,12 @@
+# ShadyShard
+
+> Privacy-first browser tools. ShadyShard is a free collection of fast, browser-based utilities that run entirely on-device - no uploads, no accounts, no tracking.
+
+ShadyShard hosts 500+ single-purpose tools (text, image, PDF, converters, generators, developer, math, color, security, and time/date utilities). Every tool is client-side only: inputs are processed locally in the browser and never sent to a server.
+
+## Docs
+
+- [Homepage](https://shadyshard.com/): Tool categories and featured tools.
+- [About](https://shadyshard.com/about): Project mission and principles.
+- [Privacy Policy](https://shadyshard.com/privacy): Data handling practices.
+- [Sitemap](https://shadyshard.com/sitemap.xml): Full list of tool and category URLs.
