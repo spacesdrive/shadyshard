@@ -1,10 +1,6 @@
 import { expect, test } from "@playwright/test"
 
 test.describe("tool functionality", () => {
-  test.beforeEach(async ({ context }) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"])
-  })
-
   test("word counter updates stats live and clears on reset", async ({ page }) => {
     await page.goto("/tools/word-counter")
 
@@ -18,14 +14,29 @@ test.describe("tool functionality", () => {
     await expect(input).toHaveValue("")
   })
 
-  test("copy button places tool output on the clipboard", async ({ page }) => {
+  test("copy button places tool output on the clipboard", async ({
+    page,
+    context,
+    browserName,
+  }) => {
+    // Playwright only supports clipboard-read/write permission grants on
+    // Chromium; Firefox and WebKit reject grantPermissions outright. The
+    // "Copied" confirmation UI is verified on every browser -- only the
+    // actual clipboard content read-back is Chromium-only.
+    if (browserName === "chromium") {
+      await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    }
+
     await page.goto("/tools/word-counter")
     await page.getByLabel("Text to analyze").fill("copy me")
     await page.getByRole("button", { name: /copy text/i }).click()
 
     await expect(page.getByRole("button", { name: /copied/i })).toBeVisible()
-    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
-    expect(clipboardText).toBe("copy me")
+
+    if (browserName === "chromium") {
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+      expect(clipboardText).toBe("copy me")
+    }
   })
 
   test("JSON formatter formats valid JSON in place and reports invalid JSON inline", async ({
