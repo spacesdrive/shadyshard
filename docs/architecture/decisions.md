@@ -403,3 +403,131 @@ upload needs (e.g., chunked/streamed large-file handling) should extend it
 carefully rather than fork it, per the same "don't duplicate, improve the
 shared abstraction" principle this ADR describes.
 
+---
+
+## ADR-014: GitHub Actions CI/CD with `cloudflare/wrangler-action` for deployment
+
+Date: 2026-07-08
+
+**Decision:** Full CI/CD via GitHub Actions (`ci.yml`, `cd.yml`,
+`pr-validation.yml`, `codeql.yml`, `dependabot.yml`). Deployment to
+Cloudflare Pages runs from `cd.yml` using Cloudflare's own
+`cloudflare/wrangler-action` (`wrangler pages deploy`), triggered on push
+to `main` and gated on the full `ci.yml` check suite passing first
+(`cd.yml`'s `deploy` job declares `needs: [ci]`, where `ci` runs `ci.yml`
+as a reusable workflow via `uses:`).
+
+**Reasoning:** GitHub Actions is the natural choice given the repository
+is hosted on GitHub and the project has no existing CI provider. For
+deployment specifically, Cloudflare Pages offers two paths: its
+dashboard's native Git integration (Cloudflare's infrastructure builds
+directly from a connected GitHub App installation) or a CI-driven deploy
+via Wrangler. The dashboard integration requires a one-time interactive
+OAuth authorization to install Cloudflare's GitHub App on the repository,
+which cannot be completed from an unattended/headless setup process.
+`wrangler-action` is Cloudflare's own official action, requires only an
+API token and account ID (both stored as GitHub Actions secrets, never
+committed), and keeps the deploy step visible as an ordinary, auditable CI
+job rather than a parallel process living entirely outside GitHub Actions.
+Full detail: [ci-cd/ci-cd.md](../ci-cd/ci-cd.md).
+
+**Alternatives considered:** Cloudflare Pages dashboard Git integration --
+rejected for now per the OAuth/headless-setup constraint above; revisit if
+someone completes that one-time interactive step later; the `deploy` job
+in `cd.yml` should be removed in the same change to avoid double-deploying
+if that happens. GitHub Pages -- rejected, no first-class support for SPA
+client-side routing fallback without extra configuration, and no
+preview-deployment story as clean as Cloudflare Pages'. Vercel/Netlify --
+rejected, no reason to introduce a second hosting provider relationship
+when Cloudflare already hosts this account's other projects and owns the
+`spacesdrive.cc` DNS zone the production domain (`shadyshard.spacesdrive.cc`)
+lives under.
+
+**Trade-offs:** The deploy job rebuilds the project from source rather
+than reusing a build artifact from an earlier CI job -- accepted because
+this project's build is sub-second (Vite on Rolldown), making artifact
+passing between jobs pure complexity with no measurable time benefit.
+Revisit if the build ever becomes slow enough that rebuilding per job
+matters.
+
+---
+
+## ADR-015: Vitest + React Testing Library + Playwright, with intentionally shallow per-tool coverage
+
+Date: 2026-07-08
+
+**Decision:** Vitest (unit + component tests, jsdom environment) and
+Playwright (end-to-end, real browsers) are the test stack. Coverage
+targets shared infrastructure (the tool registry, `CopyButton`, and the
+crypto/heuristic `lib/` utilities) plus one or two representative tools
+per interaction shape, not every tool in the 50-tool catalog individually.
+
+**Reasoning:** The highest-value thing to protect with automated tests is
+the tool registry (`lib/tool-registry.ts`) -- a regression there silently
+breaks routing, search, sitemap generation, and related-tools linking for
+every tool at once, and it's exactly the kind of shared-code change a
+human reviewer can miss in a large diff. Per-tool logic, by contrast, is
+already covered by the mandatory manual verification step in
+[tool-development.md](../engineering/tool-development.md#4-verify-locally)
+at the time each tool is built. Writing a dedicated test file for all 50
+(and eventually 500) tools would cost roughly one test file per tool
+forever, for a failure mode (an isolated bug in one tool's own logic) that
+manual verification at build time already catches, while not meaningfully
+improving protection against the failure mode that actually matters most
+at this scale: a shared-code regression.
+
+**Alternatives considered:** Full per-tool test coverage (a `.test.tsx`
+for every tool) -- rejected per the cost/benefit reasoning above; revisit
+if a pattern of untested-tool regressions actually starts occurring.
+Cypress instead of Playwright -- rejected, Playwright's built-in
+multi-browser project support (`chromium`/`firefox`/`webkit`/mobile
+emulation) and `@axe-core/playwright` integration fit this project's
+"browser compatibility" and "accessibility" requirements more directly
+without extra plugins. Jest instead of Vitest -- rejected, the project
+already runs on Vite; Vitest shares its config/transform pipeline
+(`vite.config.ts`'s plugins apply directly) instead of needing a separate
+Babel/ts-jest transform setup.
+
+**Trade-offs:** A bug isolated entirely within one tool's own rendering
+logic, not caught during that tool's own manual verification, will not be
+caught by the automated suite either. This is an accepted gap, not an
+oversight -- see [testing.md § Test coverage
+philosophy](../testing/testing.md#test-coverage-philosophy).
+
+---
+
+## ADR-016: Cloudflare R2 credentials provided during CI/CD setup are intentionally unused
+
+Date: 2026-07-08
+
+**Decision:** R2 (S3-compatible object storage) API credentials were made
+available while setting up the deployment pipeline. They are not stored as
+GitHub secrets, not referenced anywhere in the repository, and nothing in
+the CI/CD pipeline or the application uses R2.
+
+**Reasoning:** [ARCHITECTURE.md §1](ARCHITECTURE.md#1-system-summary) and
+this project's core product principle are that ShadyShard is 100%
+client-side with no remote storage of any kind -- every tool's input and
+output stays in the visiting browser, and there is no server component to
+store anything on behalf of a user. Introducing R2 for anything (build
+artifact caching, asset hosting, upload storage) would create a genuine
+architectural exception to that principle for a need the project does not
+actually have. Declining unused infrastructure by default, rather than
+wiring it in because it happened to be available, keeps the deployed
+system's actual capabilities matching its documented ones.
+
+**Alternatives considered:** Using R2 to cache `node_modules` or build
+output between CI runs -- rejected, GitHub Actions' own `actions/cache`
+already does this without adding a second storage provider or a second set
+of credentials to manage and rotate. Using R2 to host Lighthouse CI
+reports long-term -- rejected in favor of `treosh/lighthouse-ci-action`'s
+built-in `temporaryPublicStorage` option, which needs no credentials at
+all and is sufficient for the current need (reviewing a specific run's
+report, not maintaining historical trend data).
+
+**Trade-offs:** None currently -- this is a decision not to add
+complexity, not a constraint that costs anything today. If a genuine
+future need for object storage arises (e.g. long-term Lighthouse trend
+data, if that ever becomes valuable enough to justify), reconsider with a
+new ADR rather than quietly wiring the existing credentials in without
+one.
