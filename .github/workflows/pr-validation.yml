@@ -1,0 +1,36 @@
+name: PR Validation
+
+# Runs only on pull requests, in addition to (not instead of) ci.yml, which
+# also triggers on pull_request. These checks are PR-specific and can't run
+# on a plain push: dependency-review needs a base/head diff, and the title
+# check only makes sense once a PR exists.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Scan new/changed dependencies for known vulnerabilities and license issues
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  pr-title:
+    name: PR title follows Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Lint PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: echo "$PR_TITLE" | npx commitlint
