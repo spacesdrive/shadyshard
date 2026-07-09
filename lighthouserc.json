@@ -9,7 +9,7 @@
         "http://localhost:4173/category/developer",
         "http://localhost:4173/about"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop"
       }
