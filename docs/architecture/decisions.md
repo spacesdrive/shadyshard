@@ -531,3 +531,68 @@ future need for object storage arises (e.g. long-term Lighthouse trend
 data, if that ever becomes valuable enough to justify), reconsider with a
 new ADR rather than quietly wiring the existing credentials in without
 one.
+
+---
+
+## ADR-017: IITM BS Student Tools as a new category, with shared reference data and persistence
+
+Date: 2026-07-09
+
+**Decision:** Added a `student` category with ten IITM BS planning tools
+(CGPA Calculator, GPA Goal Calculator, Credit Calculator, Degree Progress
+Tracker, Semester Planner, Graduation Estimator, Weekly Study Planner, Exam
+Countdown Planner, Course Prerequisite Visualizer, Semester Workload
+Estimator). Before building the individual tools, extracted two shared
+pieces of infrastructure: `lib/iitm-bs.ts` (the IIT Madras grade-point
+scale, default per-level credit targets, and the shared unofficial-tool
+disclaimer text) and `hooks/use-local-storage-state.ts` (a generic
+localStorage-backed `useState` replacement). `components/tool/UnofficialToolNotice.tsx`
+renders the shared disclaimer banner used by every tool in the category.
+
+**Reasoning:** All ten tools independently need at least one of: the IIT
+Madras grade scale, a program-level credit target, or a persisted
+user-entered list (courses, exams, a weekly grid). Extracting these once,
+before writing the first tool, avoids ten near-identical copies of the same
+grade-point lookup and the same localStorage read/write boilerplate --
+directly following [engineering/standards.md](../engineering/standards.md)'s
+guidance to create a reusable abstraction when a genuine cross-cutting need
+is visible up front, rather than after duplicating it three times.
+Curriculum-specific numbers (credit targets, grade points) are published by
+IIT Madras but vary by specialization and program revision, and this
+project has no way to verify them live -- every such value is exposed as an
+editable default (a plain, persisted number/text input) rather than a
+hard-coded constant, and every tool carries the shared disclaimer stating
+it is unofficial and that users should confirm against the current IITM BS
+portal. Prerequisite data specifically (Course Prerequisite Visualizer) is
+never pre-filled with invented course relationships, since no reliably
+verifiable public source for IITM BS's exact prerequisite graph exists --
+the tool is a general-purpose dependency-order calculator the student
+populates themselves.
+
+**Alternatives considered:** Hard-coding the grade scale and credit targets
+as fixed constants -- rejected, since a fixed number presented as fact when
+it cannot be verified against the current official document would be
+actively misleading, worse than an editable default. A single combined
+"IITM BS Planner" mega-tool covering CGPA, credits, and scheduling in one
+page -- rejected as inconsistent with the one-tool-one-job pattern every
+other category follows, and worse for SEO (one generic page competing for
+many distinct search intents instead of ten specific ones). A shared
+generic `ListEditor` component for the add/remove-row UI pattern common to
+several of these tools -- rejected per
+[standards.md § Component conventions](../engineering/standards.md#component-conventions):
+each tool's rows differ enough in shape (course+credits+grade vs.
+course+date vs. a 7-day hours grid) that a generic component would need
+enough configuration props to defeat the purpose; a few similar lines
+repeated per tool was judged better than a premature abstraction.
+
+**Trade-offs:** The category's numeric defaults (grade points, credit
+targets) will drift from official IITM BS documents over time as the
+program evolves, since nothing in this codebase re-fetches them -- this is
+accepted because every value is user-editable and the disclaimer makes the
+unofficial, point-in-time nature explicit rather than implying live
+accuracy. No dedicated unit tests were added for the ten tools' calculation
+logic, consistent with this project's existing test coverage philosophy
+(see [testing.md § Test coverage philosophy](../testing/testing.md#test-coverage-philosophy));
+the shared `lib/iitm-bs.ts` and `use-local-storage-state.ts` are exercised
+indirectly through the tool registry's existing invariant tests (unique
+slugs/descriptions, every tool resolving to a real category).
