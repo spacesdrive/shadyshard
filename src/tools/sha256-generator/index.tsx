@@ -2,21 +2,11 @@ import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CopyButton } from "@/components/tool/CopyButton"
-
-const ALGORITHMS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const
-type Algorithm = (typeof ALGORITHMS)[number]
-
-async function hashText(text: string, algorithm: Algorithm): Promise<string> {
-  const bytes = new TextEncoder().encode(text)
-  const digest = await crypto.subtle.digest(algorithm, bytes)
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")
-}
+import { HASH_ALGORITHMS, hashText, type HashAlgorithm } from "@/lib/hash"
 
 export default function Sha256Generator() {
   const [input, setInput] = useState("")
-  const [algorithm, setAlgorithm] = useState<Algorithm>("SHA-256")
+  const [algorithm, setAlgorithm] = useState<HashAlgorithm>("SHA-256")
   const [hash, setHash] = useState("")
 
   useEffect(() => {
@@ -45,9 +35,12 @@ export default function Sha256Generator() {
         aria-label="Text to hash"
       />
 
-      <Tabs value={algorithm} onValueChange={(value) => setAlgorithm(value as Algorithm)}>
+      <Tabs
+        value={algorithm}
+        onValueChange={(value) => setAlgorithm(value as HashAlgorithm)}
+      >
         <TabsList>
-          {ALGORITHMS.map((alg) => (
+          {HASH_ALGORITHMS.map((alg) => (
             <TabsTrigger key={alg} value={alg}>
               {alg}
             </TabsTrigger>

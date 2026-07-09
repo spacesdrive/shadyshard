@@ -4,7 +4,7 @@
   <h1>ShadyShard</h1>
 
   <p><strong>Privacy-first browser tools. Everything runs locally.</strong></p>
-  <p>60+ fast, free, browser-based utilities. No uploads, no accounts, no tracking, no backend.</p>
+  <p>90+ fast, free, browser-based utilities. No uploads, no accounts, no tracking, no backend.</p>
 
   <p>
     <a href="https://github.com/spacesdrive/shadyshard/actions/workflows/ci.yml"><img src="https://github.com/spacesdrive/shadyshard/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
@@ -54,17 +54,19 @@ That constraint also shapes how the project is built: no accounts to manage, no 
 
 ## Features
 
-| Category      | Examples                                                                                                                   |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Developer     | JSON formatter, validator, minifier, diff; Base64 and URL encode/decode; UUID and Nano ID generators; SHA-256; JWT decoder |
-| Text          | Word/character counters, case converter, slug generator, duplicate-line remover, Markdown preview, HTML escape             |
-| Image         | Compressor, resizer, cropper, format converters (PNG, JPG, WebP), SVG optimizer, EXIF remover, favicon generator           |
-| Color and CSS | Color converter, gradient generator, contrast checker, box-shadow/border-radius/grid/flexbox generators                    |
-| SEO           | Meta tag generator, robots.txt generator, sitemap generator, Open Graph preview                                            |
-| QR            | QR code generator and camera-based scanner                                                                                 |
-| Security      | Password generator, password strength checker, all client-side                                                             |
-| Utilities     | Age, percentage, GST, and date-difference calculators; browser info, clipboard inspector, user agent parser                |
-| Student Tools | Unofficial IITM BS CGPA, credit, and degree-progress calculators; semester, study, and exam planners                       |
+| Category      | Examples                                                                                                                                             |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Developer     | JSON formatter, validator, minifier, diff; Base64, URL, HEX, and binary encode/decode; UUID and Nano ID generators; SHA-256; JWT decoder; URL parser |
+| Text          | Word/character counters, case converter, slug generator, duplicate-line remover, Markdown preview, HTML escape                                       |
+| Image         | Compressor, resizer, cropper, format converters (PNG, JPG, WebP), SVG optimizer, EXIF remover, favicon generator                                     |
+| PDF           | Merge, split, extract/rotate/reorder/delete pages, compress, metadata view/remove, text extraction, PDF-to-images, images-to-PDF, password checker   |
+| Converters    | Markdown/HTML, CSV/JSON/XML/YAML/TSV, and unit/format converters                                                                                     |
+| Color and CSS | Color converter, gradient generator, contrast checker, box-shadow/border-radius/grid/flexbox generators                                              |
+| SEO           | Meta tag generator, robots.txt generator, sitemap generator, Open Graph preview                                                                      |
+| QR            | QR code generator and camera-based scanner                                                                                                           |
+| Security      | Password generator, password strength checker, file hashing, checksum verification, file signature/MIME inspection                                   |
+| Utilities     | Age, percentage, GST, and date-difference calculators; browser info, clipboard inspector, user agent parser                                          |
+| Student Tools | Unofficial IITM BS CGPA, credit, and degree-progress calculators; semester, study, and exam planners                                                 |
 
 Every tool ships with a responsive layout, full dark and light mode, keyboard accessibility, copy and download buttons where relevant, inline validation, and its own SEO metadata and structured data, generated automatically from a single `meta.ts` file. See [Features in depth](docs/architecture/ARCHITECTURE.md#6-metadata-and-seo).
 

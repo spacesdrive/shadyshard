@@ -49,7 +49,8 @@ src/
     seo/                    Seo.tsx (react-helmet-async wrapper)
     search/                 SearchDialog.tsx (Fuse.js + cmdk)
     tool/                   ToolPageLayout, ToolCard, ToolFaq, RelatedTools, StrengthMeter,
-                             CopyButton, DownloadButton, FileDropZone, UnofficialToolNotice
+                             CopyButton, DownloadButton, FileDropZone, UnofficialToolNotice,
+                             PageRangeInput
     ui/                     shadcn/ui primitives (generated, see ui/design-system.md)
 
   hooks/
@@ -72,6 +73,19 @@ src/
     iitm-bs.ts                Shared IITM BS reference data (grade scale, default
                              per-level credit targets, unofficial-tool disclaimer
                              text) for the Student Tools category
+    pdf.ts                    pdf-lib helpers: load/merge/split/rotate/reorder/
+                             delete pages, metadata read/strip, images-to-PDF
+    pdf-render.ts             pdfjs-dist helpers: lazy-loaded page rendering to
+                             canvas/PNG, text extraction
+    page-range.ts             Parses "1-3,5,8-9" page-range input, shared by
+                             every PDF tool that lets a user pick specific pages
+    csv.ts                    Hand-rolled RFC 4180-style CSV/TSV parse/serialize
+    xml.ts                    XML <-> plain-object conversion via native
+                             DOMParser/XMLSerializer
+    file-signatures.ts        Magic-byte file-signature database and hex-dump
+                             formatter, shared by the file-inspection tools
+    hash.ts                    Shared Web Crypto hashing (hashText/hashFile),
+                             used by both text- and file-hashing tools
 
   types/
     tool.ts                   ToolMeta, ToolCategory, ToolDefinition, ToolFaq
@@ -309,9 +323,16 @@ large batch image operation is the likely trigger for moving work off the
 main thread with a Worker). See
 [engineering/tool-development.md](../engineering/tool-development.md) for
 the browser-first policy that governs when to reach for them, and
-[decisions.md](decisions.md) for the two justified exceptions where no
-browser API exists at all (`qrcode`/`jsQR` for QR tools, `marked`/
-`dompurify` for Markdown Preview).
+[decisions.md](decisions.md) for the justified exceptions where no browser
+API exists at all: `qrcode`/`jsQR` (QR tools), `marked`/`dompurify`
+(Markdown Preview, Markdown to HTML, HTML to Markdown), `turndown` (HTML to
+Markdown), `js-yaml` (YAML converters), and `pdf-lib`/`pdfjs-dist` (the PDF
+Tools category, ADR-019).
+
+`pdfjs-dist`'s worker script is imported as a local asset
+(`pdfjs-dist/build/pdf.worker.mjs?url`, `lib/pdf-render.ts`) rather than
+pointed at a CDN, keeping it consistent with the no-external-requests
+posture the rest of the app follows.
 
 ## 11. Build and deployment
 
@@ -347,23 +368,34 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 60 tools (up from the
+What already scales without change, now validated at 93 tools (up from the
 original 3):
 
 - Adding a tool: two files, zero registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 60 tools
+- Code splitting: automatic per tool and per page -- confirmed at 93 tools
   that per-tool-chunk size stays small and independent of catalog size
-  (adding tool #60 does not inflate tool #1's chunk).
+  (adding tool #93 does not inflate tool #1's chunk). The 33-tool PDF &
+  Document Tools batch also confirmed that a handful of tools sharing one
+  heavy dependency (`pdf-lib`/`pdfjs-dist` across 15 PDF tools) still
+  produces one shared lazy vendor chunk rather than 15 duplicated copies --
+  Rolldown dedupes it automatically.
 - Adding a whole new category (`css`, `seo`, `qr`, `browser` were added in
   the same change that took the catalog from 12 to 50 tools; `student` was
   added in the change that took it from 50 to 60) is a single entry in
-  `categories.ts` -- no routing or registry change needed.
+  `categories.ts` -- no routing or registry change needed. The 33-tool PDF &
+  Document Tools batch needed **no new category at all**: all of it fit
+  into the existing `pdf`, `converters`, `developer`, and `security`
+  categories, which is the stronger scaling signal -- reusing an existing
+  category is preferred over adding one whenever the tools genuinely fit,
+  per [tool-development.md §5](../engineering/tool-development.md#5-adding-a-new-category).
 - Cross-tool shared data and persistence also scale the same way a shared
-  component does: the ten IITM BS Student Tools all import their reference
-  data from one `lib/iitm-bs.ts` and their persistence behavior from one
-  `hooks/use-local-storage-state.ts`, rather than each re-deriving grade
-  scales or hand-rolling localStorage reads.
+  component does: the ten IITM BS Student Tools import their reference
+  data from one `lib/iitm-bs.ts`; the fifteen PDF Tools import from one
+  `lib/pdf.ts` and one `lib/pdf-render.ts`; the file-inspection tools share
+  one `lib/file-signatures.ts`; text- and file-hashing tools share one
+  `lib/hash.ts` -- none of these tools re-derive or hand-roll logic another
+  tool in the same batch already needed.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -378,12 +410,13 @@ forgotten:
   categories this is already worth watching.
 - **`import.meta.glob` eager meta loading** puts every tool's metadata
   object into the main bundle's JS graph at build time. This has gone from
-  negligible to measurable: the app entry chunk grew from ~93 KB to ~157 KB
-  gzip-uncompressed-source (45 KB gzip) between 12 and 50 tools. Still
-  acceptable, but the growth is now linear and visible -- re-measure at
-  every doubling of catalog size, and treat splitting metadata out of the
-  eager bundle (e.g., a generated static JSON index fetched lazily) as the
-  fix if it becomes a real problem before 500 tools.
+  negligible to a real constraint: the app entry chunk (`index-*.js`) is
+  now 55.4 KB gzip at 93 tools, up from 45 KB gzip at 50 tools, against a
+  `scripts/check-bundle-size.ts` budget of 65 KB -- there is not much
+  headroom left before the next batch of tools trips this budget. Treat
+  splitting metadata out of the eager bundle (e.g., a generated static JSON
+  index fetched lazily) as the fix the next time this budget needs raising,
+  rather than raising it again without addressing the underlying cause.
 - **Automated test coverage is deliberately shallow by tool count, not by
   layer.** Vitest + React Testing Library + Playwright now cover the
   shared registry, shared components, and a representative tool per

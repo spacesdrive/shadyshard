@@ -643,3 +643,72 @@ Tailwind, so a highly custom-branded date picker or scrollbar is still out
 of reach if ever desired; that's an intentional, currently-unneeded
 trade-off in favor of not maintaining a hand-built replacement for browser
 functionality that already works correctly once themed.
+
+---
+
+## ADR-019: pdf-lib, pdfjs-dist, js-yaml, and Turndown for the PDF & Document Tools category
+
+Date: 2026-07-09
+
+**Decision:** Added four dependencies to build the 33-tool PDF & Document
+Tools batch (15 PDF tools, 10 document format converters, 3 encoding
+tools, 5 file-inspection tools): `pdf-lib` (creating, merging, splitting,
+rotating, reordering, and editing PDF pages and metadata), `pdfjs-dist`
+(rendering PDF pages to canvas/PNG and extracting text -- the same engine
+behind Firefox's built-in PDF viewer), `js-yaml` (YAML parse/dump), and
+`turndown` (HTML-to-Markdown conversion). Every other tool in the batch
+(CSV/TSV, XML/JSON, hex, binary, URL parsing, file hashing/signature
+inspection) uses only native browser APIs (`DOMParser`/`XMLSerializer`,
+`TextEncoder`/`TextDecoder`, `crypto.subtle`, the File API) plus small
+hand-rolled parsers (`lib/csv.ts`, `lib/page-range.ts`,
+`lib/file-signatures.ts`) rather than a dependency.
+
+**Reasoning:** PDF creation/editing and PDF rendering have no browser-native
+API at all -- there is no way to merge two PDFs, rotate a page, or rasterize
+a page to an image using only what the browser ships, which is exactly the
+bar [tool-development.md's browser-first
+philosophy](../engineering/tool-development.md#browser-first-philosophy)
+sets for reaching past a browser API to a dependency (the same bar that
+justified `qrcode`/`jsQR` in ADR-011 and `marked`/`dompurify` in ADR-012).
+`pdf-lib` and `pdfjs-dist` are the de facto standard pure-JS libraries for
+these two problems respectively (creation/editing vs. rendering/parsing),
+both are actively maintained, and using two purpose-built libraries rather
+than one library asked to do both keeps each tool's actual dependency
+surface smaller than a single do-everything PDF library would. `js-yaml`
+and `turndown` follow the same reasoning at smaller scale: YAML's
+indentation-sensitive grammar and Markdown-from-HTML's many edge cases
+(nested lists, code fences, tables) are exactly the kind of "small feature
+set, large edge-case surface" problem [engineering/standards.md](../engineering/standards.md)
+already treats as a case for a well-established library over a hand-rolled
+parser -- unlike CSV, which this project's own `lib/csv.ts` shows is small
+and stable enough to hand-roll without meaningfully more risk than a
+dependency.
+
+**Alternatives considered:** A single combined PDF library instead of
+splitting `pdf-lib` (editing) and `pdfjs-dist` (rendering) -- rejected;
+`pdfjs-dist` has no PDF-writing capability and `pdf-lib` has no
+rendering/rasterization capability, so one library could not have covered
+both halves of the category regardless. Hand-rolling a YAML parser --
+rejected, YAML's grammar (flow vs. block styles, anchors, multi-document
+markers, type coercion rules) is materially more complex than CSV's, and a
+subtly incorrect hand-rolled parser would silently mis-convert valid YAML
+rather than failing loudly. `pdfjs-dist`'s worker loaded from a CDN
+(matching several of its own official examples) -- rejected in favor of
+bundling it as a local asset via Vite's `?url` import
+(`lib/pdf-render.ts`), keeping this category consistent with the rest of
+the app's zero-external-request posture.
+
+**Trade-offs:** `pdf-lib` and `pdfjs-dist` together produce two lazy
+vendor chunks named `pdf-*` by Rolldown (~171 KB and ~123 KB gzip
+respectively, budgeted at 200 KB each in `scripts/check-bundle-size.ts`),
+downloaded only when a visitor opens a PDF tool, never as part of the main
+bundle -- acceptable given they're genuinely necessary for that category
+and irrelevant to every other tool's load time. PDF Compressor's real
+limitation (it compacts internal PDF structure via `useObjectStreams` but
+cannot re-encode or downsample embedded images, since neither `pdf-lib`
+nor a browser API supports that) and PDF Password Checker's real
+limitation (it can detect encryption but cannot verify or remove a
+password, since `pdf-lib` cannot decrypt a PDF at all) are both documented
+directly in those tools' `meta.ts` descriptions and FAQs rather than
+silently omitted or half-implemented, per this task's requirement to
+document a browser limitation rather than work around it with a backend.
