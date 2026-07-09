@@ -1,11 +1,14 @@
 name: CI
 
-# Runs on every push and pull request, and is also callable from cd.yml so
-# main-branch deploys always go through the exact same gate rather than a
-# parallel, potentially-drifted copy of the same checks.
+# Runs on every push to a non-main branch and every pull request, and is
+# also callable from cd.yml so main-branch deploys always go through the
+# exact same gate. main is excluded from the push trigger because cd.yml
+# already invokes this workflow via workflow_call on every push to main --
+# without the exclusion, a push to main would run the full suite twice
+# (once standalone, once nested under CD).
 on:
   push:
-    branches: ["**"]
+    branches-ignore: [main]
   pull_request:
     branches: [main]
   workflow_call:

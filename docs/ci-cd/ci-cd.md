@@ -31,7 +31,10 @@ every push/PR to main and weekly on a schedule, independent of the rest of
 the pipeline. Nothing reaches `main`'s production deployment without every
 job in `ci.yml` succeeding first -- `cd.yml` calls `ci.yml` as a reusable
 workflow via `needs: [ci]`, not a separate copy of the same checks, so
-there is exactly one place that defines "passing."
+there is exactly one place that defines "passing." `ci.yml`'s own `push`
+trigger excludes `main` (`branches-ignore: [main]`) for the same reason:
+without the exclusion, a push to `main` would run the full suite twice --
+once as a standalone `CI` workflow and once nested under `CD`.
 
 ## Local development workflow
 
