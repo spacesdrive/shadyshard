@@ -6,7 +6,7 @@ ShadyShard hosts 500+ single-purpose tools (text, image, PDF, converters, genera
 
 ## Docs
 
-- [Homepage](https://shadyshard.com/): Tool categories and featured tools.
-- [About](https://shadyshard.com/about): Project mission and principles.
-- [Privacy Policy](https://shadyshard.com/privacy): Data handling practices.
-- [Sitemap](https://shadyshard.com/sitemap.xml): Full list of tool and category URLs.
+- [Homepage](https://shadyshard.spacesdrive.cc/): Tool categories and featured tools.
+- [About](https://shadyshard.spacesdrive.cc/about): Project mission and principles.
+- [Privacy Policy](https://shadyshard.spacesdrive.cc/privacy): Data handling practices.
+- [Sitemap](https://shadyshard.spacesdrive.cc/sitemap.xml): Full list of tool and category URLs.

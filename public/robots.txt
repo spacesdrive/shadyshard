@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shadyshard.com/sitemap.xml
+Sitemap: https://shadyshard.spacesdrive.cc/sitemap.xml
