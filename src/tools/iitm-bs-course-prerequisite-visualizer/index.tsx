@@ -3,6 +3,7 @@ import { Plus, Trash2, AlertCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { UnofficialToolNotice } from "@/components/tool/UnofficialToolNotice"
 import { useLocalStorageState } from "@/hooks/use-local-storage-state"
 
@@ -86,8 +87,19 @@ export default function IitmBsCoursePrerequisiteVisualizer() {
     setCourses(courses.map((c) => (c.id === id ? { ...c, name } : c)))
   }
 
-  function updatePrereqs(id: string, prereqIds: string[]) {
-    setCourses(courses.map((c) => (c.id === id ? { ...c, prereqIds } : c)))
+  function togglePrereq(id: string, prereqId: string, checked: boolean) {
+    setCourses(
+      courses.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              prereqIds: checked
+                ? [...c.prereqIds, prereqId]
+                : c.prereqIds.filter((p) => p !== prereqId),
+            }
+          : c,
+      ),
+    )
   }
 
   function removeCourse(id: string) {
@@ -136,30 +148,29 @@ export default function IitmBsCoursePrerequisiteVisualizer() {
             </div>
             {courses.length > 1 && (
               <div className="mt-2">
-                <Label htmlFor={`prereq-select-${course.id}`} className="text-xs">
-                  Requires (hold Ctrl/Cmd to select multiple)
-                </Label>
-                <select
-                  id={`prereq-select-${course.id}`}
-                  name={`prereqs-${index}`}
-                  multiple
-                  value={course.prereqIds}
-                  onChange={(e) =>
-                    updatePrereqs(
-                      course.id,
-                      Array.from(e.target.selectedOptions, (o) => o.value),
-                    )
-                  }
-                  className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 mt-1.5 h-20 w-full rounded-lg border bg-transparent p-1.5 text-sm outline-none focus-visible:ring-3"
-                >
+                <span className="text-xs font-medium">Requires</span>
+                <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-2">
                   {courses
                     .filter((c) => c.id !== course.id)
                     .map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name || "Untitled course"}
-                      </option>
+                      <div key={c.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`prereq-${course.id}-${c.id}`}
+                          name={`prereqs-${index}`}
+                          checked={course.prereqIds.includes(c.id)}
+                          onCheckedChange={(checked) =>
+                            togglePrereq(course.id, c.id, checked === true)
+                          }
+                        />
+                        <Label
+                          htmlFor={`prereq-${course.id}-${c.id}`}
+                          className="text-sm font-normal"
+                        >
+                          {c.name || "Untitled course"}
+                        </Label>
+                      </div>
                     ))}
-                </select>
+                </div>
               </div>
             )}
           </div>

@@ -146,6 +146,22 @@ Every component must render correctly in both themes using semantic color
 tokens (see above) -- never assume dark mode when writing a component, even
 though it's the default.
 
+`src/index.css` sets the CSS `color-scheme` property (`light` on `:root`,
+`dark` on `.dark`) alongside the token overrides. Without this, browser-native
+form control chrome that Tailwind classes cannot reach -- an `<input
+type="date">`'s calendar popup, `<input type="number">` spinner arrows,
+scrollbars -- renders using the OS's light/dark preference instead of the
+app's actual theme, producing a white popup on an otherwise dark page. This
+was a real bug: a raw `<select>` element styled only with Tailwind classes
+still opened a light-background native dropdown in dark mode, because
+Tailwind can style the closed trigger but not the browser-rendered options
+popup. The fix for a `<select>` specifically is to use `components/ui/select.tsx`
+(Base UI, portal-rendered, follows the `popover`/`popover-foreground`
+tokens like any other themed primitive) rather than a raw `<select>` --
+see [Component consistency checklist](#component-consistency-checklist).
+`color-scheme` is the remaining fix for the handful of native controls
+with no themed shadcn equivalent (`type="date"`, `type="number"`).
+
 ## Layout and spacing
 
 - Page-width containers: `max-w-7xl` for grid/card layouts (homepage,

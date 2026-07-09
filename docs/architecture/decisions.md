@@ -596,3 +596,50 @@ logic, consistent with this project's existing test coverage philosophy
 the shared `lib/iitm-bs.ts` and `use-local-storage-state.ts` are exercised
 indirectly through the tool registry's existing invariant tests (unique
 slugs/descriptions, every tool resolving to a real category).
+
+---
+
+## ADR-018: `color-scheme` CSS property added alongside `.dark` token overrides
+
+Date: 2026-07-09
+
+**Decision:** Added `color-scheme: light` to `:root` and `color-scheme: dark`
+to `.dark` in `src/index.css`. Also replaced two raw `<select>` elements
+(IITM BS CGPA Calculator's grade dropdown, Course Prerequisite Visualizer's
+multi-select) with the shadcn `Select` primitive (`components/ui/select.tsx`,
+newly added via the shadcn MCP) and a `Checkbox` list, respectively.
+
+**Reasoning:** A user reported the CGPA Calculator's grade dropdown was
+unreadable in dark mode -- white background, low-contrast text. Root cause:
+a raw `<select>` element can have its closed trigger styled with Tailwind
+classes, but the browser renders the open options popup itself using native
+chrome, which follows the OS/browser `prefers-color-scheme` rather than this
+app's own `.dark` class toggle. The same root cause affects every other
+browser-native form control popup this project might use (`<input
+type="date">`'s calendar, `<input type="number">`'s spinner arrows,
+scrollbars). Fixing only the one reported dropdown would have left the same
+class of bug live in `<input type="date">` (already in use in the Exam
+Countdown Planner) and in effect for any future raw native form control.
+Two fixes were needed together: use the themed `Select` primitive
+(portal-rendered, uses `popover`/`popover-foreground` tokens, so it's
+already correct in both themes) wherever a `<select>`-shaped control is
+needed, per [standards.md's existing "don't hand-build a form control from
+scratch" rule](../ui/design-system.md#component-consistency-checklist) --
+that rule already existed before this bug, this was a violation of it, not
+a gap in it. `color-scheme` is the fix for the remaining native controls
+that have no themed shadcn equivalent.
+
+**Alternatives considered:** Styling only the reported `<select>` with more
+specific CSS -- rejected, cannot override native popup rendering with CSS
+alone in any browser. Building a custom themed date picker to replace
+`<input type="date">` -- rejected as disproportionate to the actual need;
+`color-scheme` fixes the native picker's theme with one line and no new
+component, and a custom calendar widget is unjustified complexity unless a
+tool needs date-picking behavior beyond what the native control offers.
+
+**Trade-offs:** `color-scheme` affects browser-rendered chrome only
+(scrollbar color, form control popups) -- it cannot be styled further with
+Tailwind, so a highly custom-branded date picker or scrollbar is still out
+of reach if ever desired; that's an intentional, currently-unneeded
+trade-off in favor of not maintaining a hand-built replacement for browser
+functionality that already works correctly once themed.

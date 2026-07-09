@@ -3,6 +3,13 @@ import { Plus, Trash2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { CopyButton } from "@/components/tool/CopyButton"
 import { DownloadButton } from "@/components/tool/DownloadButton"
 import { UnofficialToolNotice } from "@/components/tool/UnofficialToolNotice"
@@ -124,19 +131,24 @@ export default function IitmBsCgpaCalculator() {
               >
                 Grade
               </Label>
-              <select
-                id={`cgpa-grade-${course.id}`}
-                name={`course-grade-${index}`}
+              <Select
                 value={course.grade}
-                onChange={(e) => updateRow(course.id, { grade: e.target.value })}
-                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 mt-1.5 h-8 w-full rounded-lg border bg-transparent px-2.5 text-sm outline-none focus-visible:ring-3"
+                onValueChange={(value) => {
+                  if (value) updateRow(course.id, { grade: value })
+                }}
+                name={`course-grade-${index}`}
               >
-                {gradeScale.map((g) => (
-                  <option key={g.letter} value={g.letter}>
-                    {g.letter} ({g.points})
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id={`cgpa-grade-${course.id}`} className="mt-1.5 w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {gradeScale.map((g) => (
+                    <SelectItem key={g.letter} value={g.letter}>
+                      {g.letter} ({g.points})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button
               type="button"
