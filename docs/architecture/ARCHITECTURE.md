@@ -49,16 +49,12 @@ src/
     seo/                    Seo.tsx (react-helmet-async wrapper)
     search/                 SearchDialog.tsx (Fuse.js + cmdk)
     tool/                   ToolPageLayout, ToolCard, ToolFaq, RelatedTools, StrengthMeter,
-                             CopyButton, DownloadButton, FileDropZone, UnofficialToolNotice,
-                             PageRangeInput
+                             CopyButton, DownloadButton, FileDropZone, PageRangeInput
     ui/                     shadcn/ui primitives (generated, see ui/design-system.md)
 
   hooks/
     use-theme.tsx            Theme context: light/dark/system
     use-search-index.ts      Fuse.js index over the tool registry
-    use-local-storage-state.ts  Generic localStorage-backed useState, used by
-                             every IITM BS Student Tools entry that persists a
-                             user-entered list or plan
 
   lib/
     tool-registry.ts         import.meta.glob discovery + lookup/query helpers
@@ -70,9 +66,6 @@ src/
     password-strength.ts      Entropy-heuristic password strength estimator
     image.ts                  Canvas load/draw/convert helpers, formatBytes
     download.ts                downloadBlob/downloadText helpers
-    iitm-bs.ts                Shared IITM BS reference data (grade scale, default
-                             per-level credit targets, unofficial-tool disclaimer
-                             text) for the Student Tools category
     pdf.ts                    pdf-lib helpers: load/merge/split/rotate/reorder/
                              delete pages, metadata read/strip, images-to-PDF
     pdf-render.ts             pdfjs-dist helpers: lazy-loaded page rendering to
@@ -368,50 +361,55 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 93 tools (up from the
+What already scales without change, now validated at 83 tools (up from the
 original 3):
 
 - Adding a tool: two files, zero registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 93 tools
+- Code splitting: automatic per tool and per page -- confirmed at 83 tools
   that per-tool-chunk size stays small and independent of catalog size
-  (adding tool #93 does not inflate tool #1's chunk). The 33-tool PDF &
-  Document Tools batch also confirmed that a handful of tools sharing one
-  heavy dependency (`pdf-lib`/`pdfjs-dist` across 15 PDF tools) still
-  produces one shared lazy vendor chunk rather than 15 duplicated copies --
-  Rolldown dedupes it automatically.
+  (adding another tool does not inflate an existing tool's chunk). The
+  33-tool PDF & Document Tools batch also confirmed that a handful of tools
+  sharing one heavy dependency (`pdf-lib`/`pdfjs-dist` across 15 PDF tools)
+  still produces one shared lazy vendor chunk rather than 15 duplicated
+  copies -- Rolldown dedupes it automatically.
 - Adding a whole new category (`css`, `seo`, `qr`, `browser` were added in
-  the same change that took the catalog from 12 to 50 tools; `student` was
-  added in the change that took it from 50 to 60) is a single entry in
-  `categories.ts` -- no routing or registry change needed. The 33-tool PDF &
-  Document Tools batch needed **no new category at all**: all of it fit
-  into the existing `pdf`, `converters`, `developer`, and `security`
-  categories, which is the stronger scaling signal -- reusing an existing
-  category is preferred over adding one whenever the tools genuinely fit,
-  per [tool-development.md §5](../engineering/tool-development.md#5-adding-a-new-category).
+  the same change that took the catalog from 12 to 50 tools) is a single
+  entry in `categories.ts` -- no routing or registry change needed. The
+  33-tool PDF & Document Tools batch needed **no new category at all**: all
+  of it fit into the existing `pdf`, `converters`, `developer`, and
+  `security` categories, which is the stronger scaling signal -- reusing an
+  existing category is preferred over adding one whenever the tools
+  genuinely fit, per [tool-development.md
+  §5](../engineering/tool-development.md#5-adding-a-new-category). Removing
+  a category is symmetric: deleting the ten IITM BS Student Tools (see
+  [decisions.md ADR-020](decisions.md)) was ten tool folders, one
+  `categories.ts` entry, and the category-exclusive shared infrastructure
+  those tools used (`lib/iitm-bs.ts`, `hooks/use-local-storage-state.ts`,
+  `components/tool/UnofficialToolNotice.tsx`) -- sitemap, nav, and search
+  updated automatically with no other code changes needed.
 - Cross-tool shared data and persistence also scale the same way a shared
-  component does: the ten IITM BS Student Tools import their reference
-  data from one `lib/iitm-bs.ts`; the fifteen PDF Tools import from one
-  `lib/pdf.ts` and one `lib/pdf-render.ts`; the file-inspection tools share
-  one `lib/file-signatures.ts`; text- and file-hashing tools share one
+  component does: the fifteen PDF Tools import from one `lib/pdf.ts` and
+  one `lib/pdf-render.ts`; the file-inspection tools share one
+  `lib/file-signatures.ts`; text- and file-hashing tools share one
   `lib/hash.ts` -- none of these tools re-derive or hand-roll logic another
   tool in the same batch already needed.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
 
-- **`categories.ts` is a hand-maintained flat list**, now at 15 entries (up
+- **`categories.ts` is a hand-maintained flat list**, now at 14 entries (up
   from 10). Still fine; reconsider if subcategories or a category hierarchy
   become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
-  tools-per-category grows enough to make five links insufficient -- at 15
+  tools-per-category grows enough to make five links insufficient -- at 14
   categories this is already worth watching.
 - **`import.meta.glob` eager meta loading** puts every tool's metadata
   object into the main bundle's JS graph at build time. This has gone from
   negligible to a real constraint: the app entry chunk (`index-*.js`) is
-  now 55.4 KB gzip at 93 tools, up from 45 KB gzip at 50 tools, against a
+  now 51.4 KB gzip at 83 tools, up from 45 KB gzip at 50 tools, against a
   `scripts/check-bundle-size.ts` budget of 65 KB -- there is not much
   headroom left before the next batch of tools trips this budget. Treat
   splitting metadata out of the eager bundle (e.g., a generated static JSON

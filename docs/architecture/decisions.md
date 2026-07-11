@@ -712,3 +712,46 @@ password, since `pdf-lib` cannot decrypt a PDF at all) are both documented
 directly in those tools' `meta.ts` descriptions and FAQs rather than
 silently omitted or half-implemented, per this task's requirement to
 document a browser limitation rather than work around it with a backend.
+
+---
+
+## ADR-020: Removed the IITM BS Student Tools category
+
+Date: 2026-07-12
+
+**Decision:** Removed the `student` category and all ten IITM BS planning
+tools added in ADR-017 (CGPA Calculator, GPA Goal Calculator, Credit
+Calculator, Degree Progress Tracker, Semester Planner, Graduation
+Estimator, Weekly Study Planner, Exam Countdown Planner, Course
+Prerequisite Visualizer, Semester Workload Estimator), along with the
+shared infrastructure that existed only to serve them: `lib/iitm-bs.ts`,
+`hooks/use-local-storage-state.ts`, and
+`components/tool/UnofficialToolNotice.tsx`. The `student` entry in
+`categories.ts` was deleted along with its now-unused `GraduationCap`
+icon import. `components/ui/select.tsx` (added in ADR-018) and
+`components/ui/checkbox.tsx` (part of the base shadcn/ui component set)
+were kept: `Select` is now used by three PDF tools unrelated to this
+category, and `checkbox.tsx` is vendored shadcn/ui infrastructure, not
+something built specifically for these tools.
+
+**Reasoning:** Direct user request to remove the category and every tool
+in it. Because the tool registry, sitemap, search index, and nav are all
+derived from `src/tools/*` and `categories.ts` (see [ARCHITECTURE.md
+§3](ARCHITECTURE.md#3-tool-registry-the-core-abstraction) and [§13](ARCHITECTURE.md#13-scalability-notes-for-500-tools)),
+removal required no routing, sitemap, or search changes beyond deleting
+the ten tool folders and the one category entry -- the same
+zero-hand-wiring property that makes adding a tool cheap also makes
+removing one cheap.
+
+**Alternatives considered:** None -- this was an explicit removal request,
+not a decision between implementation approaches.
+
+**Trade-offs:** The tool catalog drops from 93 to 83 tools and from 15 to
+14 categories. ADR-017 remains in this log unedited (this log is
+append-only, see [docs/index.md](../index.md#document-by-document)) as the
+historical record of why the category was built; this entry is the record
+of why it was removed. `ARCHITECTURE.md` §2 and §13 were updated to drop
+every reference to the removed tools and infrastructure, since that
+document describes current implementation reality, not history.
+
+---

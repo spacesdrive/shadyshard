@@ -91,11 +91,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shadyshard.spacesdrive.cc/category/student</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/age-calculator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -227,56 +222,6 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/html-to-markdown</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-cgpa-calculator</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-course-prerequisite-visualizer</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-credit-calculator</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-degree-progress-tracker</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-exam-countdown-planner</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-gpa-goal-calculator</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-graduation-estimator</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-semester-planner</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-semester-workload-estimator</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://shadyshard.spacesdrive.cc/tools/iitm-bs-weekly-study-planner</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

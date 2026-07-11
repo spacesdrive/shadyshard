@@ -12,7 +12,6 @@ import {
   Paintbrush,
   Search,
   Globe,
-  GraduationCap,
 } from "lucide-react"
 import type { ToolCategory } from "@/types/tool"
 
@@ -101,12 +100,6 @@ export const categories: ToolCategory[] = [
     title: "Browser & System Info",
     description: "Inspect your browser, device, and clipboard.",
     icon: Globe,
-  },
-  {
-    slug: "student",
-    title: "Student Tools",
-    description: "CGPA, credit, and planning calculators for IITM BS students.",
-    icon: GraduationCap,
   },
 ]
 
