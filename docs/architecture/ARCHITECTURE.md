@@ -37,7 +37,7 @@ src/
     Home.tsx
     ToolPage.tsx            Renders any tool by slug (/tools/:slug)
     CategoryPage.tsx         Renders any category by slug (/category/:slug)
-    About.tsx, Privacy.tsx, Terms.tsx, NotFound.tsx
+    About.tsx, Privacy.tsx, Terms.tsx, HtmlSitemap.tsx, NotFound.tsx
 
   tools/                   One folder per tool. See tool-development.md
     <slug>/
@@ -162,6 +162,7 @@ Route tree:
 /about               -> pages/About.tsx
 /privacy             -> pages/Privacy.tsx
 /terms               -> pages/Terms.tsx
+/sitemap             -> pages/HtmlSitemap.tsx  (crawlable link list, ADR-021)
 *                    -> pages/NotFound.tsx
 ```
 

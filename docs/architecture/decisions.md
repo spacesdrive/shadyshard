@@ -755,3 +755,62 @@ every reference to the removed tools and infrastructure, since that
 document describes current implementation reality, not history.
 
 ---
+
+---
+
+## ADR-021: HTML sitemap page as a second crawl-discovery path
+
+Date: 2026-07-12
+
+**Decision:** Added `/sitemap` (`src/pages/HtmlSitemap.tsx`), a plain HTML
+page listing every static page, category, and tool as ordinary `<a>`
+links (via React Router `Link`), grouped by category. Linked from the
+footer alongside About/Privacy/Terms. Registered in the router
+(`routes/router.tsx`) and added to the generated `sitemap.xml` as a
+regular entry (`scripts/generate-seo.ts`).
+
+**Reasoning:** Google Search Console's Sitemaps report persistently showed
+"Couldn't fetch" and then "Sitemap could not be read" for
+`sitemap.xml` despite exhaustive verification that the file itself is
+correct: `200 OK`, `Content-Type: application/xml`, well-formed XML,
+correct `robots.txt` reference, valid SSL, no Cloudflare WAF/bot rule
+blocking it (confirmed via direct API inspection of the zone -- Bot
+Fight Mode off, crawler protection disabled, no custom firewall rules;
+disabling the one plausible remaining culprit, legacy Browser Integrity
+Check, did not resolve it either). Research into other Cloudflare-hosted
+sites hitting the identical symptom (technically valid, fully reachable
+sitemap; GSC still refuses to read it) found a documented case where the
+same project was tested across three different hosting platforms
+(Cloudflare Pages, Vercel, Cloudflare Workers/OpenNext) on the same
+production domain -- all failed identically -- and succeeded immediately
+on a different domain. That rules out hosting/CDN configuration as the
+cause and points at Google-side state cached against this specific,
+recently-reconfigured domain (`shadyshard.spacesdrive.cc`'s SSL
+certificate was only issued days before this investigation), which by
+other accounts can take weeks to clear and isn't accelerated by GSC's
+"Validate Fix." An HTML sitemap is immune to that failure mode entirely:
+it's just a page Googlebot crawls like any other, discovered via the
+footer link the same way every other page on this site already is (this
+project's internal-linking model already has no orphan pages -- see
+[seo-standards.md § Internal linking](../seo/seo-standards.md#internal-linking)),
+so indexing does not depend on the XML sitemap report ever going green.
+
+**Alternatives considered:** Continuing to change Cloudflare zone settings
+-- rejected; the evidence (identical failure across three unrelated
+hosting stacks in the referenced case, and a clean bot/WAF audit here)
+points away from a server-config cause, and further blind changes to
+production security settings without a specific hypothesis to test would
+be cargo-culting, not debugging. Waiting without adding a fallback --
+rejected as passive when a cheap, well-precedented mitigation exists and
+GSC's own community reports multi-week resolution lag for this exact
+symptom.
+
+**Trade-offs:** The HTML sitemap duplicates information already in
+`sitemap.xml` and `categories.ts`/the tool registry, but it derives from
+the same source of truth (`tools`, `categories`) rather than hand-maintained
+data, so it cannot drift out of sync. It does not fix the underlying GSC
+sitemap-report issue -- that remains Google-side and outside this
+project's control -- it only ensures indexing does not depend on that
+report resolving.
+
+---

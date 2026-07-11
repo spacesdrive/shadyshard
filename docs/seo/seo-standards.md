@@ -58,6 +58,16 @@ underlying data (`categories.ts`, tool `meta.ts` files) instead. See
 [ARCHITECTURE.md §6](../architecture/ARCHITECTURE.md#6-metadata-and-seo) and
 [decisions.md ADR-006](../architecture/decisions.md#adr-006-sitemaprobotstxtllmstxt-generated-as-static-files-pre-build).
 
+`/sitemap` (`pages/HtmlSitemap.tsx`) is a plain crawlable HTML page listing
+every category and tool as ordinary links, linked from the footer. It is
+not a replacement for `sitemap.xml` -- it exists as a second, independent
+discovery path for search crawlers, since Google Search Console's XML
+sitemap fetch/read status has been observed to get stuck against a
+specific domain regardless of the file's actual validity (see
+[decisions.md ADR-021](../architecture/decisions.md)). It is regenerated
+implicitly by the tool registry and `categories.ts` -- no manual
+maintenance needed when a tool or category is added or removed.
+
 `public/llms.txt` follows the [llms.txt](https://llmstxt.org) convention
 for LLM crawlers and is hand-maintained prose (site-level summary + doc
 links), since its content doesn't map to per-tool data the generator script

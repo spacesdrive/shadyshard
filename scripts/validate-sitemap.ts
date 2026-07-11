@@ -50,11 +50,11 @@ function validateSitemap(toolSlugs: string[]) {
     }
   }
 
-  const expectedCount = 4 + categories.length + toolSlugs.length // home + about + privacy + terms
+  const expectedCount = 5 + categories.length + toolSlugs.length // home + about + privacy + terms + sitemap
   if (locs.length !== expectedCount) {
     errors.push(
       `sitemap.xml has ${locs.length} entries, expected ${expectedCount} ` +
-        `(4 static + ${categories.length} categories + ${toolSlugs.length} tools)`,
+        `(5 static + ${categories.length} categories + ${toolSlugs.length} tools)`,
     )
   }
 

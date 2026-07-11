@@ -38,6 +38,7 @@ async function main() {
     urlEntry(`${site.url}/about`, "0.5", "monthly"),
     urlEntry(`${site.url}/privacy`, "0.3", "yearly"),
     urlEntry(`${site.url}/terms`, "0.3", "yearly"),
+    urlEntry(`${site.url}/sitemap`, "0.4", "weekly"),
   ]
 
   const categoryEntries = categories.map((c) =>
