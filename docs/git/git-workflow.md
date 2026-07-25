@@ -45,7 +45,11 @@ generator`, `fix(seo): correct duplicate meta description on json-compare`,
 Tracked normally: all of `src/`, `docs/`, `scripts/`, `public/` (including
 the generated `sitemap.xml`/`robots.txt` -- regenerated on every build, but
 committing the last-generated version keeps the repo's static output
-inspectable), configuration files, and `README.md`.
+inspectable), configuration files, `README.md`, and `claude.md` -- tracked
+specifically so that a cloud-run agent (which clones a fresh checkout with
+no access to any contributor's local machine) can read the same
+AI-instruction entry point as everyone else; see [the root
+CLAUDE.md](../../claude.md) for the loading order it defines.
 
 Intentionally gitignored (see `.gitignore`): `node_modules`, `dist`,
 editor-specific files, test artifacts (`coverage/`, `playwright-report/`,
@@ -53,11 +57,10 @@ editor-specific files, test artifacts (`coverage/`, `playwright-report/`,
 (Husky's regenerated internal shim), any `.env*` file (never commit
 secrets -- this project's CI/CD secrets live only in GitHub Actions
 repository secrets, see
-[ci-cd/ci-cd.md § Secrets](../ci-cd/ci-cd.md#secrets)), and `claude.md` --
-the private, local AI-instruction entry point is deliberately not shared
-via version control; see [the root CLAUDE.md](../../claude.md) for why.
-`docs/` is **not** gitignored -- it is genuine project documentation
-meant to be shared and versioned like code.
+[ci-cd/ci-cd.md § Secrets](../ci-cd/ci-cd.md#secrets)), and `.claude`
+(Claude Code's local session-state directory -- distinct from the
+tracked `claude.md` file). `docs/` is **not** gitignored -- it is genuine
+project documentation meant to be shared and versioned like code.
 
 ## Destructive operations
 
