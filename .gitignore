@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Private, local AI-instruction entry point -- not shared via version control.
-# docs/ IS tracked (see docs/git/git-workflow.md); only this file is excluded.
-claude.md
 
 # Test artifacts
 coverage
