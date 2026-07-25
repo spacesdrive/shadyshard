@@ -23,6 +23,19 @@ export default function QrCodeScanner() {
 
   useEffect(() => stopCamera, [])
 
+  // The <video> element only mounts once `scanning` is true, so the stream
+  // can't be attached to videoRef inside startCamera (it's still null at
+  // that point) -- attach it here, once the element genuinely exists.
+  useEffect(() => {
+    if (!scanning) return
+    const video = videoRef.current
+    const stream = streamRef.current
+    if (!video || !stream) return
+    video.srcObject = stream
+    video.play().catch(() => {})
+    tick()
+  }, [scanning])
+
   async function startCamera() {
     setError(null)
     try {
@@ -30,12 +43,7 @@ export default function QrCodeScanner() {
         video: { facingMode: "environment" },
       })
       streamRef.current = stream
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        await videoRef.current.play()
-      }
       setScanning(true)
-      tick()
     } catch {
       setError(
         "Could not access the camera. Check your browser's camera permission for this site.",

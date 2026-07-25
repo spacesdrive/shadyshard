@@ -84,11 +84,12 @@ the documentation describing whatever it touched reflects the new reality
 Never leave documentation stale; if you notice stale documentation while
 working on something unrelated, fix it in the same change.
 
-This file (`CLAUDE.md`) itself is deliberately not tracked in version
-control (see [`.gitignore`](.gitignore) and
-[`docs/git/git-workflow.md`](docs/git/git-workflow.md)) -- it is a private,
-local AI-instruction entry point. Everything under `docs/` _is_ tracked: it
-is real, shared project documentation, not AI scratch notes.
+This file (`CLAUDE.md`) is tracked in version control (see
+[`docs/git/git-workflow.md`](docs/git/git-workflow.md)) so that a cloud-run
+agent -- which clones a fresh checkout with no access to any contributor's
+local files -- reads the same AI-instruction entry point as anyone working
+from a local clone. Everything under `docs/` is likewise tracked: both are
+real, shared project documentation, not local-only scratch notes.
 
 ## Important Note
 
