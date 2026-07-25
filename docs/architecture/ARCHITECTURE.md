@@ -147,7 +147,7 @@ makes 500+ tools tractable.
 
 **Source:** `src/routes/router.tsx`
 
-React Router v7 in **Data Mode** (`createBrowserRouter` + `RouterProvider`
+React Router v8 in **Data Mode** (`createBrowserRouter` + `RouterProvider`
 from `react-router/dom`), not Framework Mode -- there is no server, no
 `react-router.config.ts`, no file-based routing convention. Chosen
 specifically because it gives per-route `lazy()` code splitting without

@@ -40,9 +40,10 @@ page has no deeper source of truth than the codebase itself.
 - **`ToolDefinition`** -- a `{ meta, Component }` pair, the registry's
   internal representation of a tool combining its metadata with its
   lazy-loaded component.
-- **Data Mode** -- the React Router v7 usage pattern this project uses
+- **Data Mode** -- the React Router usage pattern this project uses
   (`createBrowserRouter`), as opposed to Framework Mode or Declarative
-  Mode. See
+  Mode; on React Router v8 since [ADR-022](../architecture/decisions.md#adr-022-react-router-v7-to-v8-forced-by-a-security-advisory).
+  See
   [decisions.md ADR-003](../architecture/decisions.md#adr-003-react-router-v7-in-data-mode-not-framework-mode).
 - **`base-nova`** -- the shadcn/ui style this project uses, built on Base
   UI rather than Radix. See

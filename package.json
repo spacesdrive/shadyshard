@@ -9,7 +9,7 @@
     "url": "https://github.com/spacesdrive/shadyshard.git"
   },
   "engines": {
-    "node": ">=22 <23",
+    "node": ">=22.22 <23",
     "npm": ">=10"
   },
   "scripts": {
@@ -64,8 +64,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-helmet-async": "^3.0.0",
-    "react-router": "^7.18.1",
-    "shadcn": "^4.13.0",
+    "react-router": "^8.3.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.2",
     "turndown": "^7.2.4",
@@ -96,6 +95,7 @@
     "oxlint": "^1.71.0",
     "prettier": "^3.9.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "shadcn": "^4.13.0",
     "tsx": "^4.23.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",

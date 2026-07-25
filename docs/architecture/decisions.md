@@ -814,3 +814,62 @@ project's control -- it only ensures indexing does not depend on that
 report resolving.
 
 ---
+
+---
+
+## ADR-022: React Router v7 to v8, forced by a security advisory
+
+Date: 2026-07-26
+
+**Decision:** Upgraded `react-router` from `^7.18.1` to `^8.3.0`. Also
+reclassified `shadcn` from `dependencies` to `devDependencies` (it is a
+CLI-only tool invoked via `npx shadcn add ...` to generate
+`components/ui/*` files, never imported by runtime app code -- it was
+misclassified from the start), and bumped `engines.node` from `>=22 <23`
+to `>=22.22 <23` to match react-router v8's actual minimum.
+
+**Reasoning:** CI's `npm audit --omit=dev --audit-level=high` step
+(`dependency-audit` job) started failing: `react-router@7.12.0-8.2.0` has
+a high-severity advisory (GHSA-qwww-vcr4-c8h2, RSC Mode CSRF bypass), and
+the only version outside that range is `8.3.0` -- no non-major fix
+exists. Before upgrading, checked [Data Mode](../reference/quick-reference.md)
+compatibility via Context7 against the live React Router docs rather than
+trusting training-data knowledge of this library, which this project has
+already been burned by once (see [ADR-003](decisions.md#adr-003-react-router-v7-in-data-mode-not-framework-mode)).
+Confirmed `createBrowserRouter`/`RouterProvider` Data Mode is unchanged
+and fully supported in v8, and that this codebase already followed
+every pattern v8 requires before the bump even happened: `RouterProvider`
+already imported from `react-router/dom` (not the removed
+`react-router-dom` package), `HydrateFallback` already used instead of
+the removed `RouterProvider fallbackElement` prop, no route-level `meta()`
+functions (this project's own `<Seo>` component handles metadata, not
+React Router's Framework Mode convention), and Node 22.23.1 / React
+19.2.7 already both meet v8's minimums. The `shadcn` reclassification
+was a genuine bug, not incidental: `shadcn`'s own dependency chain
+(`@modelcontextprotocol/sdk` -> `@hono/node-server`) was also failing the
+same production-only audit, and moving it to `devDependencies` (where a
+CLI-only tool belongs regardless of the audit) removed that finding
+entirely rather than needing a version workaround for a tool this
+project's runtime never touches. The remaining findings (`brace-expansion`,
+`dompurify`, `fast-uri`, `js-yaml`, `postcss`) were all resolved by plain
+`npm audit fix` within existing semver ranges -- no code changes needed.
+
+**Alternatives considered:** `npm audit fix --force`'s own first
+suggestion was to downgrade to `react-router@7.11.0` -- rejected outright,
+since that is older than the already-installed `7.18.1` and would trade
+a security fix for reintroducing whatever `7.12.0`-`7.18.1` fixed, while
+still being a "breaking change" in npm's own accounting. Ignoring the
+audit failure (lowering `--audit-level` or adding an allowlist) --
+rejected as treating the CI gate as the problem instead of fixing the
+actual vulnerable dependency, inconsistent with this project's
+root-cause-first standard.
+
+**Trade-offs:** None found. Full verification (`tsc -b`, `oxlint`,
+`prettier --check`, `vitest run` 23/23, production build, bundle size --
+`vendor-router` chunk actually shrank slightly, 31.31 KB -> 30.58 KB
+gzip, metadata/sitemap/link/HTML validation, and a live Chrome DevTools
+pass covering a lazy-loaded tool route, client-side navigation, and the
+`/404` catch-all) all passed with zero console errors and no code
+changes required beyond `package.json`/`package-lock.json`.
+
+---
