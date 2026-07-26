@@ -8,5 +8,27 @@ export default {
     // violations. Disabled rather than worked around by rewording every
     // affected subject.
     "subject-case": [0],
+    // `release:` is not part of @commitlint/config-conventional's default
+    // type-enum -- added on top of it (not replacing it) for this
+    // project's tagged-release convention, see
+    // docs/git/git-workflow.md#release-tagging.
+    "type-enum": [
+      2,
+      "always",
+      [
+        "build",
+        "chore",
+        "ci",
+        "docs",
+        "feat",
+        "fix",
+        "perf",
+        "refactor",
+        "revert",
+        "style",
+        "test",
+        "release",
+      ],
+    ],
   },
 }
