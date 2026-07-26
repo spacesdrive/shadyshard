@@ -79,7 +79,17 @@ Before considering any change complete:
    verification](#chrome-devtools-verification) below, or
    `e2e/console.spec.ts` for the automated equivalent).
 5. **Responsive check** at a mobile viewport (390×844 used historically)
-   for any UI change.
+   for any UI change. If the change touches breakpoint-dependent layout
+   (a grid that adds columns, anything that hides/shows around `sm`/`md`/`lg`
+   -- see [design-system.md § Responsive
+   breakpoints](../ui/design-system.md#responsive-breakpoints)), also check
+   just above and below each breakpoint it crosses (640px, 768px, 1024px),
+   not only the 390px baseline -- a defect can be specific to one
+   breakpoint and invisible at both narrower and wider widths. The
+   `RelatedTools` grid overflow bug (see [design-system.md § Truncated text
+   inside a grid or flex
+   item](../ui/design-system.md#truncated-text-inside-a-grid-or-flex-item))
+   was exactly this: invisible above `sm`, present below it.
 6. **Accessibility check** -- accessibility tree snapshot reviewed, no
    missing labels/landmarks; see
    [accessibility.md](../accessibility/accessibility.md). `npm run test:e2e`

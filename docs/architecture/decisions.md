@@ -873,3 +873,41 @@ pass covering a lazy-loaded tool route, client-side navigation, and the
 changes required beyond `package.json`/`package-lock.json`.
 
 ---
+
+## ADR-023: Tagged releases with a CHANGELOG, reversing the "no release process" stance
+
+Date: 2026-07-26
+
+**Decision:** Adopt discrete versioned releases (semantic versioning, git
+tags, a `CHANGELOG.md` with an `Unreleased` section) alongside the existing
+continuous-deployment pipeline. `main` still deploys to production
+automatically on every passing merge; tags are an added record layered on
+top, not a gating mechanism. Documented in the rewritten
+[git-workflow.md](../git/git-workflow.md#release-tagging), with
+[ci-cd.md's Release workflow section](../ci-cd/ci-cd.md#release-workflow)
+updated to match.
+
+**Reasoning:** [ADR-014](#adr-014-github-actions-cicd-with-cloudflarewrangler-action-for-deployment)
+and `ci-cd.md` originally stated deliberately that no release/tagging
+process existed, reasoning that a single static SPA with no migrations and
+instant rollback via redeploy didn't need one, and that introducing
+tags/CHANGELOG speculatively wasn't worth it -- explicitly deferring the
+decision until a concrete need arose. Requested directly by the project
+owner as part of a broader git-workflow rewrite: a tagged history makes it
+possible to correlate a specific production state with a specific set of
+changes after the fact (e.g. "what shipped between v1.1.0 and v1.2.0"),
+which redeploying an arbitrary prior commit doesn't give for free.
+
+**Alternatives considered:** Leaving continuous deployment as the sole
+source of truth (status quo) -- rejected, superseded by the owner's
+explicit request. Gating deploys on a manual release/promotion step
+instead of tagging after the fact -- rejected as a much larger change
+(would require rearchitecting `cd.yml`) for a need that's really just
+"a labeled point in history," not "control over when code reaches
+production."
+
+**Trade-offs:** An extra manual step (`CHANGELOG.md` + `git tag` + push
+`--tags`) after merges that warrant a version bump; nothing enforces that
+step is actually taken, so it depends on discipline rather than tooling.
+Deployment behavior is unchanged -- every merge to `main` still deploys
+regardless of whether it was tagged.

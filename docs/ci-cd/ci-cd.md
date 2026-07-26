@@ -247,15 +247,21 @@ without passing the same checks a human-authored change would.
 
 ## Release workflow
 
-There is no separate release/tagging process -- every merge to `main` that
-passes CI deploys to production automatically (continuous deployment, not
-continuous delivery with a manual promotion step). This is a deliberate
-fit for a single static SPA with no migrations, no server-side state, and
-instant rollback (redeploying a prior commit via `wrangler pages deploy`
-or re-running an older successful `cd.yml` run restores the previous
-build). If discrete versioned releases become useful later (e.g. to
-correlate a production incident with a specific deploy), introduce git
-tags and a CHANGELOG at that point rather than speculatively now.
+Every merge to `main` that passes CI still deploys to production
+automatically (continuous deployment, no manual promotion gate) -- tagging
+does not control or delay a deploy, it only labels a point already
+deployed. On top of that, discrete versioned releases (semantic
+versioning, git tags, a `CHANGELOG.md` `Unreleased` section moved to a
+dated version entry) are maintained to correlate a specific production
+state with a specific set of changes after the fact. See
+[git-workflow.md § Release
+Tagging](../git/git-workflow.md#release-tagging) for the exact process and
+[decisions.md ADR-023](../architecture/decisions.md#adr-023-tagged-releases-with-a-changelog-reversing-the-no-release-process-stance)
+for why this reverses this document's earlier "no release process"
+position. Rollback is unaffected by tagging either way -- redeploying a
+prior commit via `wrangler pages deploy` or re-running an older successful
+`cd.yml` run restores the previous build regardless of whether it was
+tagged.
 
 ## Troubleshooting
 
