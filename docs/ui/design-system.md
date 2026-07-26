@@ -174,6 +174,21 @@ with no themed shadcn equivalent (`type="date"`, `type="number"`).
   tool containers) or `rounded-lg` for smaller elements (buttons, inputs,
   badges) -- see [Radius scale](#radius-scale).
 
+### Truncated text inside a grid or flex item
+
+A flex/grid item's default `min-width` is `auto` (its content's intrinsic
+max-content size), not `0`. `truncate` sets `white-space: nowrap`, so an
+untruncated descendant's full text width becomes that intrinsic size and
+can push the item -- and the grid track or flex row containing it -- wider
+than its container, causing page-level horizontal overflow with no visual
+indication beyond a scrollbar. `min-w-0` must be applied at **every**
+level of the chain from the grid/flex item down to the truncated element,
+not just on the immediate parent of the truncated text. This was a real
+bug: `components/tool/RelatedTools.tsx`'s card grid had `min-w-0` on the
+inner text wrapper but not on the `Link` itself (the actual grid item),
+causing horizontal overflow on every tool page at mobile widths, scaled by
+each page's longest related-tool title/description.
+
 ## Responsive breakpoints
 
 Standard Tailwind defaults (`sm`, `md`, `lg`), mobile-first. The

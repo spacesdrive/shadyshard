@@ -15,7 +15,7 @@ export function RelatedTools({ tools }: { tools: ToolDefinition[] }) {
           <Link
             key={meta.slug}
             to={`/tools/${meta.slug}`}
-            className="group border-border/60 hover:border-border hover:bg-muted/50 flex items-center gap-3 rounded-lg border p-4 transition-colors"
+            className="group border-border/60 hover:border-border hover:bg-muted/50 flex min-w-0 items-center gap-3 rounded-lg border p-4 transition-colors"
           >
             <meta.icon className="text-primary size-5 shrink-0" aria-hidden />
             <div className="min-w-0 flex-1">
