@@ -362,12 +362,12 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 83 tools (up from the
+What already scales without change, now validated at 88 tools (up from the
 original 3):
 
 - Adding a tool: two files, zero registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 83 tools
+- Code splitting: automatic per tool and per page -- confirmed at 88 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -410,12 +410,17 @@ forgotten:
 - **`import.meta.glob` eager meta loading** puts every tool's metadata
   object into the main bundle's JS graph at build time. This has gone from
   negligible to a real constraint: the app entry chunk (`index-*.js`) is
-  now 51.4 KB gzip at 83 tools, up from 45 KB gzip at 50 tools, against a
-  `scripts/check-bundle-size.ts` budget of 65 KB -- there is not much
-  headroom left before the next batch of tools trips this budget. Treat
-  splitting metadata out of the eager bundle (e.g., a generated static JSON
-  index fetched lazily) as the fix the next time this budget needs raising,
-  rather than raising it again without addressing the underlying cause.
+  now 55.3 KB gzip at 88 tools, up from 51.4 KB gzip at 83 tools and 45 KB
+  gzip at 50 tools, against a `scripts/check-bundle-size.ts` budget of 65
+  KB -- roughly 10 KB of headroom left. Note that the cost is per tool
+  metadata, not per tool, so it scales with how much prose a `meta.ts`
+  carries rather than with tool count alone: the five tools added in the
+  88-tool batch cost about 0.8 KB gzip each, against roughly 0.2 KB each
+  for the 33-tool PDF batch, because their `longDescription` and `faqs`
+  fields are substantially longer. Treat splitting metadata out of the
+  eager bundle (e.g., a generated static JSON index fetched lazily) as the
+  fix the next time this budget needs raising, rather than raising it again
+  without addressing the underlying cause.
 - **Automated test coverage is deliberately shallow by tool count, not by
   layer.** Vitest + React Testing Library + Playwright now cover the
   shared registry, shared components, and a representative tool per
