@@ -297,6 +297,19 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   byte-size measurement across JSON/SVG tools
 - `crypto.subtle.digest` -- SHA-1/256/384/512 hashing in SHA256 Generator,
   entirely native, no hashing library
+- `crypto.subtle.importKey` / `deriveKey` / `encrypt` / `decrypt` --
+  password-based AES-256-GCM encryption with PBKDF2-SHA256 key derivation
+  in Text Encrypter. No crypto library; see
+  [decisions.md ADR-024](decisions.md) for the message format.
+- `crypto.subtle.sign` (HMAC) -- TOTP code generation in TOTP Code
+  Generator, over a hand-rolled Base32 decoder for the shared secret
+- `Intl.DateTimeFormat.formatToParts` and `Intl.supportedValuesOf` -- Time
+  Zone Converter derives each zone's offset by formatting an instant in
+  that zone and reading the parts back, which is the only way to get a
+  daylight-saving-correct offset without shipping a time zone database.
+  `Intl.RelativeTimeFormat` (Unix Timestamp Converter) and `Intl.Collator`
+  with `numeric: true` (Line Sorter's natural ordering) are used the same
+  way: native formatting and collation instead of a dependency.
 - Canvas API (`<canvas>`, `CanvasRenderingContext2D`, `canvas.toBlob`/
   `toDataURL`) -- the whole Image Tools category (`lib/image.ts`):
   compression, resizing, cropping, format conversion, and EXIF stripping
@@ -362,12 +375,12 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 88 tools (up from the
-original 3):
+What already scales without change, now validated at 103 tools across 14
+categories (up from the original 3):
 
 - Adding a tool: two files, zero registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 88 tools
+- Code splitting: automatic per tool and per page -- confirmed at 103 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -399,28 +412,35 @@ original 3):
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
 
-- **`categories.ts` is a hand-maintained flat list**, now at 14 entries (up
-  from 10). Still fine; reconsider if subcategories or a category hierarchy
-  become necessary.
+- **`categories.ts` is a hand-maintained flat list**, still at 14 entries.
+  The 15-tool batch that took the catalog to 103 needed no new category at
+  all, which is the same signal the 33-tool PDF batch gave. Still fine;
+  reconsider if subcategories or a category hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
   tools-per-category grows enough to make five links insufficient -- at 14
   categories this is already worth watching.
 - **`import.meta.glob` eager meta loading** puts every tool's metadata
-  object into the main bundle's JS graph at build time. This has gone from
-  negligible to a real constraint: the app entry chunk (`index-*.js`) is
-  now 55.3 KB gzip at 88 tools, up from 51.4 KB gzip at 83 tools and 45 KB
-  gzip at 50 tools, against a `scripts/check-bundle-size.ts` budget of 65
-  KB -- roughly 10 KB of headroom left. Note that the cost is per tool
-  metadata, not per tool, so it scales with how much prose a `meta.ts`
-  carries rather than with tool count alone: the five tools added in the
-  88-tool batch cost about 0.8 KB gzip each, against roughly 0.2 KB each
-  for the 33-tool PDF batch, because their `longDescription` and `faqs`
-  fields are substantially longer. Treat splitting metadata out of the
-  eager bundle (e.g., a generated static JSON index fetched lazily) as the
-  fix the next time this budget needs raising, rather than raising it again
-  without addressing the underlying cause.
+  object into the main bundle's JS graph at build time. This is now the
+  binding constraint on catalog growth: the app entry chunk (`index-*.js`)
+  is **64.06 KB gzip at 103 tools**, up from 55.3 KB at 88 tools, 51.4 KB
+  at 83 tools, and 45 KB at 50 tools, against a
+  `scripts/check-bundle-size.ts` budget of 65 KB -- **under 1 KB of
+  headroom left**. Note that the cost is per tool metadata, not per tool,
+  so it scales with how much prose a `meta.ts` carries rather than with
+  tool count alone: the fifteen tools added in the 103-tool batch cost
+  about 0.58 KB gzip each and the five in the 88-tool batch about 0.8 KB
+  each, against roughly 0.2 KB each for the 33-tool PDF batch, because
+  their `longDescription` and `faqs` fields are substantially longer.
+  **The next tool batch cannot fit under the current budget.** Splitting
+  metadata out of the eager bundle (e.g. a generated static JSON index
+  fetched lazily, keeping only slug/title/category/icon eager for
+  navigation and search) is now required work rather than a deferred
+  option, and must land before the next batch -- raising the budget again
+  without addressing the underlying cause is explicitly not the fix. See
+  [decisions.md ADR-025](decisions.md) for why the split was deferred out
+  of the 103-tool batch rather than bundled into it.
 - **Automated test coverage is deliberately shallow by tool count, not by
   layer.** Vitest + React Testing Library + Playwright now cover the
   shared registry, shared components, and a representative tool per
