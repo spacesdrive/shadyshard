@@ -911,3 +911,113 @@ production."
 step is actually taken, so it depends on discipline rather than tooling.
 Deployment behavior is unchanged -- every merge to `main` still deploys
 regardless of whether it was tagged.
+
+---
+
+## ADR-024: Password-based text encryption format for Text Encrypter
+
+Date: 2026-07-27
+
+**Decision:** Text Encrypter derives a 256-bit key from the user's password
+with PBKDF2-SHA256 at 310,000 iterations over a per-message 16-byte random
+salt, encrypts with AES-256-GCM under a per-message 12-byte random nonce,
+and emits a single Base64 string containing `salt || nonce || ciphertext`
+(the GCM authentication tag included in the ciphertext). All primitives come
+from Web Crypto (`crypto.subtle.importKey`/`deriveKey`/`encrypt`/`decrypt`,
+`crypto.getRandomValues`); no crypto library was added. The same batch added
+TOTP Code Generator, which uses `crypto.subtle.sign` with HMAC over a
+hand-rolled Base32 decoder, likewise with no dependency.
+
+**Reasoning:** This is the first tool in the catalog that produces a durable
+artifact another instance of the tool has to read back, so the byte layout
+is a compatibility contract, not an implementation detail, and belongs in
+the decision log rather than only in code. Every parameter is a deliberate
+choice: AES-GCM rather than AES-CBC because it authenticates, so a wrong
+password fails loudly instead of returning plausible-looking garbage, which
+is the difference between a usable error message and silent data loss;
+PBKDF2 because it is the only password-based KDF Web Crypto exposes natively
+(Argon2id would be better but needs a WebAssembly dependency, which the
+browser-first policy in
+[tool-development.md](../engineering/tool-development.md#browser-first-philosophy)
+puts a high bar on); 310,000 iterations because that is OWASP's current
+PBKDF2-SHA256 floor and it still completes fast enough to feel instant;
+random salt and nonce per message because GCM nonce reuse under the same key
+is catastrophic, and a per-message salt means two messages encrypted with
+the same password never share a key. Packing all three parts into one Base64
+string means a user copies and pastes exactly one thing, with no side-channel
+metadata to keep track of.
+
+**Alternatives considered:** A library such as `libsodium-wrappers` or
+`age`-style tooling -- rejected; Web Crypto covers every primitive needed
+natively, and the browser-first policy treats a dependency as justified only
+where no browser API exists (as with `pdf-lib` in ADR-019),
+which is not the case here. A self-describing envelope carrying a version
+byte and the KDF parameters -- rejected as speculative structure for a
+format with exactly one producer and one consumer, per the "no abstraction
+for a hypothetical future need" rule in
+[standards.md](../engineering/standards.md#component-conventions); if the
+parameters ever change, the fix is a version prefix added at that point, not
+one carried unused now. Storing ciphertext as hex -- rejected, roughly a
+third larger for text meant to be pasted into a chat message.
+
+**Trade-offs:** The output is only readable by this tool, not by GPG, `age`,
+or OpenSSL, so it is unsuitable for interoperating with anything else; the
+tool's FAQ says so directly rather than leaving the user to discover it.
+PBKDF2 is weaker against GPU-based cracking than Argon2id, so the security
+of a message ultimately rests on password strength, which is why the tool
+enforces a minimum length and links to the existing password tools. Because
+the parameters are not encoded in the message, raising the iteration count
+later would break every previously produced message unless a version prefix
+is introduced at the same time.
+
+---
+
+## ADR-025: Deferred splitting tool metadata out of the eager bundle, despite exhausting the entry-chunk budget
+
+Date: 2026-07-27
+
+**Decision:** Ship the 15-tool batch that takes the catalog from 88 to 103
+tools without changing how `tool-registry.ts` loads `meta.ts` files, leaving
+the app entry chunk at 64.06 KB gzip against its 65 KB budget. Record here,
+and in
+[ARCHITECTURE.md §13](ARCHITECTURE.md#13-scalability-notes-for-500-tools),
+that the metadata split is now required work that must land before the next
+tool batch, and that raising the budget instead is explicitly not the fix.
+
+**Reasoning:** `import.meta.glob(..., { eager: true })` puts every tool's
+full `ToolMeta`, including `longDescription` and `faqs` prose, into the main
+bundle. The cost tracks prose volume rather than tool count: about 0.58 KB
+gzip per tool in this batch, against roughly 0.2 KB per tool in the 33-tool
+PDF batch. `ARCHITECTURE.md` has flagged this since the 88-tool batch as the
+thing to fix "the next time this budget needs raising"; that point has now
+effectively arrived, with under 1 KB of headroom left. Doing the split in
+this change was rejected because it is a broad architectural change to the
+single abstraction the entire "500+ tools" scalability story depends on
+(the registry feeds routing, search, the sitemap generator, category pages,
+and related-tools scoring), and
+[workflow.md](../workflow/workflow.md#autonomy-and-when-to-stop-vs-continue)
+is explicit that an unrequested architectural change of that size gets named
+and proposed rather than silently bundled into unrelated work. Mixing it into
+a 30-file tool addition would also make the diff much harder to review and
+would blur which change caused any regression.
+
+**Alternatives considered:** Raising `NAMED_BUDGETS_KB.index` from 65 KB to,
+say, 80 KB -- rejected; the budget exists to catch exactly this drift, and
+raising it is treating the alarm as the problem, the same failure mode
+rejected in
+[ADR-022](#adr-022-react-router-v7-to-v8-forced-by-a-security-advisory).
+Trimming this batch's `longDescription` and `faqs` prose to fit -- rejected;
+that trades genuine SEO and user-facing content quality, which
+[seo-standards.md](../seo/seo-standards.md#content-quality) requires, for
+headroom that a proper fix recovers entirely. Shipping fewer than 15 tools
+-- rejected; it defers the same constraint by one batch without addressing
+it, and the tools themselves are non-duplicate and independently justified.
+
+**Trade-offs:** The next contributor inherits a hard blocker rather than a
+soft warning: any tool added before the split will fail `npm run size`. That
+is deliberate and is why the constraint is stated in two places rather than
+one. Until the split lands, the entry chunk carries roughly 19 KB gzip of
+metadata prose that most visitors never read, since a visitor needs one
+tool's `longDescription` and `faqs`, not all 103.
+
+---

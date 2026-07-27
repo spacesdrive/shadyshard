@@ -8,6 +8,17 @@ process this file is maintained under.
 
 ## [Unreleased]
 
+### Added
+
+- Fifteen tools across seven existing categories, taking the catalog from 88
+  to 103: Cron Expression Parser, IP Subnet Calculator, HAR File Analyzer,
+  and JSON to TypeScript (Developer Tools); Text Encrypter and TOTP Code
+  Generator (Security and Privacy); Word Frequency Counter and Line Sorter
+  (Text Tools); Markdown Table Generator (Converters); Unix Timestamp
+  Converter and Time Zone Converter (Time and Date); ICS Calendar Event
+  Generator and vCard Generator (Generators); UTM Link Builder and Hreflang
+  Tag Generator (SEO Tools).
+
 ### Fixed
 
 - Horizontal overflow on every tool page at narrow viewports, caused by a
