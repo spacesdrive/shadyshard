@@ -45,8 +45,13 @@ function detectDelimiter(text: string): string {
   return best
 }
 
+/**
+ * Backslashes are escaped before pipes, not after: escaping pipes first would
+ * turn a cell containing `\|` into `\\|`, where the doubled backslash is an
+ * escaped backslash and the pipe is left bare to break the table.
+ */
 function escapeCell(value: string): string {
-  return value.replace(/\|/g, "\\|").replace(/\r?\n/g, " ")
+  return value.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, " ")
 }
 
 function separatorCell(alignment: Alignment, width: number): string {
