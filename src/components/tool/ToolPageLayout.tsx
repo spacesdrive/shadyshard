@@ -12,7 +12,7 @@ export function ToolPageLayout({
   detail,
 }: {
   tool: ToolSummary
-  detail?: ToolDetail
+  detail: ToolDetail
 }) {
   const category = getCategory(tool.category)
   const Component = getToolComponent(tool.slug)
@@ -44,40 +44,36 @@ export function ToolPageLayout({
         </Suspense>
       </div>
 
-      {detail && (
-        <>
-          {detail.longDescription && (
-            <div className="text-muted-foreground mt-8 text-sm leading-relaxed">
-              <p>{detail.longDescription}</p>
-            </div>
-          )}
-
-          {detail.features.length > 0 && (
-            <section aria-labelledby="features-heading" className="mt-10">
-              <h2 id="features-heading" className="text-xl font-semibold">
-                Features
-              </h2>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {detail.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="text-muted-foreground flex items-start gap-2 text-sm"
-                  >
-                    <span
-                      className="bg-primary mt-2 size-1.5 shrink-0 rounded-full"
-                      aria-hidden
-                    />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <ToolFaqSection faqs={detail.faqs} />
-          <RelatedTools tools={getRelatedTools(tool, detail.relatedTools)} />
-        </>
+      {detail.longDescription && (
+        <div className="text-muted-foreground mt-8 text-sm leading-relaxed">
+          <p>{detail.longDescription}</p>
+        </div>
       )}
+
+      {detail.features.length > 0 && (
+        <section aria-labelledby="features-heading" className="mt-10">
+          <h2 id="features-heading" className="text-xl font-semibold">
+            Features
+          </h2>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {detail.features.map((feature) => (
+              <li
+                key={feature}
+                className="text-muted-foreground flex items-start gap-2 text-sm"
+              >
+                <span
+                  className="bg-primary mt-2 size-1.5 shrink-0 rounded-full"
+                  aria-hidden
+                />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <ToolFaqSection faqs={detail.faqs} />
+      <RelatedTools tools={getRelatedTools(tool, detail.relatedTools)} />
     </div>
   )
 }

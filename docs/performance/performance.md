@@ -100,8 +100,25 @@ are the largest lazy assets on the site at 176.42 KB and 126.74 KB gzip,
 loaded only by the PDF Tools category.
 
 The Lighthouse and Core Web Vitals rows above are still the 2026-07-08
-measurement and have not been re-taken since; the chunk figures below them
+measurement and have not been re-taken since; the chunk figures above them
 have.
+
+Layout stability was re-measured on 2026-07-28 when the metadata split
+(ADR-026) was made, under 4x CPU throttling and a simulated 1.6 Mbps link,
+against the pre-split baseline:
+
+| Page                    | Before the split | After  |
+| ----------------------- | ---------------- | ------ |
+| `/tools/word-counter`   | 0.0328           | 0.0328 |
+| `/tools/json-formatter` | 0.0084           | 0.0084 |
+| `/` (homepage)          | 0.0007           | 0.0007 |
+
+Any change that defers content a tool page paints on first load must be
+measured this way before it ships. An intermediate implementation of the
+same split fetched the prose from a `useEffect` and pushed
+`/tools/word-counter` to 0.256 CLS and Lighthouse performance to 78, which
+CI caught. See [ARCHITECTURE.md section
+3](../architecture/ARCHITECTURE.md#3-tool-registry-the-core-abstraction).
 
 Re-measure and update this table whenever a change is plausibly
 performance-relevant (new heavy dependency, new tool category with

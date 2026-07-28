@@ -1072,15 +1072,25 @@ evaluating TypeScript inside the plugin, which is considerably more moving
 parts than a script that does what `generate-seo.ts` already does. Raising
 `NAMED_BUDGETS_KB.index` -- rejected in ADR-025 and rejected again here.
 
-**Trade-offs:** A tool page's prose now arrives one module fetch after the
-page shell instead of being present at first paint. That fetch is issued in
-parallel with the tool component's own chunk, so it adds no serial round
-trip, and the breadcrumbs, title, description, and every meta tag still
-render immediately from the summary. The `WebApplication` and `FAQPage`
-JSON-LD are added to the same single `<Seo>` element once the detail
-resolves, which is a real change for a crawler that does not execute
-JavaScript -- but such a crawler already sees nothing on this site, since
-every route is client-rendered. The build now emits one extra small chunk
+**Trade-offs:** The detail has to be fetched before a tool page can render,
+which is why the `/tools/:slug` route carries a statically-declared `loader`
+rather than fetching from an effect inside `ToolPage`. React Router runs a
+static loader concurrently with the route's own `lazy` module, so this costs
+no extra serial round trip and the page still renders in one commit.
+
+The first implementation used a `useEffect` instead, and CI caught what that
+cost: Lighthouse performance fell from 100 to 78 on `/tools/word-counter`
+and 80 on two other tool pages. Measured locally against the pre-split
+baseline, CLS on `/tools/word-counter` went from 0.033 to 0.256, and LCP
+separated from FCP for the first time. The cause was that the page painted
+once as a short shell, with the footer sitting mid-viewport, and again when
+the prose arrived and pushed the footer off-screen. The loader version
+measures identically to the pre-split baseline on every page tested
+(0.0328, 0.0084, 0.0007), with FCP and LCP coincident again. The lesson is
+recorded in ARCHITECTURE.md section 3: prose that is part of a page's first
+paint must be loaded as route data, not from an effect.
+
+The build now emits one extra small chunk
 per tool (118 of them, 0.5 to 1.5 KB gzip each), which is why
 `vite.config.ts` names them `<slug>-meta-*.js`: without that they would all
 be called `meta` and the bundle-size report would be unreadable. Finally,

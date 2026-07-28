@@ -143,8 +143,7 @@ must match the slug set on disk exactly. A stale generated file therefore
 throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
-Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so opening a
-tool page fetches its component and its prose in parallel and a visitor
+Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
 never downloads the other 117 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
@@ -160,11 +159,20 @@ Exposed helpers:
   the tool's `meta.relatedTools` provides them, otherwise scored by shared
   category (+3) and shared tags (+1 each)
 
-`ToolPage` renders breadcrumbs, the title header, and the tool component
-straight from the eager summary, then fills in `longDescription`, features,
-FAQ, and related tools once `loadToolDetail` resolves. The `WebApplication`
-and `FAQPage` JSON-LD are added to the same single `<Seo>` element at that
-point; the `BreadcrumbList` schema and every meta tag render immediately.
+The `/tools/:slug` route pairs its `lazy` page module with a
+statically-declared `loader` that calls `loadToolDetail`. React Router runs
+the two concurrently, so the detail chunk downloads alongside the `ToolPage`
+chunk and the page still renders in a single commit, with the header,
+features, FAQ, and related tools all present in the first paint.
+
+That pairing is load-bearing, not incidental. Loading the detail from a
+`useEffect` inside `ToolPage` instead was measured at **0.26 CLS** on
+`/tools/word-counter` against 0.03 before the split, because the page
+painted once as a short shell (leaving the footer mid-viewport) and again
+once the prose arrived. Moving the fetch into the route loader restored the
+original 0.033. If this ever needs revisiting, measure CLS on a tool page
+before and after -- the entry-chunk win is not worth a layout-shift
+regression.
 
 **Adding a tool touches exactly two new files and zero hand-edited existing
 files.** Routing, the search index, the sitemap, category counts,

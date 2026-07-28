@@ -31,9 +31,11 @@ process this file is maintained under.
 
 - Tool metadata is split into an eagerly-loaded summary and a lazily-loaded
   detail half, so a tool's long description and FAQs now download only when
-  its own page opens. The app entry chunk drops from 64.06 KB to 34.34 KB
-  gzip despite the catalog growing by fifteen tools. Writing a `meta.ts` is
-  unchanged. See
+  its own page opens. The app entry chunk drops from 64.06 KB to 34.35 KB
+  gzip despite the catalog growing by fifteen tools. The prose is loaded as
+  route data so tool pages still render in a single paint, with layout
+  stability measured unchanged against the pre-split baseline. Writing a
+  `meta.ts` is unchanged. See
   [decisions.md ADR-026](docs/architecture/decisions.md).
 - The `isNew` flag is cleared from the 103 previously-shipped tools, so the
   homepage "New tools" section shows tools that are actually new.
