@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["csv-to-json", "csv-to-tsv", "json-formatter"],
-  isNew: true,
 }
 
 export default meta

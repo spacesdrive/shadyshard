@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["password-strength-checker", "uuid-generator", "nanoid-generator"],
-  isNew: true,
 }
 
 export default meta

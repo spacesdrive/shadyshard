@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-metadata-viewer", "pdf-page-counter", "checksum-verifier"],
-  isNew: true,
 }
 
 export default meta

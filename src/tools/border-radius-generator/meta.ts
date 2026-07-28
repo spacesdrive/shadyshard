@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["box-shadow-generator", "css-grid-generator"],
-  isNew: true,
 }
 
 export default meta

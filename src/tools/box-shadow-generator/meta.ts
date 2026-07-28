@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["border-radius-generator", "gradient-generator"],
-  isNew: true,
 }
 
 export default meta

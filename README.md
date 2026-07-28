@@ -4,7 +4,7 @@
   <h1>ShadyShard</h1>
 
   <p><strong>Privacy-first browser tools. Everything runs locally.</strong></p>
-  <p>100+ fast, free, browser-based utilities. No uploads, no accounts, no tracking, no backend.</p>
+  <p>118 fast, free, browser-based utilities. No uploads, no accounts, no tracking, no backend.</p>
 
   <p>
     <a href="https://github.com/spacesdrive/shadyshard/actions/workflows/ci.yml"><img src="https://github.com/spacesdrive/shadyshard/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
@@ -54,20 +54,20 @@ That constraint also shapes how the project is built: no accounts to manage, no 
 
 ## Features
 
-| Category      | Examples                                                                                                                                                                                                                                  |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Developer     | JSON formatter, validator, minifier, diff, JSON to TypeScript; Base64, URL, HEX, and binary encode/decode; UUID and Nano ID generators; SHA-256; JWT decoder; URL parser; cron expression parser; IP subnet calculator; HAR file analyzer |
-| Text          | Word/character counters, word frequency counter, case converter, slug generator, line sorter, duplicate-line remover, text diff checker, invisible character remover, Markdown preview, HTML escape                                       |
-| Image         | Compressor, resizer, cropper, format converters (PNG, JPG, WebP), SVG optimizer, EXIF remover, favicon generator                                                                                                                          |
-| PDF           | Merge, split, extract/rotate/reorder/delete pages, compress, metadata view/remove, text extraction, PDF-to-images, images-to-PDF, password checker                                                                                        |
-| Converters    | Markdown/HTML, CSV/JSON/XML/YAML/TSV, Markdown table generator, and unit/format converters                                                                                                                                                |
-| Color and CSS | Color converter, gradient generator, contrast checker, box-shadow/border-radius/grid/flexbox generators                                                                                                                                   |
-| SEO           | Meta tag generator, robots.txt generator and tester, sitemap generator, Open Graph preview, UTM link builder, hreflang tag generator                                                                                                      |
-| QR            | QR code generator and camera-based scanner                                                                                                                                                                                                |
-| Security      | Password generator, password strength checker, text encrypter, TOTP code generator, file hashing, checksum verification, file signature/MIME inspection, email header analyzer, SPF/DMARC record checker                                  |
-| Generators    | QR codes, passwords, UUIDs, Nano IDs, favicons, ICS calendar events, vCard contact cards                                                                                                                                                  |
-| Time and date | Unix timestamp converter, time zone converter, age, date-difference, and reading-time calculators                                                                                                                                         |
-| Utilities     | Percentage and GST calculators; browser info, clipboard inspector, user agent parser                                                                                                                                                      |
+| Category      | Examples                                                                                                                                                                                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Developer     | JSON formatter, validator, minifier, diff, JSON to TypeScript; Base64, URL, HEX, and binary encode/decode; UUID and Nano ID generators; SHA-256; JWT decoder; URL parser; cron expression parser; IP subnet calculator; HAR file analyzer; regex tester; chmod calculator |
+| Text          | Word/character counters, word frequency counter, case converter, slug generator, line sorter, duplicate-line remover, text diff checker, invisible character remover, Markdown preview and TOC generator, HTML escape                                                     |
+| Image         | Compressor, resizer, cropper, format converters (PNG, JPG, WebP, SVG to PNG), SVG optimizer, EXIF remover, favicon generator, signature pad                                                                                                                               |
+| PDF           | Merge, split, extract/rotate/reorder/delete pages, compress, metadata view/remove, text extraction, PDF-to-images, images-to-PDF, password checker, watermark, page numbering                                                                                             |
+| Converters    | Markdown/HTML, CSV/JSON/XML/YAML/TSV, Markdown table generator, and unit/format converters                                                                                                                                                                                |
+| Color and CSS | Color converter, gradient generator, contrast checker, color blindness simulator, image palette extractor, box-shadow/text-shadow/border-radius/grid/flexbox generators, clamp generator, unit converter, cubic-bezier editor                                             |
+| SEO           | Meta tag generator, robots.txt generator and tester, sitemap generator, Open Graph preview, UTM link builder, hreflang tag generator                                                                                                                                      |
+| QR            | QR code generator and camera-based scanner                                                                                                                                                                                                                                |
+| Security      | Password generator, password strength checker, text encrypter, TOTP code generator, file hashing, checksum verification, file signature/MIME inspection, email header analyzer, SPF/DMARC record checker, CSP header generator                                            |
+| Generators    | QR codes, passwords, UUIDs, Nano IDs, favicons, ICS calendar events, vCard contact cards, mock data for JSON/CSV/SQL                                                                                                                                                      |
+| Time and date | Unix timestamp converter, time zone converter, age, date-difference, and reading-time calculators                                                                                                                                                                         |
+| Utilities     | Percentage and GST calculators; browser info, clipboard inspector, user agent parser                                                                                                                                                                                      |
 
 Every tool ships with a responsive layout, full dark and light mode, keyboard accessibility, copy and download buttons where relevant, inline validation, and its own SEO metadata and structured data, generated automatically from a single `meta.ts` file. See [Features in depth](docs/architecture/ARCHITECTURE.md#6-metadata-and-seo).
 
@@ -107,21 +107,22 @@ Open `http://localhost:5173`. That's the whole setup, there are no environment v
 
 ## Scripts
 
-| Command                     | Does                                                                        |
-| --------------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`               | Start the Vite dev server.                                                  |
-| `npm run build`             | Generate SEO files, typecheck, and produce the production build in `dist/`. |
-| `npm run preview`           | Preview the production build locally.                                       |
-| `npm test`                  | Run the Vitest unit/component suite.                                        |
-| `npm run test:coverage`     | Run Vitest with a coverage report.                                          |
-| `npm run test:e2e`          | Run the full Playwright end-to-end suite.                                   |
-| `npm run lint`              | Run Oxlint.                                                                 |
-| `npm run format`            | Format the codebase with Prettier.                                          |
-| `npm run typecheck`         | Typecheck without building (`tsc -b`).                                      |
-| `npm run validate:metadata` | Validate every tool's SEO metadata.                                         |
-| `npm run validate:sitemap`  | Validate `sitemap.xml`/`robots.txt` against the tool registry.              |
-| `npm run size`              | Check production bundle sizes against budget.                               |
-| `npm run generate:seo`      | Regenerate `public/sitemap.xml` and `robots.txt`.                           |
+| Command                       | Does                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `npm run dev`                 | Start the Vite dev server.                                                  |
+| `npm run build`               | Generate SEO files, typecheck, and produce the production build in `dist/`. |
+| `npm run preview`             | Preview the production build locally.                                       |
+| `npm test`                    | Run the Vitest unit/component suite.                                        |
+| `npm run test:coverage`       | Run Vitest with a coverage report.                                          |
+| `npm run test:e2e`            | Run the full Playwright end-to-end suite.                                   |
+| `npm run lint`                | Run Oxlint.                                                                 |
+| `npm run format`              | Format the codebase with Prettier.                                          |
+| `npm run typecheck`           | Typecheck without building (`tsc -b`).                                      |
+| `npm run validate:metadata`   | Validate every tool's SEO metadata.                                         |
+| `npm run validate:sitemap`    | Validate `sitemap.xml`/`robots.txt` against the tool registry.              |
+| `npm run size`                | Check production bundle sizes against budget.                               |
+| `npm run generate:seo`        | Regenerate `public/sitemap.xml` and `robots.txt`.                           |
+| `npm run generate:tool-index` | Regenerate `src/lib/tool-index.generated.ts`.                               |
 
 Full command reference, including flags: [`docs/reference/quick-reference.md`](docs/reference/quick-reference.md).
 
@@ -186,9 +187,9 @@ src/
     tool/         Shared tool-page chrome and utilities (CopyButton, FileDropZone, ...)
     ui/           shadcn/ui primitives on Base UI
   hooks/          Theme, search index
-  lib/            Tool registry, categories, SEO builders, crypto/heuristic utilities
+  lib/            Tool registry and generated tool index, categories, SEO builders, crypto/heuristic utilities
   routes/         React Router (data mode) route tree
-scripts/          Sitemap generation and CI validation scripts
+scripts/          Sitemap and tool-index generation, plus CI validation scripts
 e2e/              Playwright end-to-end specs
 docs/             Full project documentation (architecture, SEO, accessibility, CI/CD, ...)
 ```

@@ -31,7 +31,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-metadata-viewer", "pdf-password-checker", "pdf-split"],
-  isNew: true,
 }
 
 export default meta

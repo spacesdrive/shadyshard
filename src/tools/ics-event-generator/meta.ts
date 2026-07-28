@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Yes. An .ics file is a plain text attachment, so you can email it or host it. Recipients get the event in their own calendar app.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

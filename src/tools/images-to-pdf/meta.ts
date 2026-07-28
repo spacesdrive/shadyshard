@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-to-images", "pdf-merge", "image-resizer"],
-  isNew: true,
 }
 
 export default meta

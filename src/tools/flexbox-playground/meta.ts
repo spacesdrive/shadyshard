@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["css-grid-generator", "border-radius-generator"],
-  isNew: true,
 }
 
 export default meta

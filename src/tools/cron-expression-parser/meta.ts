@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "They are shown in your browser's local time zone. A server running the same expression will use its own time zone, so compare the two before relying on the preview.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

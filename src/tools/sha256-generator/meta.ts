@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["password-generator", "base64-encoder-decoder", "jwt-decoder"],
-  isNew: true,
 }
 
 export default meta

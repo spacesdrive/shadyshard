@@ -19,10 +19,24 @@ src/tools/<slug>/
 validated at build time and the build fails loudly if it doesn't match.
 The slug becomes the URL: `/tools/<slug>`.
 
+Nothing else needs editing by hand. `src/lib/tool-index.generated.ts`, the
+eagerly-loaded summary of every tool, is regenerated automatically by the
+`predev` and `prebuild` npm scripts, so `npm run dev` or `npm run build`
+picks up a new folder on its own. If you add a tool while a dev server is
+already running, the registry will throw a message telling you to run
+`npm run generate:tool-index`; run it and the page recovers. See
+[ARCHITECTURE.md section 3](../architecture/ARCHITECTURE.md#3-tool-registry-the-core-abstraction)
+for why the summary is generated rather than globbed.
+
 ## 2. Write `meta.ts`
 
 Default-export a `ToolMeta` object (full type in
-[`src/types/tool.ts`](../../src/types/tool.ts)). Use
+[`src/types/tool.ts`](../../src/types/tool.ts)). Write it as one object with
+every field; the registry is what splits it into the eagerly-loaded summary
+fields and the lazily-loaded prose fields, not you. Keep that split in mind
+when writing, though: `description` and `keywords` ship to every visitor, so
+they should stay tight, while `longDescription` and `faqs` cost nothing to
+anyone who does not open the tool. Use
 [`src/tools/word-counter/meta.ts`](../../src/tools/word-counter/meta.ts) as
 the reference template.
 
@@ -96,9 +110,10 @@ Requirements for the component itself:
 Before considering the tool done:
 
 1. `npx tsc -b` -- zero errors.
-2. `npm run build` -- confirm the tool gets its own lazy chunk in the build
-   output (`dist/assets/<slug>-*.js`), confirm `generate-seo.ts` picked it
-   up (sitemap tool count increments).
+2. `npm run build` -- confirm the tool gets its own lazy chunks in the build
+   output (`dist/assets/<slug>-*.js` for the component and
+   `dist/assets/<slug>-meta-*.js` for its prose), confirm `generate-seo.ts`
+   picked it up (sitemap tool count increments).
 3. Load `/tools/<slug>` in a browser: confirm the tool renders, the
    breadcrumb shows the right category, features/FAQ render, and related
    tools shows sensible suggestions.

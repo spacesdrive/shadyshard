@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Yes. Negative timestamps count backwards from the epoch, so -86400 resolves to 31 December 1969.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

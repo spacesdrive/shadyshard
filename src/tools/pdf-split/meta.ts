@@ -37,7 +37,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-page-extractor", "pdf-merge", "pdf-page-counter"],
-  isNew: true,
 }
 
 export default meta

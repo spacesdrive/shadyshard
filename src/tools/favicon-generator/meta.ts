@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["image-resizer", "svg-optimizer"],
-  isNew: true,
 }
 
 export default meta

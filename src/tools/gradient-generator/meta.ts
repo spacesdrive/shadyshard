@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["color-converter", "color-contrast-checker"],
-  isNew: true,
 }
 
 export default meta

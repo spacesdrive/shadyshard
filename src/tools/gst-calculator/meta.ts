@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["percentage-calculator", "age-calculator"],
-  isNew: true,
 }
 
 export default meta

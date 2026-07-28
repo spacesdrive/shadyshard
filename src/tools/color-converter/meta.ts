@@ -35,7 +35,6 @@ const meta: ToolMeta = {
         "Yes, it uses standard color space math to convert between formats with rounded, display-accurate values.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

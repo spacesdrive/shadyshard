@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "No. Parsing and code generation both happen in the page using the browser's own JSON parser, so nothing leaves your device.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

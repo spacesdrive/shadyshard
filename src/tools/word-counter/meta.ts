@@ -42,7 +42,6 @@ const meta: ToolMeta = {
         "Words are counted as whitespace-separated tokens, so numbers are counted as words but standalone punctuation is not.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

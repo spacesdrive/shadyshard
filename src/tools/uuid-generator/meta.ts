@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["nanoid-generator", "password-generator"],
-  isNew: true,
 }
 
 export default meta

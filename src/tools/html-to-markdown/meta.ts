@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["markdown-to-html", "markdown-preview", "html-escape"],
-  isNew: true,
 }
 
 export default meta

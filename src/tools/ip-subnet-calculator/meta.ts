@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Not yet. This calculator covers IPv4 only, which is where subnet mask and wildcard mask arithmetic is most commonly needed.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

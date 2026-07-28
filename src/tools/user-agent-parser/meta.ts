@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["browser-information", "clipboard-inspector"],
-  isNew: true,
 }
 
 export default meta

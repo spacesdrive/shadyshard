@@ -37,7 +37,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-to-images", "word-counter", "pdf-thumbnail-viewer"],
-  isNew: true,
 }
 
 export default meta

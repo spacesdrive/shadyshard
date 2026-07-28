@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["slug-generator", "word-counter"],
-  isNew: true,
 }
 
 export default meta

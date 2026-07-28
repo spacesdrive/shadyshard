@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["qr-code-scanner", "password-generator", "password-strength-checker"],
-  isNew: true,
 }
 
 export default meta

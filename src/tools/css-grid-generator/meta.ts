@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["flexbox-playground", "border-radius-generator"],
-  isNew: true,
 }
 
 export default meta

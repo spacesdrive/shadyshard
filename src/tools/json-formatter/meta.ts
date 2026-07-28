@@ -41,7 +41,6 @@ const meta: ToolMeta = {
         "Yes, the minify option strips all unnecessary whitespace to produce the smallest valid JSON output.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

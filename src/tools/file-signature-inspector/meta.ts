@@ -37,7 +37,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["mime-type-inspector", "file-hash-generator", "file-size-analyzer"],
-  isNew: true,
 }
 
 export default meta

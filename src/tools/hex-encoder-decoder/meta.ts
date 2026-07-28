@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["binary-converter", "base64-encoder-decoder", "url-encoder-decoder"],
-  isNew: true,
 }
 
 export default meta

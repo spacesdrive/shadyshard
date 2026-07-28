@@ -41,20 +41,20 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         <CommandList>
           <CommandEmpty>No tools found.</CommandEmpty>
           <CommandGroup heading={query ? "Results" : "Popular tools"}>
-            {results.map(({ meta }) => (
+            {results.map((tool) => (
               <CommandItem
-                key={meta.slug}
-                value={meta.slug}
+                key={tool.slug}
+                value={tool.slug}
                 onSelect={() => {
                   onOpenChange(false)
-                  navigate(`/tools/${meta.slug}`)
+                  navigate(`/tools/${tool.slug}`)
                 }}
               >
-                <meta.icon className="size-4" />
+                <tool.icon className="size-4" />
                 <div className="flex flex-col">
-                  <span>{meta.title}</span>
+                  <span>{tool.title}</span>
                   <span className="text-muted-foreground text-xs">
-                    {meta.description}
+                    {tool.description}
                   </span>
                 </div>
               </CommandItem>

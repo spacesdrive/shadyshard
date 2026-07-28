@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["json-to-xml", "csv-to-json", "yaml-to-json"],
-  isNew: true,
 }
 
 export default meta

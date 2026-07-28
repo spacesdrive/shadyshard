@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["base64-encoder-decoder", "json-formatter"],
-  isNew: true,
 }
 
 export default meta

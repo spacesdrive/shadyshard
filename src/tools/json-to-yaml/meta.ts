@@ -30,7 +30,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["yaml-to-json", "json-formatter", "json-to-xml"],
-  isNew: true,
 }
 
 export default meta

@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["robots-txt-generator", "meta-tag-generator"],
-  isNew: true,
 }
 
 export default meta

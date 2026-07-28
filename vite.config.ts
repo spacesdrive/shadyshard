@@ -22,6 +22,17 @@ export default defineConfig({
           if (/@base-ui|cmdk|lucide-react/.test(id)) return "vendor-ui"
           if (/fuse\.js/.test(id)) return "vendor-search"
         },
+        // Every tool's lazily-loaded meta.ts would otherwise produce a chunk
+        // named "meta", making the check-bundle-size report unreadable and
+        // its failure messages ambiguous. Name each one after its tool.
+        chunkFileNames(chunk) {
+          const toolMeta = chunk.facadeModuleId?.match(
+            /[\\/]src[\\/]tools[\\/]([^\\/]+)[\\/]meta\.ts$/,
+          )
+          return toolMeta
+            ? `assets/${toolMeta[1]}-meta-[hash].js`
+            : "assets/[name]-[hash].js"
+        },
       },
     },
   },

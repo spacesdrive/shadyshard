@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["qr-code-generator", "ics-event-generator"],
-  isNew: true,
 }
 
 export default meta

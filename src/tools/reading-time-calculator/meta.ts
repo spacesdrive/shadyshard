@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["word-counter", "character-counter"],
-  isNew: true,
 }
 
 export default meta

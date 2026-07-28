@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["checksum-verifier", "sha256-generator", "file-signature-inspector"],
-  isNew: true,
 }
 
 export default meta

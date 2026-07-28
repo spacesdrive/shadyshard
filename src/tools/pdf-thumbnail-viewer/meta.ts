@@ -32,7 +32,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-to-images", "pdf-page-counter", "pdf-page-reorder"],
-  isNew: true,
 }
 
 export default meta

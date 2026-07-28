@@ -13,10 +13,12 @@
     "npm": ">=10"
   },
   "scripts": {
+    "predev": "npm run generate:tool-index",
     "dev": "vite",
-    "prebuild": "npm run generate:seo",
+    "prebuild": "npm run generate:tool-index && npm run generate:seo",
     "build": "tsc -b && vite build",
     "generate:seo": "tsx scripts/generate-seo.ts",
+    "generate:tool-index": "tsx scripts/generate-tool-index.ts",
     "lint": "oxlint",
     "typecheck": "tsc -b",
     "format": "prettier --write .",

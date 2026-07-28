@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["user-agent-parser", "clipboard-inspector"],
-  isNew: true,
 }
 
 export default meta

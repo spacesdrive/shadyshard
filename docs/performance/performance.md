@@ -80,20 +80,28 @@ preview`, Chrome DevTools MCP, desktop, 50 tools across 14 categories):
 | CLS                         | 0.00   |
 | Failed audits               | 0      |
 
-Largest production chunks at this baseline (50 tools):
-`vendor-react` 371.81 KB / 119.94 KB gzip, `vendor-router` 94.48 KB / 31.30
+Largest production chunks measured on 2026-07-28 at 118 tools:
+`vendor-react` 399.09 KB / 128.80 KB gzip, `vendor-router` 94.48 KB / 31.30
 KB gzip, `vendor-ui` 65.34 KB / 22.27 KB gzip, `vendor-search` 26.05 KB /
-9.41 KB gzip, app entry 156.71 KB / 45.26 KB gzip (grew from ~93 KB at 12
-tools -- expected per
-[ARCHITECTURE.md §13](../architecture/ARCHITECTURE.md#13-scalability-notes-for-500-tools),
-since `import.meta.glob` eager-loads every tool's metadata into the main
-bundle graph; still a worthwhile trade-off at this scale, but worth
-re-measuring again well before 500 tools). Most per-tool chunks stay under
-4 KB. Two justified exceptions, both single-tool dependencies isolated to
-their own lazy chunk and never loaded elsewhere: `qr-code-scanner` 132.69
-KB / 48.90 KB gzip (`jsqr`) and `markdown-preview` 69.33 KB / 23.30 KB gzip
-(`marked` + `dompurify`). `qr-code-generator` (`qrcode`) is 25.57 KB /
-9.74 KB gzip.
+9.41 KB gzip, app entry 34.34 KB gzip. The app entry chunk previously grew
+with the catalog, reaching 64.06 KB gzip at 103 tools against its 65 KB
+budget, because `import.meta.glob` eager-loaded every tool's full metadata
+including its `longDescription` and `faqs` prose. Splitting `ToolMeta` into
+an eagerly-loaded summary and a lazily-loaded detail
+([decisions.md ADR-026](../architecture/decisions.md)) removed that prose
+from the entry chunk; each tool now also ships a `<slug>-meta-*.js` chunk of
+0.5 to 1.5 KB gzip, fetched only when that tool's page opens, in parallel
+with the tool's own component chunk. Most per-tool component chunks stay
+under 4 KB. Two justified exceptions, both single-tool dependencies isolated
+to their own lazy chunk and never loaded elsewhere: `qr-code-scanner` 48.90
+KB gzip (`jsqr`) and `markdown-preview` 23.30 KB gzip (`marked` +
+`dompurify`). The shared `pdf` chunks (`pdf-lib` and `pdfjs-dist`, ADR-019)
+are the largest lazy assets on the site at 176.42 KB and 126.74 KB gzip,
+loaded only by the PDF Tools category.
+
+The Lighthouse and Core Web Vitals rows above are still the 2026-07-08
+measurement and have not been re-taken since; the chunk figures below them
+have.
 
 Re-measure and update this table whenever a change is plausibly
 performance-relevant (new heavy dependency, new tool category with

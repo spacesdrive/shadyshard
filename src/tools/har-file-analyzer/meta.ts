@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Transferred size is what came over the wire after compression, while content size is the decompressed body. A large gap usually means the response was gzip or brotli encoded.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

@@ -35,7 +35,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-metadata-viewer", "exif-remover", "pdf-compressor"],
-  isNew: true,
 }
 
 export default meta

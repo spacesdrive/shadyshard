@@ -29,7 +29,7 @@ by the pre-commit hook (typecheck) and available via `npm test`/
   zero console/page errors on the same set). Runs across four Playwright
   projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`.
 
-This intentionally does not cover every one of the 50 tools individually
+This intentionally does not cover every one of the 118 tools individually
 -- see [Test coverage philosophy](#test-coverage-philosophy). It
 complements, rather than replaces, the manual
 [Chrome DevTools verification](#chrome-devtools-verification) process

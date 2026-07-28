@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Apostrophes and hyphens inside a word are kept, so it is and well-known each count as a single word rather than being split apart.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

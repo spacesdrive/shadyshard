@@ -49,7 +49,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["character-counter", "remove-duplicate-lines", "case-converter"],
-  isNew: true,
 }
 
 export default meta
