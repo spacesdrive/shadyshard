@@ -25,7 +25,7 @@ const highlights = [
 ]
 
 export default function Home() {
-  const newTools = tools.filter((t) => t.meta.isNew).slice(0, 6)
+  const newTools = tools.filter((tool) => tool.isNew).slice(0, 6)
   const featured = (newTools.length ? newTools : tools).slice(0, 6)
 
   return (
@@ -86,8 +86,8 @@ export default function Home() {
             </h2>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((t) => (
-              <ToolCard key={t.meta.slug} meta={t.meta} />
+            {featured.map((tool) => (
+              <ToolCard key={tool.slug} tool={tool} />
             ))}
           </div>
         </section>

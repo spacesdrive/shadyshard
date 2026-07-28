@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "No. It is meant for one-off encryption of short text. For sharing keys with other people over time, use a password manager or an end-to-end encrypted messenger.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

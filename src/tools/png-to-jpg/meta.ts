@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["jpg-to-png", "image-compressor"],
-  isNew: true,
 }
 
 export default meta

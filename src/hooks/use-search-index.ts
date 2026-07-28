@@ -1,27 +1,27 @@
 import { useMemo } from "react"
 import Fuse from "fuse.js"
 import { tools } from "@/lib/tool-registry"
-import type { ToolDefinition } from "@/types/tool"
+import type { ToolSummary } from "@/types/tool"
 
-const options: ConstructorParameters<typeof Fuse<ToolDefinition>>[1] = {
+const options: ConstructorParameters<typeof Fuse<ToolSummary>>[1] = {
   keys: [
-    { name: "meta.title", weight: 3 },
-    { name: "meta.description", weight: 1 },
-    { name: "meta.keywords", weight: 2 },
-    { name: "meta.tags", weight: 2 },
+    { name: "title", weight: 3 },
+    { name: "description", weight: 1 },
+    { name: "keywords", weight: 2 },
+    { name: "tags", weight: 2 },
   ],
   threshold: 0.35,
   ignoreLocation: true,
 }
 
-let sharedFuse: Fuse<ToolDefinition> | null = null
+let sharedFuse: Fuse<ToolSummary> | null = null
 
-function getFuse(): Fuse<ToolDefinition> {
+function getFuse(): Fuse<ToolSummary> {
   if (!sharedFuse) sharedFuse = new Fuse(tools, options)
   return sharedFuse
 }
 
-export function useSearchIndex(query: string): ToolDefinition[] {
+export function useSearchIndex(query: string): ToolSummary[] {
   return useMemo(() => {
     const trimmed = query.trim()
     if (!trimmed) return tools.slice(0, 8)

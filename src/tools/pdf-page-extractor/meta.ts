@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-page-deleter", "pdf-split", "pdf-page-reorder"],
-  isNew: true,
 }
 
 export default meta

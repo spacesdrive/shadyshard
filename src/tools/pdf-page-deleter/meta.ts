@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-page-extractor", "pdf-split", "pdf-page-rotator"],
-  isNew: true,
 }
 
 export default meta

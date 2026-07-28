@@ -37,7 +37,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-metadata-remover", "pdf-page-counter", "pdf-password-checker"],
-  isNew: true,
 }
 
 export default meta

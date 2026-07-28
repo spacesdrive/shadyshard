@@ -58,6 +58,7 @@ src/
 
   lib/
     tool-registry.ts         import.meta.glob discovery + lookup/query helpers
+    tool-index.generated.ts   Generated eager ToolSummary list, see section 3
     categories.ts             Static category taxonomy
     seo.ts                    JSON-LD schema builders
     site.ts                   Site-wide constants (name, url, description)
@@ -81,10 +82,11 @@ src/
                              used by both text- and file-hashing tools
 
   types/
-    tool.ts                   ToolMeta, ToolCategory, ToolDefinition, ToolFaq
+    tool.ts                   ToolSummary, ToolDetail, ToolMeta, ToolCategory, ToolFaq
 
 scripts/
   generate-seo.ts            Node script: writes public/sitemap.xml + robots.txt
+  generate-tool-index.ts     Node script: writes src/lib/tool-index.generated.ts
 
 public/                     Static assets served as-is: favicons, manifest,
                              logo.jpg, llms.txt, generated sitemap.xml/robots.txt
@@ -98,7 +100,7 @@ if it is stateful logic meant for reuse across components.
 
 ## 3. Tool registry (the core abstraction)
 
-**Source:** `src/lib/tool-registry.ts`
+**Source:** `src/lib/tool-registry.ts`, `src/lib/tool-index.generated.ts`
 
 Every tool is a folder at `src/tools/<slug>/` containing exactly two files:
 
@@ -107,41 +109,76 @@ Every tool is a folder at `src/tools/<slug>/` containing exactly two files:
   [tool-development.md](../engineering/tool-development.md))
 - `index.tsx` -- default-exports the tool's React component
 
-`tool-registry.ts` uses two `import.meta.glob` calls:
+`ToolMeta` is split into two halves by responsibility, and the split is what
+keeps the app entry chunk from growing with catalog prose (ADR-026):
+
+- **`ToolSummary`** -- `slug`, `title`, `description`, `category`,
+  `keywords`, `tags`, `icon`, `isNew`. Navigation, search, tool cards,
+  category pages, and the HTML sitemap all need these synchronously, so they
+  are loaded eagerly from `tool-index.generated.ts`.
+- **`ToolDetail`** -- `longDescription`, `features`, `faqs`,
+  `relatedTools`. Only the tool's own page renders these, so they are loaded
+  on demand from the tool's `meta.ts`.
+
+`tool-index.generated.ts` is written by `scripts/generate-tool-index.ts`,
+which imports every `meta.ts` from disk and emits the summary half as a
+plain TypeScript array with real `lucide-react` icon imports. It runs
+automatically via the `predev` and `prebuild` npm scripts, and standalone
+via `npm run generate:tool-index`. It is committed so a fresh checkout
+typechecks before anything is run.
+
+`tool-registry.ts` uses two `import.meta.glob` calls, both lazy:
 
 ```ts
-const metaModules = import.meta.glob<{ default: ToolMeta }>("/src/tools/*/meta.ts", {
-  eager: true,
-})
+const metaLoaders = import.meta.glob<{ default: ToolMeta }>("/src/tools/*/meta.ts")
 const componentLoaders = import.meta.glob<{ default: React.ComponentType }>(
   "/src/tools/*/index.tsx",
 )
 ```
 
-`meta.ts` files are loaded **eagerly** at build time -- their content is small
-and needed synchronously for navigation, search, and sitemap generation.
-`index.tsx` files are loaded **lazily** via `React.lazy`, so each tool's
-component code ships as its own chunk and is only downloaded when a visitor
-opens that tool. This is why the production build already produces one small
-JS chunk per tool (verified: `word-counter-*.js`, `json-formatter-*.js`,
-`color-converter-*.js` each under 4 KB).
+The globs still enumerate every tool folder at build time, which is what the
+registry validates against at module init: every discovered `meta.ts` must
+have a matching `index.tsx`, and the slug set in `tool-index.generated.ts`
+must match the slug set on disk exactly. A stale generated file therefore
+throws immediately, naming the missing slugs and the command to fix it,
+rather than silently dropping a tool from navigation.
 
-The registry validates at build time that every `meta.ts` has a matching
-`index.tsx`, and that `meta.slug` matches the folder name. A mismatch throws
-immediately rather than producing a silently broken route.
+Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
+never downloads the other 117 tools' FAQs. `vite.config.ts` names the
+metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
+(every one of them would otherwise be called `meta`).
 
 Exposed helpers:
 
-- `tools` -- all tools, sorted by title
-- `toolBySlug` / `getTool(slug)` -- O(1) lookup
+- `tools` -- all tool summaries, sorted by title
+- `toolBySlug` / `getTool(slug)` -- O(1) summary lookup
 - `getToolsByCategory(categorySlug)` -- powers category pages
-- `getRelatedTools(meta, limit = 4)` -- explicit `meta.relatedTools` slugs if
-  present, otherwise scored by shared category (+3) and shared tags (+1 each)
+- `getToolComponent(slug)` -- memoised `React.lazy` component per tool
+- `loadToolDetail(slug)` -- memoised promise for the prose half
+- `getRelatedTools(tool, explicitSlugs?, limit = 4)` -- explicit slugs if
+  the tool's `meta.relatedTools` provides them, otherwise scored by shared
+  category (+3) and shared tags (+1 each)
 
-**Adding a tool touches exactly two new files and zero existing files.**
-Routing, the search index, the sitemap, category counts, and related-tools
-links all update automatically on the next build. This is the mechanism that
-makes 500+ tools tractable.
+The `/tools/:slug` route pairs its `lazy` page module with a
+statically-declared `loader` that calls `loadToolDetail`. React Router runs
+the two concurrently, so the detail chunk downloads alongside the `ToolPage`
+chunk and the page still renders in a single commit, with the header,
+features, FAQ, and related tools all present in the first paint.
+
+That pairing is load-bearing, not incidental. Loading the detail from a
+`useEffect` inside `ToolPage` instead was measured at **0.26 CLS** on
+`/tools/word-counter` against 0.03 before the split, because the page
+painted once as a short shell (leaving the footer mid-viewport) and again
+once the prose arrived. Moving the fetch into the route loader restored the
+original 0.033. If this ever needs revisiting, measure CLS on a tool page
+before and after -- the entry-chunk win is not worth a layout-shift
+regression.
+
+**Adding a tool touches exactly two new files and zero hand-edited existing
+files.** Routing, the search index, the sitemap, category counts,
+related-tools links, and the generated summary index all update
+automatically on the next `npm run dev` or `npm run build`. This is the
+mechanism that makes 500+ tools tractable.
 
 ## 4. Routing
 
@@ -323,6 +360,21 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
 - `navigator.clipboard.readText` -- Clipboard Inspector, with a manual-paste
   fallback since clipboard read requires a permission prompt some browsers
   may deny
+- Pointer Events (`onPointerDown`/`Move`/`Up`, `setPointerCapture`) --
+  Signature Pad's freehand drawing and Cubic Bezier Generator's draggable
+  control points, so mouse, stylus, and touch are handled by one code path.
+  Both also expose a keyboard-operable equivalent (sliders, undo/clear
+  buttons), since pointer input alone is not accessible.
+- `Element.animate` (Web Animations API) -- Cubic Bezier Generator's motion
+  preview, which takes the generated `cubic-bezier()` string directly as its
+  `easing` option. Chosen over a CSS keyframe rule because the easing is
+  user-defined at runtime and replaying it must not depend on a stylesheet.
+- `canvas.getImageData` / `putImageData` -- per-pixel work in Color
+  Blindness Simulator (matrix transform) and Image Palette Extractor
+  (colour bucketing over a downsampled copy)
+- SVG rasterisation via a blob URL drawn into a canvas -- SVG to PNG
+  Converter. The markup is loaded through an `<img>`, which never executes
+  script, so pasted SVG cannot run anything.
 
 No tool yet uses Web Workers, Compression Streams, or File System Access --
 these remain candidates as image/file-processing tools grow heavier (a
@@ -350,7 +402,10 @@ posture the rest of the app follows.
   `build.rolldownOptions.output.manualChunks` to split vendor code into
   `vendor-react`, `vendor-router`, `vendor-ui` (Base UI + cmdk + lucide),
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
-  the app chunk and from each lazy-loaded page/tool chunk.
+  the app chunk and from each lazy-loaded page/tool chunk. A
+  `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 118
+  of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
   `index.html` for unmatched paths (standard Cloudflare Pages SPA
@@ -375,12 +430,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 103 tools across 14
+What already scales without change, now validated at 118 tools across 14
 categories (up from the original 3):
 
-- Adding a tool: two files, zero registrations, per docs/engineering/tool-development.md.
-- Routing, sitemap, search index, related tools: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 103 tools
+- Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
+- Routing, sitemap, search index, related tools, and the generated summary
+  index: all derived, not hand-maintained.
+- Code splitting: automatic per tool and per page -- confirmed at 118 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -403,7 +459,7 @@ categories (up from the original 3):
   `components/tool/UnofficialToolNotice.tsx`) -- sitemap, nav, and search
   updated automatically with no other code changes needed.
 - Cross-tool shared data and persistence also scale the same way a shared
-  component does: the fifteen PDF Tools import from one `lib/pdf.ts` and
+  component does: the seventeen PDF Tools import from one `lib/pdf.ts` and
   one `lib/pdf-render.ts`; the file-inspection tools share one
   `lib/file-signatures.ts`; text- and file-hashing tools share one
   `lib/hash.ts` -- none of these tools re-derive or hand-roll logic another
@@ -413,34 +469,27 @@ What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
 
 - **`categories.ts` is a hand-maintained flat list**, still at 14 entries.
-  The 15-tool batch that took the catalog to 103 needed no new category at
-  all, which is the same signal the 33-tool PDF batch gave. Still fine;
+  The 15-tool batch that took the catalog to 118 needed no new category at
+  all, which is the third batch in a row to give that signal. Still fine;
   reconsider if subcategories or a category hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
   tools-per-category grows enough to make five links insufficient -- at 14
   categories this is already worth watching.
-- **`import.meta.glob` eager meta loading** puts every tool's metadata
-  object into the main bundle's JS graph at build time. This is now the
-  binding constraint on catalog growth: the app entry chunk (`index-*.js`)
-  is **64.06 KB gzip at 103 tools**, up from 55.3 KB at 88 tools, 51.4 KB
-  at 83 tools, and 45 KB at 50 tools, against a
-  `scripts/check-bundle-size.ts` budget of 65 KB -- **under 1 KB of
-  headroom left**. Note that the cost is per tool metadata, not per tool,
-  so it scales with how much prose a `meta.ts` carries rather than with
-  tool count alone: the fifteen tools added in the 103-tool batch cost
-  about 0.58 KB gzip each and the five in the 88-tool batch about 0.8 KB
-  each, against roughly 0.2 KB each for the 33-tool PDF batch, because
-  their `longDescription` and `faqs` fields are substantially longer.
-  **The next tool batch cannot fit under the current budget.** Splitting
-  metadata out of the eager bundle (e.g. a generated static JSON index
-  fetched lazily, keeping only slug/title/category/icon eager for
-  navigation and search) is now required work rather than a deferred
-  option, and must land before the next batch -- raising the budget again
-  without addressing the underlying cause is explicitly not the fix. See
-  [decisions.md ADR-025](decisions.md) for why the split was deferred out
-  of the 103-tool batch rather than bundled into it.
+- **Eager metadata is no longer the binding constraint, but it has not gone
+  away.** Until the 118-tool batch, the registry globbed every `meta.ts`
+  eagerly, so all of the catalog's `longDescription` and `faqs` prose sat in
+  the app entry chunk: 64.06 KB gzip at 103 tools against a 65 KB budget,
+  with under 1 KB of headroom. Splitting `ToolMeta` into an eager
+  `ToolSummary` and a lazily-loaded `ToolDetail` (see section 3 and
+  [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
+  **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
+  summary only, roughly 0.2 KB gzip each rather than 0.58 KB. At that rate
+  the 65 KB budget is reached somewhere around 270 tools. The next lever, if
+  and when that matters, is moving the summary index itself out of the entry
+  chunk (a fetched JSON index behind the search dialog, keeping only what
+  the homepage renders eagerly) -- do not simply raise the budget.
 - **Automated test coverage is deliberately shallow by tool count, not by
   layer.** Vitest + React Testing Library + Playwright now cover the
   shared registry, shared components, and a representative tool per

@@ -1,6 +1,5 @@
 import { site } from "@/lib/site"
-import type { ToolCategory } from "@/types/tool"
-import type { ToolMeta } from "@/types/tool"
+import type { ToolCategory, ToolFaq, ToolSummary } from "@/types/tool"
 
 export function absoluteUrl(path: string): string {
   return new URL(path, site.url).toString()
@@ -19,13 +18,13 @@ export function breadcrumbSchema(items: { name: string; path: string }[]): objec
   }
 }
 
-export function toolWebApplicationSchema(meta: ToolMeta): object {
+export function toolWebApplicationSchema(tool: ToolSummary, features: string[]): object {
   return {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: meta.title,
-    description: meta.description,
-    url: absoluteUrl(`/tools/${meta.slug}`),
+    name: tool.title,
+    description: tool.description,
+    url: absoluteUrl(`/tools/${tool.slug}`),
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
     offers: {
@@ -33,16 +32,16 @@ export function toolWebApplicationSchema(meta: ToolMeta): object {
       price: "0",
       priceCurrency: "USD",
     },
-    featureList: meta.features,
+    featureList: features,
   }
 }
 
-export function faqSchema(meta: ToolMeta): object | undefined {
-  if (!meta.faqs.length) return undefined
+export function faqSchema(faqs: ToolFaq[]): object | undefined {
+  if (!faqs.length) return undefined
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: meta.faqs.map((faq) => ({
+    mainEntity: faqs.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {

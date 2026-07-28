@@ -5,14 +5,15 @@ page has no deeper source of truth than the codebase itself.
 
 ## Commands
 
-| Command                | Does                                                                        |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`          | Start the Vite dev server with HMR.                                         |
-| `npm run build`        | Generate SEO files, typecheck, and produce the production build in `dist/`. |
-| `npm run preview`      | Serve the production build locally (for Lighthouse/perf verification).      |
-| `npm run generate:seo` | Regenerate `public/sitemap.xml` and `public/robots.txt` standalone.         |
-| `npm run lint`         | Run Oxlint.                                                                 |
-| `npx tsc -b`           | Typecheck without building.                                                 |
+| Command                       | Does                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `npm run dev`                 | Start the Vite dev server with HMR.                                         |
+| `npm run build`               | Generate SEO files, typecheck, and produce the production build in `dist/`. |
+| `npm run preview`             | Serve the production build locally (for Lighthouse/perf verification).      |
+| `npm run generate:seo`        | Regenerate `public/sitemap.xml` and `public/robots.txt` standalone.         |
+| `npm run generate:tool-index` | Regenerate `src/lib/tool-index.generated.ts` standalone.                    |
+| `npm run lint`                | Run Oxlint.                                                                 |
+| `npx tsc -b`                  | Typecheck without building.                                                 |
 
 ## Key file locations
 

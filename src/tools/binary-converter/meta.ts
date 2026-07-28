@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["hex-encoder-decoder", "base64-encoder-decoder", "url-parser"],
-  isNew: true,
 }
 
 export default meta

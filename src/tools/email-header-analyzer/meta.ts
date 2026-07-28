@@ -49,7 +49,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["spf-dmarc-record-checker", "jwt-decoder", "url-parser"],
-  isNew: true,
 }
 
 export default meta

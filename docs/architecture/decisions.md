@@ -1021,3 +1021,80 @@ metadata prose that most visitors never read, since a visitor needs one
 tool's `longDescription` and `faqs`, not all 103.
 
 ---
+
+## ADR-026: Split ToolMeta into an eagerly-loaded summary and a lazily-loaded detail
+
+Date: 2026-07-28
+
+**Decision:** Stop globbing `src/tools/*/meta.ts` eagerly. Split `ToolMeta`
+into a `ToolSummary` half (slug, title, description, category, keywords,
+tags, icon, isNew) that navigation, search, cards, and category pages need
+synchronously, and a `ToolDetail` half (longDescription, features, faqs,
+relatedTools) that only the tool's own page renders. The summary half is
+generated into the committed `src/lib/tool-index.generated.ts` by
+`scripts/generate-tool-index.ts`, run automatically by the `predev` and
+`prebuild` npm scripts; the detail half is fetched from the tool's own
+`meta.ts` chunk when its page opens. `meta.ts` itself is unchanged: authors
+still write one object with every field in it.
+
+**Reasoning:** [ADR-025](#adr-025-deferred-splitting-tool-metadata-out-of-the-eager-bundle-despite-exhausting-the-entry-chunk-budget)
+recorded this as required work that must land before the next tool batch,
+with the entry chunk at 64.06 KB gzip against a 65 KB budget. That point
+arrived: no tool at all could be added without failing `npm run size`. The
+split took the entry chunk from 64.06 KB at 103 tools to 34.34 KB at 118,
+because roughly 19 KB gzip of `longDescription` and `faqs` prose that most
+visitors never read moved into per-tool chunks fetched only on that tool's
+page. Generating the summary rather than asking authors to maintain a second
+file keeps the project's headline invariant intact -- adding a tool is still
+two new files and zero hand-edited ones -- and keeps every Node-side script
+(`generate-seo.ts`, `validate-metadata.ts`) reading `meta.ts` directly with
+no change at all.
+
+The staleness risk a generated, committed artifact introduces is closed at
+its source rather than managed by convention: the lazy globs still enumerate
+every tool folder at build time, so `tool-registry.ts` compares the slug set
+on disk against the slug set in the generated file at module init and throws
+a message naming the missing slugs and the command to fix them. A stale
+index is therefore a loud failure on the first page load, not a tool that
+quietly vanishes from navigation.
+
+**Alternatives considered:** Moving the prose into a third per-tool file
+(`content.ts`) globbed lazily -- rejected; it changes "exactly two files per
+tool," which is documented as the shape of the abstraction in
+`tool-development.md` and `ARCHITECTURE.md`, in exchange for avoiding a
+generation step that already runs automatically. Moving the prose into
+`index.tsx` as a named export -- rejected; it keeps the two-file rule but
+puts a plain data object in a component file and makes the prose unreadable
+to the Node scripts, which cannot import a `.tsx` module that pulls in React
+and browser APIs. A Vite plugin that strips the heavy fields from `meta.ts`
+during the eager glob -- rejected; it requires either an AST transform or
+evaluating TypeScript inside the plugin, which is considerably more moving
+parts than a script that does what `generate-seo.ts` already does. Raising
+`NAMED_BUDGETS_KB.index` -- rejected in ADR-025 and rejected again here.
+
+**Trade-offs:** The detail has to be fetched before a tool page can render,
+which is why the `/tools/:slug` route carries a statically-declared `loader`
+rather than fetching from an effect inside `ToolPage`. React Router runs a
+static loader concurrently with the route's own `lazy` module, so this costs
+no extra serial round trip and the page still renders in one commit.
+
+The first implementation used a `useEffect` instead, and CI caught what that
+cost: Lighthouse performance fell from 100 to 78 on `/tools/word-counter`
+and 80 on two other tool pages. Measured locally against the pre-split
+baseline, CLS on `/tools/word-counter` went from 0.033 to 0.256, and LCP
+separated from FCP for the first time. The cause was that the page painted
+once as a short shell, with the footer sitting mid-viewport, and again when
+the prose arrived and pushed the footer off-screen. The loader version
+measures identically to the pre-split baseline on every page tested
+(0.0328, 0.0084, 0.0007), with FCP and LCP coincident again. The lesson is
+recorded in ARCHITECTURE.md section 3: prose that is part of a page's first
+paint must be loaded as route data, not from an effect.
+
+The build now emits one extra small chunk
+per tool (118 of them, 0.5 to 1.5 KB gzip each), which is why
+`vite.config.ts` names them `<slug>-meta-*.js`: without that they would all
+be called `meta` and the bundle-size report would be unreadable. Finally,
+`src/lib/tool-index.generated.ts` is a generated file in version control,
+which is a category this repository did not previously have.
+
+---

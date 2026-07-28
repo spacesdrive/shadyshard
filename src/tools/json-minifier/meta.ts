@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["json-formatter", "json-validator", "json-compare"],
-  isNew: true,
 }
 
 export default meta

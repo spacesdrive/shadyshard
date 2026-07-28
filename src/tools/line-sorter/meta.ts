@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "The shuffle is a Fisher-Yates permutation seeded from the browser's cryptographic random number generator, and a fresh seed is drawn each time you shuffle again. That is fair for casual draws, but for anything with legal weight use a process you can audit.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

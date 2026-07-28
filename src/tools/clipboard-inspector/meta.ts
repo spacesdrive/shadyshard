@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["browser-information", "user-agent-parser"],
-  isNew: true,
 }
 
 export default meta

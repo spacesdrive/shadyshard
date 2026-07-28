@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["gst-calculator", "age-calculator"],
-  isNew: true,
 }
 
 export default meta

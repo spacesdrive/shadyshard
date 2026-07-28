@@ -36,7 +36,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["images-to-pdf", "pdf-thumbnail-viewer", "png-to-jpg"],
-  isNew: true,
 }
 
 export default meta

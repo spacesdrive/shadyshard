@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Yes. The output uses GitHub Flavored Markdown table syntax, which GitHub, GitLab, and most static site generators support.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

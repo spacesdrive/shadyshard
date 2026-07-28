@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["open-graph-preview", "sitemap-generator"],
-  isNew: true,
 }
 
 export default meta

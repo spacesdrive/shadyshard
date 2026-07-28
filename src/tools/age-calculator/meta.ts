@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["date-difference-calculator", "percentage-calculator"],
-  isNew: true,
 }
 
 export default meta

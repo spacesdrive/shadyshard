@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["image-resizer", "image-compressor"],
-  isNew: true,
 }
 
 export default meta

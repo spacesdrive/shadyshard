@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["image-resizer", "png-to-webp"],
-  isNew: true,
 }
 
 export default meta

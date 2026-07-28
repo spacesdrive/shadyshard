@@ -283,6 +283,13 @@ description, missing category, sitemap entry count mismatch) -- see
 `scripts/validate-metadata.ts` / `scripts/validate-sitemap.ts` for exactly
 what's checked.
 
+**A page throws "tool-index.generated.ts is out of date".** A tool folder
+was added, removed, or renamed without regenerating the eager summary index.
+`npm run build` and `npm run dev` regenerate it through their `prebuild` and
+`predev` steps, so this normally only appears against an already-running dev
+server; run `npm run generate:tool-index` and commit the result. See
+[ARCHITECTURE.md section 3](../architecture/ARCHITECTURE.md#3-tool-registry-the-core-abstraction).
+
 **`e2e-tests` fails only in CI, not locally.** Confirm it isn't a real
 environment difference first (headless vs. headed rendering rarely
 matters for this app, but font rendering/timing differences can). Download

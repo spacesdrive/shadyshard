@@ -1,39 +1,38 @@
-import { Navigate, useParams } from "react-router"
+import { Navigate, useLoaderData, useParams } from "react-router"
 import { Seo } from "@/components/seo/Seo"
 import { ToolPageLayout } from "@/components/tool/ToolPageLayout"
 import { getCategory } from "@/lib/categories"
 import { getTool } from "@/lib/tool-registry"
 import { breadcrumbSchema, faqSchema, toolWebApplicationSchema } from "@/lib/seo"
+import type { ToolDetail } from "@/types/tool"
 
 export default function ToolPage() {
   const { slug } = useParams<{ slug: string }>()
-  const definition = slug ? getTool(slug) : undefined
+  const detail = useLoaderData<ToolDetail | null>()
+  const tool = slug ? getTool(slug) : undefined
 
-  if (!definition) return <Navigate to="/404" replace />
+  if (!tool || !detail) return <Navigate to="/404" replace />
 
-  const { meta, Component } = definition
-  const category = getCategory(meta.category)
+  const category = getCategory(tool.category)
 
   const jsonLd = [
-    toolWebApplicationSchema(meta),
+    toolWebApplicationSchema(tool, detail.features),
     breadcrumbSchema([
       ...(category ? [{ name: category.title, path: `/category/${category.slug}` }] : []),
-      { name: meta.title, path: `/tools/${meta.slug}` },
+      { name: tool.title, path: `/tools/${tool.slug}` },
     ]),
-    faqSchema(meta),
-  ].filter((s): s is object => Boolean(s))
+    faqSchema(detail.faqs),
+  ].filter((schema): schema is object => Boolean(schema))
 
   return (
     <>
       <Seo
-        title={meta.title}
-        description={meta.description}
-        path={`/tools/${meta.slug}`}
+        title={tool.title}
+        description={tool.description}
+        path={`/tools/${tool.slug}`}
         jsonLd={jsonLd}
       />
-      <ToolPageLayout definition={definition}>
-        <Component />
-      </ToolPageLayout>
+      <ToolPageLayout tool={tool} detail={detail} />
     </>
   )
 }

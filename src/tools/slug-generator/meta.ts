@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["case-converter", "word-counter"],
-  isNew: true,
 }
 
 export default meta

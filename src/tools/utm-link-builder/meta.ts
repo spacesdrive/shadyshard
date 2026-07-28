@@ -41,7 +41,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["url-parser", "url-encoder-decoder", "slug-generator"],
-  isNew: true,
 }
 
 export default meta

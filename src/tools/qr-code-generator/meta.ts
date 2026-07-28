@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["qr-code-scanner", "url-encoder-decoder"],
-  isNew: true,
 }
 
 export default meta

@@ -37,7 +37,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["pdf-metadata-remover", "image-compressor", "pdf-page-counter"],
-  isNew: true,
 }
 
 export default meta

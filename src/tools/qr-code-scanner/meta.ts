@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["qr-code-generator"],
-  isNew: true,
 }
 
 export default meta

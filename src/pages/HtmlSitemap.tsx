@@ -59,12 +59,12 @@ export default function HtmlSitemap() {
                 </h2>
                 <ul className="text-muted-foreground mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {tools.map((tool) => (
-                    <li key={tool.meta.slug}>
+                    <li key={tool.slug}>
                       <Link
-                        to={`/tools/${tool.meta.slug}`}
+                        to={`/tools/${tool.slug}`}
                         className="hover:text-foreground transition-colors"
                       >
-                        {tool.meta.title}
+                        {tool.title}
                       </Link>
                     </li>
                   ))}

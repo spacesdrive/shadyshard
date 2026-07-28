@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["html-escape", "word-counter"],
-  isNew: true,
 }
 
 export default meta

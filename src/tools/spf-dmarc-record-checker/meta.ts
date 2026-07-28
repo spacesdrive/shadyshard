@@ -49,7 +49,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["email-header-analyzer", "robots-txt-tester", "url-parser"],
-  isNew: true,
 }
 
 export default meta

@@ -43,7 +43,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["image-compressor", "favicon-generator"],
-  isNew: true,
 }
 
 export default meta

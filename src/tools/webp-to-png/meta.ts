@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["png-to-webp", "image-compressor"],
-  isNew: true,
 }
 
 export default meta

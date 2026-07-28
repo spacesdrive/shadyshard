@@ -40,7 +40,6 @@ const meta: ToolMeta = {
         "Every IANA zone your browser knows about, such as Europe/London or Asia/Kolkata, plus UTC. The list comes from the browser itself, so it stays current with browser updates.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

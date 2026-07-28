@@ -49,7 +49,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["json-compare", "remove-duplicate-lines", "word-counter"],
-  isNew: true,
 }
 
 export default meta

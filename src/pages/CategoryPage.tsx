@@ -16,7 +16,7 @@ export default function CategoryPage() {
   const jsonLd = [
     categoryCollectionSchema(
       category,
-      tools.map((t) => t.meta.title),
+      tools.map((tool) => tool.title),
     ),
     breadcrumbSchema([{ name: category.title, path: `/category/${category.slug}` }]),
   ]
@@ -46,8 +46,8 @@ export default function CategoryPage() {
 
         {tools.length > 0 ? (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {tools.map((t) => (
-              <ToolCard key={t.meta.slug} meta={t.meta} />
+            {tools.map((tool) => (
+              <ToolCard key={tool.slug} tool={tool} />
             ))}
           </div>
         ) : (

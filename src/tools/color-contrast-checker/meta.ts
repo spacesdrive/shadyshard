@@ -42,7 +42,6 @@ const meta: ToolMeta = {
     },
   ],
   relatedTools: ["color-converter", "gradient-generator"],
-  isNew: true,
 }
 
 export default meta
