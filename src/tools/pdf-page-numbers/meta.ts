@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The file is read locally and rewritten by pdf-lib in your browser, and the download is produced from that result.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The arithmetic runs in your browser, and no values you enter leave the page.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. It assembles the header text from the values you enter, entirely in your browser. It does not fetch your site or send your policy anywhere.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

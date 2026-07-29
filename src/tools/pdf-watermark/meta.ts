@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. An encrypted PDF cannot be read without its password, and the tool reports that clearly instead of producing a broken file.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

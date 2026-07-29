@@ -10,6 +10,18 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across nine existing categories, taking the catalog from 118
+  to 133: SERP Snippet Preview and Schema Markup Generator (SEO Tools);
+  Readability Score Checker and List Delimiter Converter (Text Tools); SQL
+  Formatter and JSONL to JSON Converter (Developer Tools); CSV Splitter
+  (Converters); JWT Generator and HMAC Generator (Security and Privacy);
+  Time Duration Calculator and Business Days Calculator (Time and Date);
+  Loan EMI Calculator and Aspect Ratio Calculator (Math and Calculators);
+  CSS Animation Generator (CSS Generators); Image Metadata Viewer (Image
+  Tools).
+- `sql-formatter` and `exifreader` as dependencies, each used by exactly one
+  tool and isolated to that tool's lazy chunk. See
+  [decisions.md ADR-027 and ADR-028](docs/architecture/decisions.md).
 - Fifteen tools across seven existing categories, taking the catalog from
   103 to 118: Regex Tester and Chmod Calculator (Developer Tools); CSS Clamp
   Generator, CSS Unit Converter, Cubic Bezier Generator, and Text Shadow
@@ -37,8 +49,9 @@ process this file is maintained under.
   stability measured unchanged against the pre-split baseline. Writing a
   `meta.ts` is unchanged. See
   [decisions.md ADR-026](docs/architecture/decisions.md).
-- The `isNew` flag is cleared from the 103 previously-shipped tools, so the
-  homepage "New tools" section shows tools that are actually new.
+- The `isNew` flag is cleared from the previous batch each time a new batch
+  ships, so the homepage "New tools" section shows tools that are actually
+  new.
 
 ### Fixed
 

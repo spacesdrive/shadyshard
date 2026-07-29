@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "They are generated with the Web Crypto random number generator, but the underlying word lists are small and public, so treat the output as sample data rather than as secrets.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

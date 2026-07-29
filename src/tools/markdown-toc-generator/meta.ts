@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The Markdown is parsed with plain string handling in your browser and never sent anywhere.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The markup is turned into a blob URL, drawn onto a canvas, and encoded to PNG entirely inside your browser.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

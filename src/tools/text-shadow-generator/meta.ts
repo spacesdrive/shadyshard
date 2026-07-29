@@ -42,7 +42,6 @@ const meta: ToolMeta = {
         "No. A text shadow is painted outside the box model, so it never changes line height or element size, and it never triggers reflow.",
     },
   ],
-  isNew: true,
 }
 
 export default meta
