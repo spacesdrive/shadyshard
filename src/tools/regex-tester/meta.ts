@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "Use the same syntax String.replace expects: $1 for the first numbered group, $<name> for a named group, and $& for the whole match.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

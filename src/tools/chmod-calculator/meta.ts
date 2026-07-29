@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "A setuid executable runs with the file owner's privileges rather than the caller's, so a flaw in a setuid root program becomes a route to root access. Set it only when you genuinely need it.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

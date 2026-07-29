@@ -112,9 +112,10 @@ config to maintain. `npm run lint` is the single command either way.
 `dist/assets`, computes its gzip size, and fails if it exceeds a budget.
 Budgets are set from the measured baseline in
 [performance.md](../performance/performance.md#baseline) with headroom for
-organic growth -- named budgets exist for the vendor chunks and the two
+organic growth -- named budgets exist for the vendor chunks and the four
 known justified per-tool exceptions (`qr-code-scanner`, `markdown-preview`,
-see [decisions.md ADR-011/012](../architecture/decisions.md)); every other
+`sql-formatter`, `image-metadata-viewer`, see [decisions.md
+ADR-011/012/027/028](../architecture/decisions.md)); every other
 chunk (typically a single tool, usually under 4 KB) falls under a 10 KB
 default. This is meant to catch an accidental regression, not to be a
 tight per-KB gate that needs updating on every tool addition.

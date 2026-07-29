@@ -42,7 +42,6 @@ const meta: ToolMeta = {
         "rem is generally preferred for font sizes because it scales with the visitor's browser font size setting, which px does not. px remains reasonable for hairline borders and other values that should not scale.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

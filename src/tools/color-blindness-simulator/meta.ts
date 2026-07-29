@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "It uses the widely cited RGB transformation matrices for each deficiency type. These approximate how the colors shift and are good enough for design review, but individual perception varies and they are not a medical assessment.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

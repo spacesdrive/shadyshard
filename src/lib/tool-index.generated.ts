@@ -2,12 +2,15 @@
 // Run `npm run generate:tool-index` after adding, removing, or renaming a tool.
 import {
   Activity,
+  Aperture,
   ArrowDownUp,
   Binary,
   Blend,
+  BookOpenCheck,
   Bot,
   Braces,
   Cake,
+  CalendarCheck,
   CalendarClock,
   CalendarPlus,
   CalendarRange,
@@ -57,10 +60,13 @@ import {
   Grid3x3,
   Hash,
   KeyRound,
+  KeySquare,
+  Landmark,
   Languages,
   LayoutGrid,
   Link,
   Link2,
+  List,
   ListTree,
   ListX,
   Lock,
@@ -75,6 +81,7 @@ import {
   Percent,
   Pipette,
   QrCode,
+  Ratio,
   Receipt,
   Regex,
   RotateCw,
@@ -89,11 +96,13 @@ import {
   Smartphone,
   Sparkles,
   Spline,
+  Split,
   Square,
   Stamp,
   Table,
   Table2,
   Tags,
+  TextSearch,
   Timer,
   Type,
   Weight,
@@ -115,6 +124,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["age", "calculator", "date", "birthday"],
     icon: Cake,
+  },
+  {
+    slug: "aspect-ratio-calculator",
+    title: "Aspect Ratio Calculator",
+    description:
+      "Work out the missing width or height for a given aspect ratio, and see the simplified ratio for any dimensions.",
+    category: "math",
+    keywords: [
+      "aspect ratio calculator",
+      "resize keeping aspect ratio",
+      "16:9 resolution calculator",
+      "image proportion calculator",
+      "pixel dimensions calculator",
+    ],
+    tags: ["aspect ratio", "calculator", "image", "video", "dimensions", "design"],
+    icon: Ratio,
+    isNew: true,
   },
   {
     slug: "base64-encoder-decoder",
@@ -195,6 +221,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Globe,
   },
   {
+    slug: "business-days-calculator",
+    title: "Business Days Calculator",
+    description:
+      "Count working days between two dates or add business days to a date, with a custom working week and holiday list.",
+    category: "time",
+    keywords: [
+      "business days calculator",
+      "working days between two dates",
+      "add business days to a date",
+      "workday calculator excluding holidays",
+      "count weekdays between dates",
+    ],
+    tags: ["time", "date", "business days", "calculator", "holidays", "working days"],
+    icon: CalendarCheck,
+    isNew: true,
+  },
+  {
     slug: "case-converter",
     title: "Case Converter",
     description:
@@ -257,7 +300,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["chmod", "permissions", "linux", "unix", "developer"],
     icon: Lock,
-    isNew: true,
   },
   {
     slug: "clipboard-inspector",
@@ -290,7 +332,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["color", "accessibility", "colorblind", "image", "wcag"],
     icon: Eye,
-    isNew: true,
   },
   {
     slug: "color-contrast-checker",
@@ -353,6 +394,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["security", "csp", "headers", "web security", "generator"],
     icon: ShieldCheck,
+  },
+  {
+    slug: "css-animation-generator",
+    title: "CSS Animation Generator",
+    description:
+      "Build a CSS keyframe animation with a live preview and copy the generated keyframes and animation shorthand.",
+    category: "css",
+    keywords: [
+      "css animation generator",
+      "css keyframes generator",
+      "keyframe animation builder",
+      "css fade in animation",
+      "animation shorthand css",
+    ],
+    tags: ["css", "animation", "keyframes", "generator", "preview", "frontend"],
+    icon: Sparkles,
     isNew: true,
   },
   {
@@ -370,7 +427,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "clamp", "typography", "responsive", "fluid"],
     icon: Scaling,
-    isNew: true,
   },
   {
     slug: "css-grid-generator",
@@ -402,6 +458,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "units", "rem", "px", "converter"],
     icon: Ruler,
+  },
+  {
+    slug: "csv-splitter",
+    title: "CSV Splitter",
+    description:
+      "Split a large CSV into smaller files by row count, repeating the header row in every part.",
+    category: "converters",
+    keywords: [
+      "csv splitter",
+      "split large csv file",
+      "split csv by row count",
+      "divide csv into smaller files",
+      "csv split with header",
+    ],
+    tags: ["csv", "split", "converter", "spreadsheet", "data", "file"],
+    icon: Split,
     isNew: true,
   },
   {
@@ -450,7 +522,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "animation", "easing", "bezier", "transition"],
     icon: Spline,
-    isNew: true,
   },
   {
     slug: "date-difference-calculator",
@@ -641,6 +712,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Binary,
   },
   {
+    slug: "hmac-generator",
+    title: "HMAC Generator",
+    description:
+      "Compute an HMAC signature with SHA-1, SHA-256, SHA-384, or SHA-512 and compare it against an expected value.",
+    category: "security",
+    keywords: [
+      "hmac generator",
+      "hmac sha256 online",
+      "webhook signature verification",
+      "hmac calculator",
+      "verify x-hub-signature-256",
+    ],
+    tags: ["hmac", "security", "webhook", "signature", "hash", "sha256"],
+    icon: FingerprintPattern,
+    isNew: true,
+  },
+  {
     slug: "hreflang-tag-generator",
     title: "Hreflang Tag Generator",
     description:
@@ -733,6 +821,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Crop,
   },
   {
+    slug: "image-metadata-viewer",
+    title: "Image Metadata Viewer",
+    description:
+      "Read the EXIF, IPTC, XMP, and GPS metadata embedded in a photo without uploading it anywhere.",
+    category: "image",
+    keywords: [
+      "exif viewer",
+      "image metadata viewer",
+      "check photo gps location",
+      "view exif data online",
+      "iptc xmp metadata reader",
+    ],
+    tags: ["image", "exif", "metadata", "privacy", "gps", "photo"],
+    icon: Aperture,
+    isNew: true,
+  },
+  {
     slug: "image-palette-extractor",
     title: "Image Palette Extractor",
     description:
@@ -747,7 +852,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["color", "palette", "image", "design", "hex"],
     icon: Pipette,
-    isNew: true,
   },
   {
     slug: "image-resizer",
@@ -949,6 +1053,23 @@ export const toolIndex: ToolSummary[] = [
     icon: CircleCheck,
   },
   {
+    slug: "jsonl-converter",
+    title: "JSONL to JSON Converter",
+    description:
+      "Convert JSON Lines to a JSON array and back, with per-line validation that names the failing line.",
+    category: "developer",
+    keywords: [
+      "jsonl to json",
+      "ndjson converter",
+      "json lines converter",
+      "json to jsonl",
+      "convert ndjson to json array",
+    ],
+    tags: ["json", "jsonl", "ndjson", "converter", "developer", "data"],
+    icon: FileBracesCorner,
+    isNew: true,
+  },
+  {
     slug: "jwt-decoder",
     title: "JWT Decoder",
     description:
@@ -965,6 +1086,23 @@ export const toolIndex: ToolSummary[] = [
     icon: LockOpen,
   },
   {
+    slug: "jwt-generator",
+    title: "JWT Generator",
+    description:
+      "Sign a JSON Web Token with HS256, HS384, or HS512 and a shared secret, entirely in your browser.",
+    category: "security",
+    keywords: [
+      "jwt generator",
+      "create jwt token",
+      "sign jwt hs256",
+      "jwt test token",
+      "json web token generator",
+    ],
+    tags: ["jwt", "token", "security", "hmac", "generator", "auth"],
+    icon: KeySquare,
+    isNew: true,
+  },
+  {
     slug: "line-sorter",
     title: "Line Sorter",
     description:
@@ -978,6 +1116,40 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "sort", "list", "lines", "shuffle"],
     icon: ArrowDownUp,
+  },
+  {
+    slug: "list-delimiter-converter",
+    title: "List Delimiter Converter",
+    description:
+      "Turn a column of values into a comma separated list, or any delimiter into any other, with optional quoting.",
+    category: "text",
+    keywords: [
+      "comma separator",
+      "convert column to comma separated list",
+      "list to comma separated",
+      "delimiter converter",
+      "sql in clause generator",
+    ],
+    tags: ["text", "list", "delimiter", "comma", "convert", "sql"],
+    icon: List,
+    isNew: true,
+  },
+  {
+    slug: "loan-emi-calculator",
+    title: "Loan EMI Calculator",
+    description:
+      "Calculate a loan's monthly instalment, total interest, and full amortisation schedule from the amount, rate, and term.",
+    category: "math",
+    keywords: [
+      "emi calculator",
+      "loan repayment calculator",
+      "monthly instalment calculator",
+      "amortisation schedule",
+      "home loan interest calculator",
+    ],
+    tags: ["loan", "emi", "finance", "calculator", "interest", "amortisation"],
+    icon: Landmark,
+    isNew: true,
   },
   {
     slug: "markdown-preview",
@@ -1041,7 +1213,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["markdown", "toc", "readme", "documentation", "text"],
     icon: ListTree,
-    isNew: true,
   },
   {
     slug: "meta-tag-generator",
@@ -1090,7 +1261,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["mock", "test data", "generator", "json", "csv", "sql"],
     icon: Database,
-    isNew: true,
   },
   {
     slug: "nanoid-generator",
@@ -1278,7 +1448,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "page numbers", "document", "pagination"],
     icon: FileDigit,
-    isNew: true,
   },
   {
     slug: "pdf-page-reorder",
@@ -1406,7 +1575,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "watermark", "stamp", "document", "privacy"],
     icon: Stamp,
-    isNew: true,
   },
   {
     slug: "percentage-calculator",
@@ -1486,6 +1654,23 @@ export const toolIndex: ToolSummary[] = [
     icon: ScanLine,
   },
   {
+    slug: "readability-score-checker",
+    title: "Readability Score Checker",
+    description:
+      "Score text with Flesch Reading Ease, Flesch-Kincaid, Gunning Fog, SMOG, Coleman-Liau, and ARI.",
+    category: "text",
+    keywords: [
+      "readability score checker",
+      "flesch reading ease calculator",
+      "flesch kincaid grade level",
+      "gunning fog index",
+      "text readability test",
+    ],
+    tags: ["text", "readability", "writing", "flesch", "grade level", "editing"],
+    icon: BookOpenCheck,
+    isNew: true,
+  },
+  {
     slug: "reading-time-calculator",
     title: "Reading Time Calculator",
     description:
@@ -1516,7 +1701,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["regex", "regular expression", "developer", "pattern", "match"],
     icon: Regex,
-    isNew: true,
   },
   {
     slug: "remove-duplicate-lines",
@@ -1567,6 +1751,40 @@ export const toolIndex: ToolSummary[] = [
     icon: ShieldQuestionMark,
   },
   {
+    slug: "schema-markup-generator",
+    title: "Schema Markup Generator",
+    description:
+      "Build valid JSON-LD structured data for articles, FAQs, products, organizations, local businesses, and breadcrumbs.",
+    category: "seo",
+    keywords: [
+      "schema markup generator",
+      "json-ld generator",
+      "structured data generator",
+      "faq schema",
+      "product schema markup",
+    ],
+    tags: ["seo", "schema", "json-ld", "structured data", "generator", "rich results"],
+    icon: Braces,
+    isNew: true,
+  },
+  {
+    slug: "serp-snippet-preview",
+    title: "SERP Snippet Preview",
+    description:
+      "Preview a Google search result and measure title and description pixel width before they get truncated.",
+    category: "seo",
+    keywords: [
+      "serp preview",
+      "google snippet preview",
+      "title tag pixel width",
+      "meta description length checker",
+      "search result preview",
+    ],
+    tags: ["seo", "serp", "meta", "title", "preview", "search"],
+    icon: TextSearch,
+    isNew: true,
+  },
+  {
     slug: "sha256-generator",
     title: "SHA256 Generator",
     description:
@@ -1597,7 +1815,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["signature", "image", "png", "draw", "canvas"],
     icon: Signature,
-    isNew: true,
   },
   {
     slug: "sitemap-generator",
@@ -1646,6 +1863,23 @@ export const toolIndex: ToolSummary[] = [
     icon: ShieldCheck,
   },
   {
+    slug: "sql-formatter",
+    title: "SQL Formatter",
+    description:
+      "Format and indent SQL queries for 19 dialects, including PostgreSQL, MySQL, BigQuery, Snowflake, and T-SQL.",
+    category: "developer",
+    keywords: [
+      "sql formatter",
+      "sql beautifier",
+      "format sql query online",
+      "postgresql formatter",
+      "sql pretty print",
+    ],
+    tags: ["sql", "formatter", "database", "developer", "query", "beautify"],
+    icon: Database,
+    isNew: true,
+  },
+  {
     slug: "svg-optimizer",
     title: "SVG Optimizer",
     description:
@@ -1676,7 +1910,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["svg", "png", "image", "converter", "raster"],
     icon: FileImage,
-    isNew: true,
   },
   {
     slug: "text-diff",
@@ -1724,6 +1957,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "shadow", "text", "typography", "generator"],
     icon: Type,
+  },
+  {
+    slug: "time-duration-calculator",
+    title: "Time Duration Calculator",
+    description:
+      "Add up a list of durations or work out the time between a start and end time, with decimal hours for timesheets.",
+    category: "time",
+    keywords: [
+      "time duration calculator",
+      "add hours and minutes",
+      "timesheet hours calculator",
+      "hours between two times",
+      "convert time to decimal hours",
+    ],
+    tags: ["time", "duration", "calculator", "timesheet", "hours"],
+    icon: Timer,
     isNew: true,
   },
   {

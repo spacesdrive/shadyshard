@@ -1098,3 +1098,91 @@ be called `meta` and the bundle-size report would be unreadable. Finally,
 which is a category this repository did not previously have.
 
 ---
+
+## ADR-027: `sql-formatter` for the SQL Formatter tool
+
+Date: 2026-07-29
+
+**Decision:** Add [`sql-formatter`](https://www.npmjs.com/package/sql-formatter)
+(15.8.2) as a dependency, used by exactly one tool (`src/tools/sql-formatter/`),
+and give its lazy chunk a named 90 KB gzip budget in
+`scripts/check-bundle-size.ts`.
+
+**Reasoning:** No browser API formats SQL, and formatting it correctly is not
+a whitespace problem. Getting `CASE` expressions, window functions, CTEs,
+string literals containing keywords, and dialect-specific quoting
+(BigQuery backticks, T-SQL square brackets) right requires a real tokenizer
+and parser per dialect. A regular-expression formatter would silently mangle
+exactly the queries a person reaches for a formatter to read. `sql-formatter`
+is the established library for this: 15.8.2 was published a month before this
+entry, it covers 19 dialects, and it parses rather than pattern-matches, so a
+query it cannot handle is reported as a parse error instead of being quietly
+corrupted. That clears the bar
+[ADR-011/012](#adr-011-qrcode-and-jsqr-for-qr-code-generatorscanner) set for
+"no browser API can reasonably do this."
+
+Placing this in a browser tool is the point rather than an incidental
+detail: a query worth formatting usually carries table names, column names,
+and literal values from a production system, and the ordinary alternative is
+pasting it into a stranger's server.
+
+**Alternatives considered:** Hand-rolling a formatter -- rejected; a
+correct multi-dialect SQL formatter is a parser project, not a helper
+function, and the failure mode of an approximate one is a corrupted query.
+`@sqltools/formatter` -- rejected; it is the older fork this library
+descends from and is less actively maintained. Restricting the tool to one
+dialect to shrink the bundle -- rejected; the dialect-specific syntax is
+precisely what a generic formatter gets wrong, and the chunk is lazy, so the
+cost falls only on people who open this one page. Deep-importing individual
+dialect modules from the package's internals to tree-shake the rest --
+rejected; it depends on file paths the package does not publish as API.
+
+**Trade-offs:** 73.74 KB gzip, which makes this the largest single-tool
+chunk on the site after the shared PDF chunks, and larger than
+`qr-code-scanner`. It is downloaded only by a visitor who opens
+`/tools/sql-formatter`, and it changes nothing about the entry chunk, the
+vendor chunks, or any other tool. The size is dominated by all 19 dialect
+grammars being reachable from the package entry point; dropping dialects
+would not help without deep imports. The library also brings a small parser
+runtime (`nearley`, `moo`) into the same chunk.
+
+---
+
+## ADR-028: `exifreader` for the Image Metadata Viewer tool
+
+Date: 2026-07-29
+
+**Decision:** Add [`exifreader`](https://www.npmjs.com/package/exifreader)
+(4.41.3) as a dependency, used by exactly one tool
+(`src/tools/image-metadata-viewer/`), and give its lazy chunk a named 45 KB
+gzip budget in `scripts/check-bundle-size.ts`.
+
+**Reasoning:** Browsers expose no API for reading image metadata. The Canvas
+API can decode pixels, and re-encoding through it is exactly how EXIF Remover
+strips metadata, but nothing in the platform reads an EXIF, IPTC, XMP, or ICC
+block. Doing it by hand means parsing JPEG APP segments, a TIFF IFD tree,
+PNG text chunks, HEIC and AVIF box structures, and XMP packets, with a tag
+dictionary for each -- a large amount of format-specific code whose bugs are
+silent wrong values rather than visible failures.
+
+`exifreader` was chosen over the more downloaded `exifr` specifically because
+of maintenance: `exifr` was last published roughly five years ago and reads
+as abandoned, while `exifreader` 4.41.3 was published days before this entry
+and covers a wider format set (JPEG, PNG, WebP, HEIC, AVIF, TIFF, GIF, JPEG
+XL). Download count is not a substitute for a maintained parser when the
+input is arbitrary untrusted binary from a user's disk.
+
+**Alternatives considered:** `exifr` -- rejected on maintenance, as above.
+`exif-parser` -- rejected; JPEG only, so PNG, WebP, and HEIC files would
+report nothing. Hand-rolling a JPEG-only EXIF parser -- rejected; it would
+cover the common case at perhaps 250 lines, but silently return nothing for
+the phone formats (HEIC) this tool exists to inspect, and every tag
+description table would have to be maintained here.
+
+**Trade-offs:** 36.74 KB gzip in the tool's own lazy chunk, downloaded only
+by a visitor who opens `/tools/image-metadata-viewer`. It pulls
+`@xmldom/xmldom` in for XMP parsing, which is the bulk of that figure. The
+tool uses the library's `expanded: true` mode, so the shape of the returned
+groups (`file`, `exif`, `gps`, `iptc`, `xmp`, `icc`) is part of the coupling
+between the tool and this library; a major version bump should be checked
+against that mode specifically.

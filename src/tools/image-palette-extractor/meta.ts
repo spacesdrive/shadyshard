@@ -42,7 +42,6 @@ const meta: ToolMeta = {
         "No. The file is read locally with the File API and sampled on a canvas element in your browser.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

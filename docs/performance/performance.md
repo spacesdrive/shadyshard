@@ -80,10 +80,10 @@ preview`, Chrome DevTools MCP, desktop, 50 tools across 14 categories):
 | CLS                         | 0.00   |
 | Failed audits               | 0      |
 
-Largest production chunks measured on 2026-07-28 at 118 tools:
-`vendor-react` 399.09 KB / 128.80 KB gzip, `vendor-router` 94.48 KB / 31.30
-KB gzip, `vendor-ui` 65.34 KB / 22.27 KB gzip, `vendor-search` 26.05 KB /
-9.41 KB gzip, app entry 34.34 KB gzip. The app entry chunk previously grew
+Largest production chunks measured on 2026-07-29 at 133 tools:
+`vendor-react` 403.95 KB / 125.84 KB gzip, `vendor-router` 93.21 KB / 29.53
+KB gzip, `vendor-ui` 82.19 KB / 25.85 KB gzip, `vendor-search` 26.06 KB /
+9.06 KB gzip, app entry 37.27 KB gzip. The app entry chunk previously grew
 with the catalog, reaching 64.06 KB gzip at 103 tools against its 65 KB
 budget, because `import.meta.glob` eager-loaded every tool's full metadata
 including its `longDescription` and `faqs` prose. Splitting `ToolMeta` into
@@ -92,12 +92,17 @@ an eagerly-loaded summary and a lazily-loaded detail
 from the entry chunk; each tool now also ships a `<slug>-meta-*.js` chunk of
 0.5 to 1.5 KB gzip, fetched only when that tool's page opens, in parallel
 with the tool's own component chunk. Most per-tool component chunks stay
-under 4 KB. Two justified exceptions, both single-tool dependencies isolated
-to their own lazy chunk and never loaded elsewhere: `qr-code-scanner` 48.90
-KB gzip (`jsqr`) and `markdown-preview` 23.30 KB gzip (`marked` +
-`dompurify`). The shared `pdf` chunks (`pdf-lib` and `pdfjs-dist`, ADR-019)
-are the largest lazy assets on the site at 176.42 KB and 126.74 KB gzip,
-loaded only by the PDF Tools category.
+under 4 KB. Three justified exceptions, all single-tool dependencies isolated
+to their own lazy chunk and never loaded elsewhere: `sql-formatter` 73.74 KB
+gzip (`sql-formatter`, ADR-027), `qr-code-scanner` 46.80 KB gzip (`jsqr`,
+ADR-011), and `image-metadata-viewer` 36.74 KB gzip (`exifreader`, ADR-028).
+`markdown-preview` was previously a fourth at 23.30 KB gzip; `dompurify` is
+now shared by every Markdown and HTML tool and Rolldown splits it into its
+own `purify.es` chunk (22.68 KB gzip), leaving the tool's own chunk under
+1 KB. Its named budget is kept as a guard rather than a current need. The
+shared `pdf` chunks (`pdf-lib` and `pdfjs-dist`, ADR-019) are the largest
+lazy assets on the site at 172.22 KB and 122.68 KB gzip, loaded only by the
+PDF Tools category.
 
 The Lighthouse and Core Web Vitals rows above are still the 2026-07-08
 measurement and have not been re-taken since; the chunk figures above them

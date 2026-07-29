@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "That depends entirely on your jurisdiction and the document. This tool produces an image; it makes no claim about the legal status of that image and is not a substitute for legal advice.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

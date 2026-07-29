@@ -42,7 +42,6 @@ const meta: ToolMeta = {
         "ease is cubic-bezier(0.25, 0.1, 0.25, 1), ease-in is (0.42, 0, 1, 1), ease-out is (0, 0, 0.58, 1), ease-in-out is (0.42, 0, 0.58, 1), and linear is (0, 0, 1, 1).",
     },
   ],
-  isNew: true,
 }
 
 export default meta
