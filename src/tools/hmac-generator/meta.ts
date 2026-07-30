@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["hmac", "security", "webhook", "signature", "hash", "sha256"],
   icon: Fingerprint,
-  isNew: true,
   features: [
     "HMAC with SHA-1, SHA-256, SHA-384, and SHA-512",
     "Secret key read as UTF-8 text, hex, or base64",

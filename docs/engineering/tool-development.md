@@ -152,8 +152,10 @@ for the full, current list of what's actually in use and where. Highlights:
   hand-rolled crypto implementation, and never `Math.random()` for
   anything that needs to be unguessable.
 - **`getUserMedia`** -- QR Code Scanner's live camera capture.
-- **Compression Streams API** -- not yet used; candidate for a future
-  gzip/deflate tool.
+- **Compression Streams API** -- Gzip Size Calculator, which pipes a `Blob`
+  stream through `CompressionStream` to measure gzip, deflate, and raw
+  deflate sizes without shipping a compression library. See
+  [decisions.md ADR-030](../architecture/decisions.md).
 - **Web Workers** -- not yet used; candidate for moving genuinely heavy
   computation (large batch image processing) off the main thread once a
   tool needs it.

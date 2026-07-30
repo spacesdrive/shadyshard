@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["json", "jsonl", "ndjson", "converter", "developer", "data"],
   icon: FileJson2,
-  isNew: true,
   features: [
     "Convert JSON Lines to a JSON array and an array back to JSON Lines",
     "Per-line validation reporting the line number and the parse error",

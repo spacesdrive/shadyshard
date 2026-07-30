@@ -1186,3 +1186,94 @@ tool uses the library's `expanded: true` mode, so the shape of the returned
 groups (`file`, `exif`, `gps`, `iptc`, `xmp`, `icc`) is part of the coupling
 between the tool and this library; a major version bump should be checked
 against that mode specifically.
+
+## ADR-029: Binary container format for File Encrypter, and a shared key-derivation module
+
+Date: 2026-07-30
+
+**Decision:** File Encrypter writes a self-describing binary container
+rather than reusing Text Encrypter's Base64 message format: the six ASCII
+bytes `SSENC1`, then a 16-byte salt, then a 12-byte nonce, then the
+AES-256-GCM ciphertext. The plaintext that gets encrypted is not the file
+contents alone but a two-byte big-endian filename length, the UTF-8
+filename, and then the contents, so the original name is recovered on
+decryption and is not readable in the encrypted file. The PBKDF2 parameters
+and the key-derivation call that both tools depend on moved into
+`src/lib/crypto-box.ts`, and Text Encrypter now imports them instead of
+holding its own copy.
+
+**Reasoning:** Two things had to be true at once. The two tools must derive
+keys identically, because a divergence would be invisible in review and
+would break decryption of data users had already saved. And the file format
+must not be Base64, because Base64 inflates a binary file by a third for no
+benefit when the output is a downloaded file rather than text to paste.
+Extracting the derivation satisfies the first without touching the ADR-024
+message format at all, since the extracted constants and function are
+byte-for-byte what Text Encrypter already used. The magic prefix satisfies a
+separate need: without it, feeding the wrong file to the decrypt tab
+produces an authentication failure that reads as "wrong password," which
+sends users looking for a password problem that does not exist. Checking the
+prefix first turns that into an accurate message.
+
+Encrypting the filename rather than storing it in a header is what keeps the
+container from leaking. An encrypted file whose header says
+`salary-review-2026.xlsx` has given away most of what the encryption was
+protecting.
+
+**Alternatives considered:** Reusing the Base64 format from ADR-024 and
+storing files as Base64 text -- rejected on the 33 percent size increase and
+on the awkwardness of a `.txt` file that is really an encrypted binary.
+Storing the filename in a plaintext header -- rejected on the metadata leak
+above. Duplicating the derivation code in the new tool rather than
+extracting it -- rejected because the parameters are part of both on-disk
+formats, so a copy is a correctness hazard, not just repetition. Adopting an
+existing interchange format such as the OpenPGP or age container --
+rejected; both require a library, and neither round-trips through a browser
+tool that has no key management to speak of.
+
+**Trade-offs:** The container is specific to this site, so a file encrypted
+here can only be decrypted here or by reimplementing the layout, which the
+tool's FAQ states plainly. The whole file is held in memory during
+encryption because Web Crypto's `encrypt` has no streaming form, which is
+why input is capped at 100 MB rather than being unbounded. Both formats are
+now coupled to one module: a change to the iterations or the hash in
+`crypto-box.ts` silently breaks previously encrypted data for both tools,
+which the module's own comment warns about.
+
+## ADR-030: Compression Streams API instead of a compression library for Gzip Size Calculator
+
+Date: 2026-07-30
+
+**Decision:** Gzip Size Calculator measures compressed size with the
+platform's `CompressionStream`, piping a `Blob` stream through it and
+reading the resulting byte length, with no compression dependency added. The
+tool renders a plain unsupported-browser message instead of the UI when
+`CompressionStream` is undefined.
+
+**Reasoning:** ARCHITECTURE.md section 10 has listed Compression Streams as
+an unused candidate since the browser-API inventory was written, and this is
+the tool it was waiting for. The API is available in every current browser
+engine, is exactly the zlib the platform already carries for HTTP, and costs
+nothing in bundle size. The alternative is `pako`, roughly 45 KB minified,
+shipped so a tool can report a number the browser can already compute. That
+is precisely the trade the browser-first policy exists to refuse.
+
+The tool reports gzip, deflate, and raw deflate rather than gzip alone
+because all three are one line each once the stream plumbing exists, and the
+difference between them is a common enough source of confusion to be worth
+showing side by side.
+
+**Alternatives considered:** `pako` -- rejected on bundle size for zero
+capability gain. `fflate`, which is smaller than `pako` -- rejected for the
+same reason: any kilobytes at all are worse than zero. Shipping a Brotli
+encoder to report Brotli sizes too -- rejected; browsers expose Brotli for
+decompression only, and a WebAssembly Brotli encoder is far heavier than the
+whole rest of the tool, for one extra figure.
+
+**Trade-offs:** The reported size is the browser's zlib at its default
+level, so it will not be byte-identical to a build tool configured at a
+different level. The tool's FAQ says so rather than implying the number
+reproduces a specific toolchain. There is no fallback path when
+`CompressionStream` is missing, since the entire tool is that API; the
+unsupported message is the honest outcome rather than a degraded mode that
+reports a wrong number.

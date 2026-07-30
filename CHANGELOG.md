@@ -10,6 +10,22 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across eight existing categories, taking the catalog from 133
+  to 148, with no new dependency: Text Encoding Fixer and List Comparison
+  (Text Tools); Text Redactor and File Encrypter (Security and Privacy);
+  Gzip Size Calculator and XML Formatter (Developer Tools); Env File
+  Converter, Number to Words Converter, and Image to Base64 Converter
+  (Converters); CSS Specificity Calculator (CSS Generators); Image Watermark
+  and Placeholder Image Generator (Image Tools); Lorem Ipsum Generator and
+  Random Picker (Generators); Compound Interest Calculator (Math and
+  Calculators).
+- `src/lib/crypto-box.ts`, holding the AES-256-GCM and PBKDF2 parameters and
+  key derivation shared by Text Encrypter and File Encrypter, so the two
+  password-based formats cannot drift apart. See
+  [decisions.md ADR-029](docs/architecture/decisions.md).
+- First use of the Compression Streams API, which is how Gzip Size
+  Calculator measures compressed size without a compression library. See
+  [decisions.md ADR-030](docs/architecture/decisions.md).
 - Fifteen tools across nine existing categories, taking the catalog from 118
   to 133: SERP Snippet Preview and Schema Markup Generator (SEO Tools);
   Readability Score Checker and List Delimiter Converter (Text Tools); SQL
@@ -51,7 +67,9 @@ process this file is maintained under.
   [decisions.md ADR-026](docs/architecture/decisions.md).
 - The `isNew` flag is cleared from the previous batch each time a new batch
   ships, so the homepage "New tools" section shows tools that are actually
-  new.
+  new. It currently surfaces File Encrypter, Text Redactor, Gzip Size
+  Calculator, Text Encoding Fixer, Image Watermark, and Number to Words
+  Converter.
 
 ### Fixed
 

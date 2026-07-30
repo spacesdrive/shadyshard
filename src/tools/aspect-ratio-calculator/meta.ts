@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["aspect ratio", "calculator", "image", "video", "dimensions", "design"],
   icon: Ratio,
-  isNew: true,
   features: [
     "Simplified ratio and decimal ratio from any width and height",
     "Solve for the missing width or height in either direction",

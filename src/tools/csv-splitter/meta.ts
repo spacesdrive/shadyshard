@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["csv", "split", "converter", "spreadsheet", "data", "file"],
   icon: Split,
-  isNew: true,
   features: [
     "Split by rows per file, with the header repeated in every part",
     "Comma, semicolon, and tab delimiters, detected automatically",

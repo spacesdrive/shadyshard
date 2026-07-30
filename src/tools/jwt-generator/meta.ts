@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["jwt", "token", "security", "hmac", "generator", "auth"],
   icon: KeySquare,
-  isNew: true,
   features: [
     "HS256, HS384, and HS512 signing with the Web Crypto API",
     "Standard iat and exp claims added from a chosen lifetime",

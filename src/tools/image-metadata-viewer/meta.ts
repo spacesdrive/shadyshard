@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["image", "exif", "metadata", "privacy", "gps", "photo"],
   icon: Aperture,
-  isNew: true,
   features: [
     "EXIF, IPTC, XMP, ICC, and file-level metadata grouped by source",
     "GPS coordinates surfaced separately with a privacy warning",

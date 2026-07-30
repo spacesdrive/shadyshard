@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["loan", "emi", "finance", "calculator", "interest", "amortisation"],
   icon: Landmark,
-  isNew: true,
   features: [
     "Monthly instalment, total interest, and total repayment",
     "Term entered in years or months",

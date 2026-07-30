@@ -30,6 +30,7 @@ import {
   Earth,
   Eraser,
   Eye,
+  EyeOff,
   FileArchive,
   FileBraces,
   FileBracesCorner,
@@ -52,6 +53,7 @@ import {
   FileTypeCorner,
   FileXCorner,
   FingerprintPattern,
+  Frame,
   GalleryHorizontal,
   Gauge,
   GitCompareArrows,
@@ -67,6 +69,7 @@ import {
   Link,
   Link2,
   List,
+  ListChecks,
   ListTree,
   ListX,
   Lock,
@@ -79,6 +82,7 @@ import {
   Network,
   Palette,
   Percent,
+  Pilcrow,
   Pipette,
   QrCode,
   Ratio,
@@ -90,8 +94,10 @@ import {
   ScanEye,
   ScanLine,
   ScanSearch,
+  Settings2,
   ShieldCheck,
   ShieldQuestionMark,
+  Shuffle,
   Signature,
   Smartphone,
   Sparkles,
@@ -102,8 +108,10 @@ import {
   Table,
   Table2,
   Tags,
+  Target,
   TextSearch,
   Timer,
+  TrendingUp,
   Type,
   Weight,
 } from "lucide-react"
@@ -140,7 +148,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["aspect ratio", "calculator", "image", "video", "dimensions", "design"],
     icon: Ratio,
-    isNew: true,
   },
   {
     slug: "base64-encoder-decoder",
@@ -235,7 +242,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["time", "date", "business days", "calculator", "holidays", "working days"],
     icon: CalendarCheck,
-    isNew: true,
   },
   {
     slug: "case-converter",
@@ -365,6 +371,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Palette,
   },
   {
+    slug: "compound-interest-calculator",
+    title: "Compound Interest Calculator",
+    description:
+      "Project savings growth from a lump sum and regular contributions, year by year.",
+    category: "math",
+    keywords: [
+      "compound interest calculator",
+      "investment growth calculator",
+      "sip return calculator",
+      "savings projection with monthly contributions",
+      "future value calculator",
+    ],
+    tags: ["compound interest", "investment", "savings", "finance", "sip", "returns"],
+    icon: TrendingUp,
+  },
+  {
     slug: "cron-expression-parser",
     title: "Cron Expression Parser",
     description:
@@ -410,7 +432,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "animation", "keyframes", "generator", "preview", "frontend"],
     icon: Sparkles,
-    isNew: true,
   },
   {
     slug: "css-clamp-generator",
@@ -444,6 +465,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Grid3x3,
   },
   {
+    slug: "css-specificity-calculator",
+    title: "CSS Specificity Calculator",
+    description:
+      "Score CSS selectors as ID, class, and element counts and see which one wins.",
+    category: "css",
+    keywords: [
+      "css specificity calculator",
+      "selector specificity",
+      "why is my css not applying",
+      "css cascade specificity",
+      "compare css selectors",
+    ],
+    tags: ["css", "specificity", "selector", "cascade", "debug"],
+    icon: Target,
+  },
+  {
     slug: "css-unit-converter",
     title: "CSS Unit Converter",
     description:
@@ -474,7 +511,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["csv", "split", "converter", "spreadsheet", "data", "file"],
     icon: Split,
-    isNew: true,
   },
   {
     slug: "csv-to-json",
@@ -556,6 +592,39 @@ export const toolIndex: ToolSummary[] = [
     icon: MailSearch,
   },
   {
+    slug: "encoding-fixer",
+    title: "Text Encoding Fixer",
+    description:
+      "Repair garbled text where accented characters turned into sequences like A-tilde.",
+    category: "text",
+    keywords: [
+      "fix garbled text",
+      "mojibake decoder",
+      "utf-8 encoding fixer",
+      "fix accented characters",
+      "repair broken characters in csv",
+    ],
+    tags: ["encoding", "mojibake", "utf-8", "latin1", "windows-1252", "repair"],
+    icon: Languages,
+    isNew: true,
+  },
+  {
+    slug: "env-file-converter",
+    title: "Env File Converter",
+    description:
+      "Convert a .env file to JSON, YAML, shell exports, Docker flags, or a Kubernetes ConfigMap.",
+    category: "converters",
+    keywords: [
+      "env to json converter",
+      "dotenv to yaml",
+      "env file to kubernetes configmap",
+      "convert env to docker",
+      "environment variables converter",
+    ],
+    tags: ["env", "dotenv", "json", "yaml", "docker", "kubernetes", "config"],
+    icon: Settings2,
+  },
+  {
     slug: "exif-remover",
     title: "EXIF Remover",
     description:
@@ -586,6 +655,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "favicon", "icon", "generator"],
     icon: Grid2x2,
+  },
+  {
+    slug: "file-encrypter",
+    title: "File Encrypter",
+    description:
+      "Encrypt any file with a password using AES-256-GCM, then decrypt it back locally.",
+    category: "security",
+    keywords: [
+      "encrypt file with password",
+      "aes 256 file encryption online",
+      "decrypt file in browser",
+      "password protect a file",
+      "encrypt before uploading to cloud",
+    ],
+    tags: ["encrypt", "decrypt", "aes", "password", "file", "privacy"],
+    icon: FileKey,
+    isNew: true,
   },
   {
     slug: "file-hash-generator",
@@ -682,6 +768,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Receipt,
   },
   {
+    slug: "gzip-size-calculator",
+    title: "Gzip Size Calculator",
+    description:
+      "Measure how small a file or snippet gets after gzip, deflate, and raw deflate.",
+    category: "developer",
+    keywords: [
+      "gzip size calculator",
+      "compressed file size checker",
+      "check bundle size gzip",
+      "deflate size online",
+      "performance budget checker",
+    ],
+    tags: ["gzip", "compression", "bundle", "performance", "size", "deflate"],
+    icon: Gauge,
+    isNew: true,
+  },
+  {
     slug: "har-file-analyzer",
     title: "HAR File Analyzer",
     description:
@@ -726,7 +829,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["hmac", "security", "webhook", "signature", "hash", "sha256"],
     icon: FingerprintPattern,
-    isNew: true,
   },
   {
     slug: "hreflang-tag-generator",
@@ -835,7 +937,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "exif", "metadata", "privacy", "gps", "photo"],
     icon: Aperture,
-    isNew: true,
   },
   {
     slug: "image-palette-extractor",
@@ -868,6 +969,39 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "resize", "dimensions"],
     icon: Maximize2,
+  },
+  {
+    slug: "image-to-base64",
+    title: "Image to Base64 Converter",
+    description:
+      "Turn an image into a Base64 data URI with ready-made CSS, HTML, and Markdown snippets.",
+    category: "converters",
+    keywords: [
+      "image to base64",
+      "base64 to image converter",
+      "data uri generator",
+      "inline image in css",
+      "convert png to base64",
+    ],
+    tags: ["base64", "image", "data uri", "encode", "decode", "css"],
+    icon: Binary,
+  },
+  {
+    slug: "image-watermark",
+    title: "Image Watermark",
+    description:
+      "Add a text watermark to a photo with control over position, size, angle, and opacity.",
+    category: "image",
+    keywords: [
+      "add watermark to image",
+      "text watermark generator",
+      "watermark photo online free",
+      "copyright watermark maker",
+      "watermark image without upload",
+    ],
+    tags: ["watermark", "image", "photo", "copyright", "canvas", "text"],
+    icon: Stamp,
+    isNew: true,
   },
   {
     slug: "images-to-pdf",
@@ -1067,7 +1201,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "jsonl", "ndjson", "converter", "developer", "data"],
     icon: FileBracesCorner,
-    isNew: true,
   },
   {
     slug: "jwt-decoder",
@@ -1100,7 +1233,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["jwt", "token", "security", "hmac", "generator", "auth"],
     icon: KeySquare,
-    isNew: true,
   },
   {
     slug: "line-sorter",
@@ -1118,6 +1250,22 @@ export const toolIndex: ToolSummary[] = [
     icon: ArrowDownUp,
   },
   {
+    slug: "list-comparison",
+    title: "List Comparison",
+    description:
+      "Compare two lists to find items only in A, only in B, in both, or in either.",
+    category: "text",
+    keywords: [
+      "compare two lists",
+      "find differences between lists",
+      "list intersection online",
+      "items in one list but not the other",
+      "compare email lists",
+    ],
+    tags: ["compare", "list", "diff", "set", "intersection", "duplicates"],
+    icon: ListChecks,
+  },
+  {
     slug: "list-delimiter-converter",
     title: "List Delimiter Converter",
     description:
@@ -1132,7 +1280,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "list", "delimiter", "comma", "convert", "sql"],
     icon: List,
-    isNew: true,
   },
   {
     slug: "loan-emi-calculator",
@@ -1149,7 +1296,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["loan", "emi", "finance", "calculator", "interest", "amortisation"],
     icon: Landmark,
-    isNew: true,
+  },
+  {
+    slug: "lorem-ipsum-generator",
+    title: "Lorem Ipsum Generator",
+    description:
+      "Generate placeholder paragraphs, sentences, words, or list items for a layout.",
+    category: "generators",
+    keywords: [
+      "lorem ipsum generator",
+      "placeholder text generator",
+      "dummy text for design",
+      "filler text paragraphs",
+      "lorem ipsum html",
+    ],
+    tags: ["lorem ipsum", "placeholder", "text", "dummy", "design", "filler"],
+    icon: Pilcrow,
   },
   {
     slug: "markdown-preview",
@@ -1277,6 +1439,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["nanoid", "id", "generator", "identifier"],
     icon: Hash,
+  },
+  {
+    slug: "number-to-words",
+    title: "Number to Words Converter",
+    description:
+      "Spell out any amount in words, in international or Indian lakh and crore format.",
+    category: "converters",
+    keywords: [
+      "number to words converter",
+      "amount in words",
+      "cheque amount in words",
+      "rupees in words converter",
+      "spell out numbers",
+    ],
+    tags: ["number", "words", "currency", "cheque", "invoice", "lakh", "crore"],
+    icon: Hash,
+    isNew: true,
   },
   {
     slug: "open-graph-preview",
@@ -1592,6 +1771,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Percent,
   },
   {
+    slug: "placeholder-image-generator",
+    title: "Placeholder Image Generator",
+    description:
+      "Create a sized placeholder image with custom colours and label, and download it.",
+    category: "image",
+    keywords: [
+      "placeholder image generator",
+      "dummy image maker",
+      "create placeholder png",
+      "mockup image generator",
+      "offline placeholder images",
+    ],
+    tags: ["placeholder", "image", "mockup", "dummy", "prototype", "canvas"],
+    icon: Frame,
+  },
+  {
     slug: "png-to-jpg",
     title: "PNG to JPG",
     description:
@@ -1654,6 +1849,22 @@ export const toolIndex: ToolSummary[] = [
     icon: ScanLine,
   },
   {
+    slug: "random-picker",
+    title: "Random Picker",
+    description:
+      "Draw winners, shuffle a list, or split names into balanced teams, fairly and offline.",
+    category: "generators",
+    keywords: [
+      "random name picker",
+      "random winner generator",
+      "team generator from list",
+      "shuffle a list randomly",
+      "raffle picker online",
+    ],
+    tags: ["random", "picker", "shuffle", "teams", "raffle", "giveaway"],
+    icon: Shuffle,
+  },
+  {
     slug: "readability-score-checker",
     title: "Readability Score Checker",
     description:
@@ -1668,7 +1879,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "readability", "writing", "flesch", "grade level", "editing"],
     icon: BookOpenCheck,
-    isNew: true,
   },
   {
     slug: "reading-time-calculator",
@@ -1765,7 +1975,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "schema", "json-ld", "structured data", "generator", "rich results"],
     icon: Braces,
-    isNew: true,
   },
   {
     slug: "serp-snippet-preview",
@@ -1782,7 +1991,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "serp", "meta", "title", "preview", "search"],
     icon: TextSearch,
-    isNew: true,
   },
   {
     slug: "sha256-generator",
@@ -1877,7 +2085,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["sql", "formatter", "database", "developer", "query", "beautify"],
     icon: Database,
-    isNew: true,
   },
   {
     slug: "svg-optimizer",
@@ -1943,6 +2150,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Lock,
   },
   {
+    slug: "text-redactor",
+    title: "Text Redactor",
+    description:
+      "Mask emails, keys, IPs, and card numbers in logs before pasting them anywhere.",
+    category: "security",
+    keywords: [
+      "redact sensitive data",
+      "remove api keys from logs",
+      "mask personal data in text",
+      "scrub logs before sharing",
+      "pii redaction tool",
+    ],
+    tags: ["redact", "privacy", "logs", "pii", "secrets", "mask"],
+    icon: EyeOff,
+    isNew: true,
+  },
+  {
     slug: "text-shadow-generator",
     title: "Text Shadow Generator",
     description:
@@ -1973,7 +2197,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["time", "duration", "calculator", "timesheet", "hours"],
     icon: Timer,
-    isNew: true,
   },
   {
     slug: "time-zone-converter",
@@ -2173,6 +2396,21 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "frequency", "keywords", "writing", "seo"],
     icon: ChartColumn,
+  },
+  {
+    slug: "xml-formatter",
+    title: "XML Formatter",
+    description: "Indent, minify, and validate XML with the exact parse error location.",
+    category: "developer",
+    keywords: [
+      "xml formatter",
+      "xml beautifier online",
+      "pretty print xml",
+      "minify xml",
+      "xml validator",
+    ],
+    tags: ["xml", "format", "beautify", "minify", "validate", "pretty print"],
+    icon: FileCodeCorner,
   },
   {
     slug: "xml-to-json",

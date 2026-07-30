@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["seo", "schema", "json-ld", "structured data", "generator", "rich results"],
   icon: Braces,
-  isNew: true,
   features: [
     "Six schema types: Article, FAQPage, Product, Organization, LocalBusiness, BreadcrumbList",
     "Repeatable rows for FAQ entries and breadcrumb trails",

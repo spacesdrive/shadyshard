@@ -6,10 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CopyButton } from "@/components/tool/CopyButton"
-
-const SALT_BYTES = 16
-const IV_BYTES = 12
-const PBKDF2_ITERATIONS = 310000
+import { SALT_BYTES, IV_BYTES, deriveAesKey } from "@/lib/crypto-box"
 
 function bytesToBase64(bytes: Uint8Array<ArrayBuffer>): string {
   let binary = ""
@@ -24,30 +21,10 @@ function base64ToBytes(value: string): Uint8Array<ArrayBuffer> {
   return bytes
 }
 
-async function deriveKey(
-  password: string,
-  salt: Uint8Array<ArrayBuffer>,
-): Promise<CryptoKey> {
-  const material = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(password),
-    "PBKDF2",
-    false,
-    ["deriveKey"],
-  )
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: PBKDF2_ITERATIONS, hash: "SHA-256" },
-    material,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"],
-  )
-}
-
 async function encrypt(plaintext: string, password: string): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES))
   const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES))
-  const key = await deriveKey(password, salt)
+  const key = await deriveAesKey(password, salt)
   const ciphertext = new Uint8Array(
     await crypto.subtle.encrypt(
       { name: "AES-GCM", iv },
@@ -79,7 +56,7 @@ async function decrypt(payload: string, password: string): Promise<string> {
   const salt = packed.slice(0, SALT_BYTES)
   const iv = packed.slice(SALT_BYTES, SALT_BYTES + IV_BYTES)
   const ciphertext = packed.slice(SALT_BYTES + IV_BYTES)
-  const key = await deriveKey(password, salt)
+  const key = await deriveAesKey(password, salt)
 
   try {
     const plaintext = await crypto.subtle.decrypt(

@@ -29,7 +29,7 @@ by the pre-commit hook (typecheck) and available via `npm test`/
   zero console/page errors on the same set). Runs across four Playwright
   projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`.
 
-This intentionally does not cover every one of the 133 tools individually
+This intentionally does not cover every one of the 148 tools individually
 -- see [Test coverage philosophy](#test-coverage-philosophy). It
 complements, rather than replaces, the manual
 [Chrome DevTools verification](#chrome-devtools-verification) process
@@ -51,6 +51,15 @@ registry or a shared component silently breaks many tools at once, which
 is exactly what automated tests are for. Do not add a dedicated test file
 for every new tool as a matter of course -- that scales linearly with tool
 count for very little incremental protection.
+
+The one exception worth making is a tool whose core is a non-trivial
+algorithm that fails by returning a plausible wrong answer rather than by
+throwing or rendering nothing. Number to Words Converter (number spelling),
+Text Encoding Fixer (the Windows-1252 byte mapping), and CSS Specificity
+Calculator (the `is`/`not`/`has`/`where` scoring rules) each have a test file
+for that reason: manually exercising them proves they produce output, not
+that the output is right. This is a judgment call about algorithmic risk, not
+a licence to add a test file per tool.
 
 ### Running tests locally
 

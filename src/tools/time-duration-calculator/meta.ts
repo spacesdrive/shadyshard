@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["time", "duration", "calculator", "timesheet", "hours"],
   icon: Timer,
-  isNew: true,
   features: [
     "Add a list of durations written as 1:45, 90m, 2h 15m, or 1.5h",
     "Per-line errors naming the line that could not be read",
