@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["sql", "formatter", "database", "developer", "query", "beautify"],
   icon: Database,
-  isNew: true,
   features: [
     "19 dialects including PostgreSQL, MySQL, BigQuery, Snowflake, Trino, and T-SQL",
     "Keyword case set to upper, lower, or left as written",

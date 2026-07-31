@@ -10,6 +10,21 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across eight existing categories, taking the catalog from
+  133 to 148: Subtitle Converter, Subtitle Timing Shifter, and Data Size
+  Converter (Converters); cURL to Fetch Converter, Gzip Size Calculator, XML
+  Formatter, JSON Schema Generator, and Env File Converter (Developer
+  Tools); Image to Base64, Image Watermark, and Placeholder Image Generator
+  (Image Tools); CSS Specificity Calculator (CSS Generators); Unicode
+  Character Inspector (Text Tools); Open Graph Image Generator (SEO Tools);
+  Punycode Converter (Security and Privacy). No new dependency and no new
+  category was needed for any of them.
+- First use of the Compression Streams API (`CompressionStream`, Gzip Size
+  Calculator) and of `Intl.Segmenter` (Unicode Character Inspector), both
+  native rather than a dependency. See
+  [decisions.md ADR-029](docs/architecture/decisions.md).
+- `lib/subtitle.ts`, shared SRT and WebVTT parsing and time shifting used by
+  the two subtitle tools, with unit test coverage.
 - Fifteen tools across nine existing categories, taking the catalog from 118
   to 133: SERP Snippet Preview and Schema Markup Generator (SEO Tools);
   Readability Score Checker and List Delimiter Converter (Text Tools); SQL
@@ -41,6 +56,8 @@ process this file is maintained under.
 
 ### Changed
 
+- Removed the `isNew` flag from the fifteen tools added in the previous
+  batch, so the homepage "New tools" section surfaces the current batch.
 - Tool metadata is split into an eagerly-loaded summary and a lazily-loaded
   detail half, so a tool's long description and FAQs now download only when
   its own page opens. The app entry chunk drops from 64.06 KB to 34.35 KB

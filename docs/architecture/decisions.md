@@ -1186,3 +1186,50 @@ tool uses the library's `expanded: true` mode, so the shape of the returned
 groups (`file`, `exif`, `gps`, `iptc`, `xmp`, `icc`) is part of the coupling
 between the tool and this library; a major version bump should be checked
 against that mode specifically.
+
+---
+
+## ADR-029: Compression Streams API for the Gzip Size Calculator, no compression dependency
+
+Date: 2026-07-31
+
+**Decision:** Build Gzip Size Calculator on the browser's native
+`CompressionStream` rather than adding a JavaScript compression library, and
+report gzip, deflate, and raw deflate only, stating plainly in the tool's own
+copy that Brotli is not available.
+
+**Reasoning:** ARCHITECTURE.md section 10 has listed Compression Streams as
+an unused candidate since the browser-first policy was written, and this is
+the tool it was waiting for. `CompressionStream` is the real DEFLATE
+implementation already inside the browser, reached by piping a `Blob` stream
+through it and reading back the resulting size. That makes the number a
+measurement rather than an estimate, which is the whole value of the tool:
+a compression ratio guessed from a rule of thumb is worth nothing to someone
+checking a size budget. It is supported across every current browser and
+costs zero bytes of bundle.
+
+The Brotli limitation is stated rather than papered over. The API exposes no
+Brotli format, and shipping a WebAssembly Brotli encoder to close that gap
+would cost more bundle than every one of the fifteen tools in this batch put
+together, for a figure a developer can approximate as 10 to 20 percent below
+the gzip number the tool already gives them.
+
+**Alternatives considered:** `pako` (or `fflate`) -- rejected; both are
+well-maintained, but they would ship 20 to 45 KB gzip of JavaScript to
+reimplement an algorithm already present in the runtime, and the browser's
+own output is the more honest answer for a tool whose entire job is
+reporting a real size. A hand-rolled DEFLATE implementation -- rejected
+outright; it is a large amount of subtle code whose bugs would be wrong
+numbers, not visible failures. Estimating the ratio from entropy or a fixed
+multiplier -- rejected; that is exactly the guesswork the tool exists to
+replace.
+
+**Trade-offs:** The whole file is held in memory as a `Blob` and again as
+its compressed output, so a very large artifact is bounded by available
+memory rather than streamed to a size counter. This is acceptable for the
+build outputs and text snippets the tool is aimed at, and a file large
+enough to matter would be a candidate for moving off the main thread with a
+Worker, which is a separate change. `CompressionStream` also always uses the
+browser's default compression level, so a server configured for a different
+level will differ from this figure by a small margin; the tool says so in
+its FAQ rather than presenting the number as exact.

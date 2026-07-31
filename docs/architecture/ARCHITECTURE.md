@@ -74,6 +74,8 @@ src/
     page-range.ts             Parses "1-3,5,8-9" page-range input, shared by
                              every PDF tool that lets a user pick specific pages
     csv.ts                    Hand-rolled RFC 4180-style CSV/TSV parse/serialize
+    subtitle.ts               SRT/WebVTT cue parsing, serialisation, and time
+                             shifting, shared by the two subtitle tools
     xml.ts                    XML <-> plain-object conversion via native
                              DOMParser/XMLSerializer
     file-signatures.ts        Magic-byte file-signature database and hex-dump
@@ -144,7 +146,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 132 tools' FAQs. `vite.config.ts` names the
+never downloads the other 147 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -375,11 +377,27 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
 - SVG rasterisation via a blob URL drawn into a canvas -- SVG to PNG
   Converter. The markup is loaded through an `<img>`, which never executes
   script, so pasted SVG cannot run anything.
+- `CompressionStream` (Compression Streams API) -- Gzip Size Calculator
+  measures real gzip, deflate, and raw deflate output sizes by piping a
+  `Blob` stream through it, rather than estimating a compression ratio. See
+  [decisions.md ADR-029](decisions.md). Brotli is deliberately absent: the
+  API does not offer it, so the tool says so instead of guessing.
+- `Intl.Segmenter` -- Unicode Character Inspector counts grapheme clusters
+  separately from code points, which is the difference between what a reader
+  sees as one character and how many code points it actually is. Used the
+  same way as the other `Intl` APIs above: native segmentation instead of a
+  dependency, with a spread-over-the-string fallback where it is
+  unavailable.
+- `DOMParser` for pretty-printing, not only conversion -- XML Formatter
+  validates with `parseFromString` and then walks the resulting tree to emit
+  indented output, since `XMLSerializer` does not pretty-print. It shares no
+  code with `lib/xml.ts`, which converts XML to and from plain objects.
 
-No tool yet uses Web Workers, Compression Streams, or File System Access --
-these remain candidates as image/file-processing tools grow heavier (a
-large batch image operation is the likely trigger for moving work off the
-main thread with a Worker). See
+No tool yet uses Web Workers or File System Access -- these remain
+candidates as image/file-processing tools grow heavier (a large batch image
+operation is the likely trigger for moving work off the main thread with a
+Worker). Compression Streams left that list when Gzip Size Calculator
+shipped, above. See
 [engineering/tool-development.md](../engineering/tool-development.md) for
 the browser-first policy that governs when to reach for them, and
 [decisions.md](decisions.md) for the justified exceptions where no browser
@@ -404,7 +422,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 133
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 148
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -430,13 +448,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 133 tools across 14
+What already scales without change, now validated at 148 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 133 tools
+- Code splitting: automatic per tool and per page -- confirmed at 148 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -472,14 +490,22 @@ categories (up from the original 3):
   36.74 KB gzip and are downloaded by nobody who does not open those two
   pages. The entry chunk, every other tool chunk, and the vendor chunks are
   unchanged by them.
+- Adding no dependency at all remains the normal case, and is the stronger
+  signal. The 15-tool batch that took the catalog to 148 added zero: every
+  one of those tools is built on a browser API already available (Canvas,
+  File, `DOMParser`, `Intl.Segmenter`, and `CompressionStream`, the last two
+  used here for the first time -- see section 10 and
+  [decisions.md ADR-029](decisions.md)). Each of the fifteen lands under
+  3 KB gzip in its own lazy chunk. Two of them share one new `lib/subtitle.ts`
+  the same way the PDF tools share `lib/pdf.ts`.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
 
 - **`categories.ts` is a hand-maintained flat list**, still at 14 entries.
-  The 15-tool batch that took the catalog to 133 needed no new category at
-  all, spreading across nine existing ones, which is the fourth batch in a
-  row to give that signal. Still fine; reconsider if subcategories or a
+  The 15-tool batch that took the catalog to 148 needed no new category
+  either, spreading across eight existing ones, which is the fifth batch in
+  a row to give that signal. Still fine; reconsider if subcategories or a
   category hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
@@ -495,8 +521,9 @@ forgotten:
   [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
   **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
   summary only, roughly 0.2 KB gzip each rather than 0.58 KB. Measured again
-  at 133 tools it is 37.27 KB gzip, which holds that per-tool rate. At that
-  rate the 65 KB budget is reached somewhere around 270 tools. The next lever, if
+  at 148 tools it is 41.07 KB gzip, which holds that per-tool rate at
+  roughly 0.25 KB gzip each. At that rate the 65 KB budget is reached
+  somewhere around 240 tools. The next lever, if
   and when that matters, is moving the summary index itself out of the entry
   chunk (a fetched JSON index behind the search dialog, keeping only what
   the homepage renders eagerly) -- do not simply raise the budget.
