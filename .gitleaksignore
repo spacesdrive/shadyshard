@@ -1,0 +1,18 @@
+# Known gitleaks false positives, one fingerprint per line.
+#
+# A fingerprint is commit:path:rule:line, so an entry here can only ever
+# silence that exact finding in that exact commit. It cannot mask a real
+# secret added later, in another file, or by another rule. Add an entry only
+# for a value that is demonstrably not a credential, with a note saying why.
+#
+# On pull_request events the gitleaks action scans the branch's whole commit
+# range rather than the working tree, so a placeholder removed in a later
+# commit still has to be acknowledged here.
+
+# A placeholder bearer token in the cURL to Fetch Converter's "Load example"
+# sample string, matched by the curl-auth-header rule. It was never a real
+# credential: it read "sk-example-token" and pointed at api.example.com, the
+# RFC 2606 reserved documentation domain. The sample was rewritten in
+# 351165c to carry no Authorization header at all, so the current tree is
+# clean and this entry covers only the superseded commit.
+303a03960549bac1cdc701a1a8203025507d4469:src/tools/curl-to-fetch/index.tsx:curl-auth-header:8

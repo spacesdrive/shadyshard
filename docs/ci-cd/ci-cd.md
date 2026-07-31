@@ -85,7 +85,7 @@ reusable workflow rather than duplicating its job list.
 | `quality`          | `tsc -b`, `oxlint`, `prettier --check`                                                                                   | TypeScript strict mode, ESLint-equivalent linting (Oxlint, see [below](#why-oxlint-instead-of-eslint)), Prettier formatting                                                          |
 | `unit-tests`       | `vitest run --coverage` (React Testing Library for components)                                                           | Unit + component tests                                                                                                                                                               |
 | `dependency-audit` | `npm audit --omit=dev --audit-level=high`                                                                                | Security: known-vulnerable dependencies                                                                                                                                              |
-| `secret-scan`      | `gitleaks/gitleaks-action` over full git history                                                                         | Security: committed secrets                                                                                                                                                          |
+| `secret-scan`      | `gitleaks/gitleaks-action` over full git history, with `.gitleaksignore` for acknowledged false positives                | Security: committed secrets                                                                                                                                                          |
 | `build`            | `npm run build`, then `validate:metadata`, `validate:sitemap`, `validate:links`, `validate:html`, `size` (bundle budget) | Build verification, metadata validation, sitemap/robots.txt validation, SEO validation, broken internal link detection, HTML validation, bundle size analysis                        |
 | `e2e-tests`        | Full Playwright suite (`chromium`, `firefox`, `webkit`, `mobile-chrome` projects)                                        | Navigation, search, routing, metadata, accessibility, responsive layouts, browser compatibility, copy/reset buttons, tool functionality, zero console errors (`e2e/console.spec.ts`) |
 | `lighthouse`       | `treosh/lighthouse-ci-action` against `lighthouserc.json`                                                                | Performance, accessibility, best practices, SEO regression gate                                                                                                                      |
@@ -93,6 +93,25 @@ reusable workflow rather than duplicating its job list.
 
 If any job fails, the workflow fails and nothing downstream (PR merge,
 deploy) proceeds.
+
+### Acknowledging a gitleaks false positive
+
+On a `pull_request` event the gitleaks action scans the branch's whole commit
+range, not the working tree. Removing a flagged string in a follow-up commit
+therefore does not clear the job: the string is still present in the history
+of the commit that introduced it, and the only ways out are rewriting that
+history or acknowledging the finding.
+
+`.gitleaksignore` in the repository root is the mechanism for the second.
+Each line is a fingerprint of the form `commit:path:rule:line`, so an entry
+can only ever silence that one finding in that one commit; it cannot mask a
+real secret added later, in a different file, or caught by a different rule.
+Copy the `Fingerprint:` line straight out of the failing job's log.
+
+Add an entry only for a value that is demonstrably not a credential, and
+write a comment above it saying why. A finding that might be a real secret is
+never an ignore-file candidate: rotate the credential first, then remove it
+from history.
 
 ### Why Oxlint instead of ESLint
 
