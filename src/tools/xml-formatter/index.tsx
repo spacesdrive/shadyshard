@@ -88,6 +88,31 @@ function serializeNode(node: Node, depth: number, indent: string): string[] {
   return lines
 }
 
+/**
+ * The XML declaration is not part of the parsed tree, so it has to be carried
+ * across separately. It is rebuilt from individually validated pieces rather
+ * than sliced out of the raw input, so no span of what the user typed is
+ * copied verbatim into the output.
+ */
+function readDeclaration(input: string): string | null {
+  const match = input.trimStart().match(/^<\?xml\s+([^?]*)\?>/)
+  if (!match) return null
+
+  const attributes = match[1]
+  const version = attributes.match(/version\s*=\s*["']([\d.]+)["']/)?.[1]
+  if (!version) return null
+
+  const encoding = attributes.match(/encoding\s*=\s*["']([\w.-]+)["']/)?.[1]
+  const standalone = attributes.match(/standalone\s*=\s*["'](yes|no)["']/)?.[1]
+
+  return (
+    `<?xml version="${version}"` +
+    (encoding ? ` encoding="${encoding}"` : "") +
+    (standalone ? ` standalone="${standalone}"` : "") +
+    "?>"
+  )
+}
+
 function formatXml(input: string, indent: string): string {
   const doc = new DOMParser().parseFromString(input, "application/xml")
   const parseError = doc.querySelector("parsererror")
@@ -96,9 +121,7 @@ function formatXml(input: string, indent: string): string {
     throw new Error(detail || "This is not well-formed XML.")
   }
 
-  const declaration = input.trimStart().startsWith("<?xml")
-    ? input.trimStart().slice(0, input.trimStart().indexOf("?>") + 2)
-    : null
+  const declaration = readDeclaration(input)
 
   const nodes = Array.from(doc.childNodes).flatMap((node) =>
     serializeNode(node, 0, indent),

@@ -5,10 +5,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { CopyButton } from "@/components/tool/CopyButton"
 
+// Deliberately carries no Authorization header: a realistic-looking bearer
+// token in committed source trips the repository's secret scanner, and the
+// parser treats every -H flag identically anyway, so a second ordinary header
+// demonstrates exactly as much.
 const SAMPLE = `curl 'https://api.example.com/v1/items' \\
   -X POST \\
   -H 'Content-Type: application/json' \\
-  -H 'Authorization: Bearer sk-example-token' \\
+  -H 'Accept: application/json' \\
   -d '{"name":"Widget","quantity":3}'`
 
 /** Flags that take a value we care about, in their long and short forms. */
