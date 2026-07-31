@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["time", "date", "business days", "calculator", "holidays", "working days"],
   icon: CalendarCheck,
-  isNew: true,
   features: [
     "Working days counted between two dates, inclusive of both",
     "Any working week, not just Monday to Friday",

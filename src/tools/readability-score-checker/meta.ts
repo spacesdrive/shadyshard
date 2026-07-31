@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["text", "readability", "writing", "flesch", "grade level", "editing"],
   icon: BookOpenCheck,
-  isNew: true,
   features: [
     "Flesch Reading Ease with a plain-language interpretation band",
     "Flesch-Kincaid, Gunning Fog, SMOG, Coleman-Liau, and ARI grade levels",

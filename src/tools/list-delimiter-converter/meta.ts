@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["text", "list", "delimiter", "comma", "convert", "sql"],
   icon: List,
-  isNew: true,
   features: [
     "Split on new lines, commas, semicolons, tabs, spaces, or a custom delimiter",
     "Join with any delimiter and wrap each item in quotes or brackets",

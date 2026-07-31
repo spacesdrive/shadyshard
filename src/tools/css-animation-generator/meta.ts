@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["css", "animation", "keyframes", "generator", "preview", "frontend"],
   icon: Sparkles,
-  isNew: true,
   features: [
     "Eleven presets covering fades, slides, zoom, bounce, pulse, shake, spin, and flip",
     "Duration, delay, easing, iteration count, direction, and fill mode controls",

@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["seo", "serp", "meta", "title", "preview", "search"],
   icon: TextSearch,
-  isNew: true,
   features: [
     "Live desktop and mobile search result preview",
     "Pixel width measured with the search result font size, not a character count",

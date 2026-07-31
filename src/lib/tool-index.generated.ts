@@ -14,6 +14,7 @@ import {
   CalendarClock,
   CalendarPlus,
   CalendarRange,
+  Captions,
   CaseSensitive,
   ChartColumn,
   CircleCheck,
@@ -58,11 +59,14 @@ import {
   Globe,
   Grid2x2,
   Grid3x3,
+  HardDrive,
   Hash,
+  ImagePlus,
   KeyRound,
   KeySquare,
   Landmark,
   Languages,
+  Layers,
   LayoutGrid,
   Link,
   Link2,
@@ -78,6 +82,7 @@ import {
   Minimize2,
   Network,
   Palette,
+  PanelTop,
   Percent,
   Pipette,
   QrCode,
@@ -90,6 +95,9 @@ import {
   ScanEye,
   ScanLine,
   ScanSearch,
+  ScanText,
+  Settings2,
+  ShieldAlert,
   ShieldCheck,
   ShieldQuestionMark,
   Signature,
@@ -98,6 +106,7 @@ import {
   Spline,
   Split,
   Square,
+  SquareTerminal,
   Stamp,
   Table,
   Table2,
@@ -140,7 +149,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["aspect ratio", "calculator", "image", "video", "dimensions", "design"],
     icon: Ratio,
-    isNew: true,
   },
   {
     slug: "base64-encoder-decoder",
@@ -235,7 +243,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["time", "date", "business days", "calculator", "holidays", "working days"],
     icon: CalendarCheck,
-    isNew: true,
   },
   {
     slug: "case-converter",
@@ -410,7 +417,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "animation", "keyframes", "generator", "preview", "frontend"],
     icon: Sparkles,
-    isNew: true,
   },
   {
     slug: "css-clamp-generator",
@@ -444,6 +450,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Grid3x3,
   },
   {
+    slug: "css-specificity-calculator",
+    title: "CSS Specificity Calculator",
+    description:
+      "Score CSS selectors as ID, class, and element counts, and see which one wins a conflict.",
+    category: "css",
+    keywords: [
+      "css specificity calculator",
+      "selector specificity",
+      "which css rule wins",
+      "css specificity 0 1 0",
+      "is not where specificity",
+    ],
+    tags: ["css", "specificity", "selector", "cascade", "debug"],
+    icon: Layers,
+    isNew: true,
+  },
+  {
     slug: "css-unit-converter",
     title: "CSS Unit Converter",
     description:
@@ -474,7 +497,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["csv", "split", "converter", "spreadsheet", "data", "file"],
     icon: Split,
-    isNew: true,
   },
   {
     slug: "csv-to-json",
@@ -524,6 +546,40 @@ export const toolIndex: ToolSummary[] = [
     icon: Spline,
   },
   {
+    slug: "curl-to-fetch",
+    title: "cURL to Fetch Converter",
+    description:
+      "Turn a copied cURL command into JavaScript fetch code, with headers, body, and auth carried over.",
+    category: "developer",
+    keywords: [
+      "curl to fetch",
+      "convert curl command to javascript",
+      "curl to javascript",
+      "copy as curl to fetch",
+      "curl converter",
+    ],
+    tags: ["curl", "fetch", "javascript", "http", "api", "converter", "devtools"],
+    icon: SquareTerminal,
+    isNew: true,
+  },
+  {
+    slug: "data-size-converter",
+    title: "Data Size Converter",
+    description:
+      "Convert between bytes, KB, MB, GB and their binary counterparts KiB, MiB, GiB, with bits included.",
+    category: "converters",
+    keywords: [
+      "data size converter",
+      "kb to kib converter",
+      "gb vs gib",
+      "bytes to megabytes",
+      "megabits to megabytes",
+    ],
+    tags: ["bytes", "storage", "size", "binary", "decimal", "bits", "units"],
+    icon: HardDrive,
+    isNew: true,
+  },
+  {
     slug: "date-difference-calculator",
     title: "Date Difference Calculator",
     description:
@@ -554,6 +610,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["email", "security", "phishing", "headers", "spf", "dkim", "dmarc"],
     icon: MailSearch,
+  },
+  {
+    slug: "env-file-converter",
+    title: "Env File Converter",
+    description:
+      "Convert a .env file into JSON, YAML, shell exports, a Docker Compose list, or a redacted .env.example.",
+    category: "developer",
+    keywords: [
+      "env to json converter",
+      "dotenv converter",
+      "env to yaml",
+      "env to docker compose",
+      "generate env example file",
+    ],
+    tags: ["env", "dotenv", "json", "yaml", "docker", "config", "converter"],
+    icon: Settings2,
+    isNew: true,
   },
   {
     slug: "exif-remover",
@@ -682,6 +755,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Receipt,
   },
   {
+    slug: "gzip-size-calculator",
+    title: "Gzip Size Calculator",
+    description:
+      "Measure how small a file or snippet becomes after gzip and deflate compression, with the saving shown as a percentage.",
+    category: "developer",
+    keywords: [
+      "gzip size calculator",
+      "compressed file size checker",
+      "gzip compression ratio",
+      "bundle size gzip",
+      "deflate size",
+    ],
+    tags: ["gzip", "deflate", "compression", "bundle", "performance", "size"],
+    icon: FileArchive,
+    isNew: true,
+  },
+  {
     slug: "har-file-analyzer",
     title: "HAR File Analyzer",
     description:
@@ -726,7 +816,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["hmac", "security", "webhook", "signature", "hash", "sha256"],
     icon: FingerprintPattern,
-    isNew: true,
   },
   {
     slug: "hreflang-tag-generator",
@@ -835,7 +924,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "exif", "metadata", "privacy", "gps", "photo"],
     icon: Aperture,
-    isNew: true,
   },
   {
     slug: "image-palette-extractor",
@@ -868,6 +956,40 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "resize", "dimensions"],
     icon: Maximize2,
+  },
+  {
+    slug: "image-to-base64",
+    title: "Image to Base64",
+    description:
+      "Encode an image as a Base64 data URI ready to paste into HTML, CSS, JSON, or Markdown.",
+    category: "image",
+    keywords: [
+      "image to base64",
+      "base64 data uri generator",
+      "png to base64",
+      "svg to css background data uri",
+      "encode image base64 online",
+    ],
+    tags: ["base64", "data uri", "image", "encode", "css", "html", "inline"],
+    icon: FileImage,
+    isNew: true,
+  },
+  {
+    slug: "image-watermark",
+    title: "Image Watermark",
+    description:
+      "Add a text watermark to an image, positioned in a corner or tiled diagonally across the whole picture.",
+    category: "image",
+    keywords: [
+      "add watermark to image",
+      "watermark photo online free",
+      "text watermark generator",
+      "watermark id document copy",
+      "tiled watermark image",
+    ],
+    tags: ["watermark", "image", "photo", "privacy", "canvas", "copyright"],
+    icon: Stamp,
+    isNew: true,
   },
   {
     slug: "images-to-pdf",
@@ -977,6 +1099,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Minimize2,
   },
   {
+    slug: "json-schema-generator",
+    title: "JSON Schema Generator",
+    description:
+      "Infer a JSON Schema from a sample JSON document, with types, required keys, and string formats detected.",
+    category: "developer",
+    keywords: [
+      "json schema generator",
+      "generate json schema from json",
+      "infer schema from json",
+      "json schema draft 2020-12",
+      "json to schema",
+    ],
+    tags: ["json", "schema", "validation", "api", "generator", "developer"],
+    icon: Braces,
+    isNew: true,
+  },
+  {
     slug: "json-to-csv",
     title: "JSON to CSV",
     description: "Convert a JSON array of objects into CSV data with a header row.",
@@ -1067,7 +1206,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "jsonl", "ndjson", "converter", "developer", "data"],
     icon: FileBracesCorner,
-    isNew: true,
   },
   {
     slug: "jwt-decoder",
@@ -1100,7 +1238,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["jwt", "token", "security", "hmac", "generator", "auth"],
     icon: KeySquare,
-    isNew: true,
   },
   {
     slug: "line-sorter",
@@ -1132,7 +1269,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "list", "delimiter", "comma", "convert", "sql"],
     icon: List,
-    isNew: true,
   },
   {
     slug: "loan-emi-calculator",
@@ -1149,7 +1285,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["loan", "emi", "finance", "calculator", "interest", "amortisation"],
     icon: Landmark,
-    isNew: true,
   },
   {
     slug: "markdown-preview",
@@ -1277,6 +1412,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["nanoid", "id", "generator", "identifier"],
     icon: Hash,
+  },
+  {
+    slug: "og-image-generator",
+    title: "Open Graph Image Generator",
+    description:
+      "Draw a 1200 by 630 social share image from a title, description, and site name, and download it as PNG.",
+    category: "seo",
+    keywords: [
+      "open graph image generator",
+      "og image 1200x630",
+      "social share image maker",
+      "twitter card image generator",
+      "link preview image",
+    ],
+    tags: ["og image", "open graph", "social", "seo", "preview", "canvas", "generator"],
+    icon: PanelTop,
+    isNew: true,
   },
   {
     slug: "open-graph-preview",
@@ -1592,6 +1744,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Percent,
   },
   {
+    slug: "placeholder-image-generator",
+    title: "Placeholder Image Generator",
+    description:
+      "Create a placeholder image at any size and colour, as a downloadable PNG, JPEG, WebP, or inline SVG.",
+    category: "image",
+    keywords: [
+      "placeholder image generator",
+      "dummy image generator",
+      "create placeholder png",
+      "svg placeholder generator",
+      "mockup placeholder image offline",
+    ],
+    tags: ["placeholder", "dummy", "mockup", "image", "svg", "prototype", "canvas"],
+    icon: ImagePlus,
+    isNew: true,
+  },
+  {
     slug: "png-to-jpg",
     title: "PNG to JPG",
     description:
@@ -1620,6 +1789,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "png", "webp", "converter"],
     icon: FileImage,
+  },
+  {
+    slug: "punycode-converter",
+    title: "Punycode Converter",
+    description:
+      "Convert internationalised domain names to and from their xn-- punycode form, with lookalike scripts flagged.",
+    category: "security",
+    keywords: [
+      "punycode converter",
+      "idn to punycode",
+      "xn-- decoder",
+      "idn homograph attack check",
+      "unicode domain name converter",
+    ],
+    tags: ["punycode", "idn", "domain", "phishing", "homograph", "security", "dns"],
+    icon: ShieldAlert,
+    isNew: true,
   },
   {
     slug: "qr-code-generator",
@@ -1668,7 +1854,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "readability", "writing", "flesch", "grade level", "editing"],
     icon: BookOpenCheck,
-    isNew: true,
   },
   {
     slug: "reading-time-calculator",
@@ -1765,7 +1950,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "schema", "json-ld", "structured data", "generator", "rich results"],
     icon: Braces,
-    isNew: true,
   },
   {
     slug: "serp-snippet-preview",
@@ -1782,7 +1966,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "serp", "meta", "title", "preview", "search"],
     icon: TextSearch,
-    isNew: true,
   },
   {
     slug: "sha256-generator",
@@ -1877,6 +2060,39 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["sql", "formatter", "database", "developer", "query", "beautify"],
     icon: Database,
+  },
+  {
+    slug: "subtitle-converter",
+    title: "Subtitle Converter",
+    description:
+      "Convert subtitles between SRT and WebVTT, or strip the timings to get a plain transcript.",
+    category: "converters",
+    keywords: [
+      "srt to vtt converter",
+      "vtt to srt",
+      "subtitle converter",
+      "webvtt converter",
+      "subtitle to text transcript",
+    ],
+    tags: ["subtitle", "srt", "vtt", "webvtt", "captions", "video", "transcript"],
+    icon: Captions,
+    isNew: true,
+  },
+  {
+    slug: "subtitle-timing-shifter",
+    title: "Subtitle Timing Shifter",
+    description:
+      "Shift every subtitle cue forward or backward by a fixed offset to resync captions with your video.",
+    category: "converters",
+    keywords: [
+      "shift subtitle timing",
+      "resync subtitles",
+      "srt delay fix",
+      "subtitle offset tool",
+      "subtitles out of sync",
+    ],
+    tags: ["subtitle", "srt", "vtt", "sync", "timing", "video", "offset"],
+    icon: Clock4,
     isNew: true,
   },
   {
@@ -1973,7 +2189,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["time", "duration", "calculator", "timesheet", "hours"],
     icon: Timer,
-    isNew: true,
   },
   {
     slug: "time-zone-converter",
@@ -2019,6 +2234,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["tsv", "csv", "convert", "data"],
     icon: Table2,
+  },
+  {
+    slug: "unicode-character-inspector",
+    title: "Unicode Character Inspector",
+    description:
+      "Break text into code points with hex values, HTML entities, UTF-8 byte counts, and invisible characters flagged.",
+    category: "text",
+    keywords: [
+      "unicode character inspector",
+      "find invisible characters",
+      "zero width space detector",
+      "unicode code point viewer",
+      "utf-8 byte inspector",
+    ],
+    tags: ["unicode", "codepoint", "invisible", "debug", "encoding", "utf-8", "text"],
+    icon: ScanText,
+    isNew: true,
   },
   {
     slug: "unix-timestamp-converter",
@@ -2173,6 +2405,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "frequency", "keywords", "writing", "seo"],
     icon: ChartColumn,
+  },
+  {
+    slug: "xml-formatter",
+    title: "XML Formatter",
+    description:
+      "Indent, validate, or minify XML, with parse errors reported in plain language.",
+    category: "developer",
+    keywords: [
+      "xml formatter",
+      "xml beautifier",
+      "xml validator online",
+      "pretty print xml",
+      "minify xml",
+    ],
+    tags: ["xml", "formatter", "beautifier", "validator", "minify", "pretty print"],
+    icon: FileCode,
+    isNew: true,
   },
   {
     slug: "xml-to-json",
