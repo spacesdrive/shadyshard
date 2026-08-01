@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["json", "schema", "validation", "api", "generator", "developer"],
   icon: Braces,
-  isNew: true,
   features: [
     "Infers types recursively through nested objects and arrays",
     "Merges mixed array items into one item schema instead of guessing from the first",

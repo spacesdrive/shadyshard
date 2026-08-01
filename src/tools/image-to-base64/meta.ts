@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["base64", "data uri", "image", "encode", "css", "html", "inline"],
   icon: FileImage,
-  isNew: true,
   features: [
     "Data URI, raw Base64, img tag, CSS background, and Markdown snippets",
     "Works with PNG, JPG, WebP, GIF, SVG, and ICO files",

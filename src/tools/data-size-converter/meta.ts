@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["bytes", "storage", "size", "binary", "decimal", "bits", "units"],
   icon: HardDrive,
-  isNew: true,
   features: [
     "Decimal units (KB, MB, GB, TB, PB) and binary units (KiB, MiB, GiB, TiB, PiB) side by side",
     "Bits and bytes in the same table for bandwidth comparisons",

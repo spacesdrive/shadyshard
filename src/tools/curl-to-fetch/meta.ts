@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["curl", "fetch", "javascript", "http", "api", "converter", "devtools"],
   icon: TerminalSquare,
-  isNew: true,
   features: [
     "Handles quoting, escapes, and backslash line continuations like a shell",
     "Maps method, headers, body, basic auth, cookies, and form fields",

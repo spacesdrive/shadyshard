@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["css", "specificity", "selector", "cascade", "debug"],
   icon: Layers,
-  isNew: true,
   features: [
     "Specificity as the three cascade values, ID, class, and element",
     "Part by part breakdown of what contributed to each value",

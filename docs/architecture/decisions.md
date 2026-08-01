@@ -1233,3 +1233,54 @@ Worker, which is a separate change. `CompressionStream` also always uses the
 browser's default compression level, so a server configured for a different
 level will differ from this figure by a small margin; the tool says so in
 its FAQ rather than presenting the number as exact.
+
+---
+
+## ADR-030: Web Speech synthesis and Web Audio for the Text to Speech Reader and Morse Code Translator, no audio dependency
+
+Date: 2026-08-01
+
+**Decision:** Build Text to Speech Reader on the browser's
+`speechSynthesis` API and Morse Code Translator's tone playback on the Web
+Audio API, adding no audio or speech dependency, and state in each tool's
+own copy what the native API cannot do rather than working around it.
+
+**Reasoning:** Both are the same shape of decision as ADR-029: the
+capability is already in the runtime, so shipping JavaScript to reimplement
+it would cost bundle for a worse result. `speechSynthesis` reaches the
+voices installed on the visitor's operating system, which is what removes
+the character caps and account requirements that every hosted text to
+speech service applies, and it keeps the pasted text on the device. Web
+Audio's `OscillatorNode` with a gain envelope is the correct primitive for
+Morse: the whole message is scheduled up front against the audio clock, so
+the dit and dah timing is sample-accurate rather than dependent on
+`setTimeout` drift, and no audio file is downloaded.
+
+The limitation of `speechSynthesis` is stated plainly instead of being
+engineered around. Browsers deliberately do not expose the synthesised audio
+stream to the page, so a web tool cannot offer a downloadable recording.
+That is said in the tool's UI and its FAQ, because the alternative -- a
+hosted synthesis API -- would mean transmitting the user's text to a third
+party, which is the thing this catalog exists not to do.
+
+**Alternatives considered:** A hosted text to speech API -- rejected; it
+would break the no-backend, nothing-leaves-the-browser property that is the
+whole premise of the site, and would reintroduce the quotas the tool exists
+to avoid. `meSpeak.js` or a WebAssembly speech engine -- rejected; hundreds
+of kilobytes for voices markedly worse than the ones the operating system
+already provides. Scheduling Morse tones with `setTimeout` -- rejected;
+timer drift is audible at the short dit lengths used above 20 words per
+minute, and the whole point of the playback is that the timing is correct
+enough to practise against. Shipping pre-recorded dit and dah audio files --
+rejected; that fixes the tone and pitch, and cannot vary the speed
+continuously.
+
+**Trade-offs:** Which voices exist is outside the site's control, so the
+Text to Speech Reader's quality varies by operating system, and a device
+with no installed voices shows an empty list. The tool reports that state
+rather than failing silently. `speechSynthesis` also has known
+inconsistencies across browsers around pause and resume for long
+utterances. Morse playback schedules the entire message on one
+`AudioContext` up front, so stopping means closing the context rather than
+cancelling individual events, which is why the stop control tears down and
+recreates it.

@@ -7,6 +7,7 @@ import {
   Binary,
   Blend,
   BookOpenCheck,
+  BookOpenText,
   Bot,
   Braces,
   Cake,
@@ -24,6 +25,7 @@ import {
   Code,
   CodeXml,
   Columns3,
+  Combine,
   Contact,
   Contrast,
   Crop,
@@ -86,11 +88,13 @@ import {
   Percent,
   Pipette,
   QrCode,
+  RadioTower,
   Ratio,
   Receipt,
   Regex,
   RotateCw,
   Ruler,
+  Scale,
   Scaling,
   ScanEye,
   ScanLine,
@@ -113,7 +117,9 @@ import {
   Tags,
   TextSearch,
   Timer,
+  TrendingUp,
   Type,
+  Volume2,
   Weight,
 } from "lucide-react"
 import type { ToolSummary } from "@/types/tool"
@@ -183,6 +189,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Binary,
   },
   {
+    slug: "bionic-reading-converter",
+    title: "Bionic Reading Converter",
+    description:
+      "Emphasise the first part of every word to give your eyes a fixation point while reading.",
+    category: "text",
+    keywords: [
+      "bionic reading converter",
+      "bionic reading text",
+      "bold first letters reading",
+      "speed reading converter",
+      "adhd reading format",
+    ],
+    tags: ["reading", "bionic", "accessibility", "focus", "adhd", "dyslexia", "text"],
+    icon: BookOpenText,
+    isNew: true,
+  },
+  {
     slug: "border-radius-generator",
     title: "Border Radius Generator",
     description: "Design a CSS border-radius with per-corner sliders and a live preview.",
@@ -243,6 +266,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["time", "date", "business days", "calculator", "holidays", "working days"],
     icon: CalendarCheck,
+  },
+  {
+    slug: "caesar-cipher",
+    title: "Caesar Cipher and ROT13",
+    description:
+      "Encode or decode a Caesar shift, apply ROT13 or ROT47, or try all 26 shifts at once.",
+    category: "security",
+    keywords: [
+      "caesar cipher",
+      "rot13 decoder",
+      "caesar cipher decoder",
+      "rot47",
+      "shift cipher solver",
+    ],
+    tags: ["cipher", "rot13", "caesar", "decode", "encode", "ctf", "puzzle"],
+    icon: RotateCw,
+    isNew: true,
   },
   {
     slug: "case-converter",
@@ -372,6 +412,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Palette,
   },
   {
+    slug: "compound-interest-calculator",
+    title: "Compound Interest Calculator",
+    description:
+      "Project how a lump sum or a regular monthly contribution grows, with a year-by-year breakdown.",
+    category: "math",
+    keywords: [
+      "compound interest calculator",
+      "sip calculator",
+      "investment growth calculator",
+      "monthly savings calculator",
+      "future value calculator",
+    ],
+    tags: ["compound", "interest", "investment", "sip", "savings", "finance", "growth"],
+    icon: TrendingUp,
+    isNew: true,
+  },
+  {
     slug: "cron-expression-parser",
     title: "Cron Expression Parser",
     description:
@@ -450,6 +507,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Grid3x3,
   },
   {
+    slug: "css-minifier",
+    title: "CSS Minifier and Formatter",
+    description:
+      "Minify a stylesheet to cut its size, or expand it back into readable indented CSS.",
+    category: "developer",
+    keywords: [
+      "css minifier",
+      "css formatter",
+      "css beautifier",
+      "minify css online",
+      "format css",
+    ],
+    tags: ["css", "minify", "format", "beautify", "stylesheet", "compress"],
+    icon: Braces,
+    isNew: true,
+  },
+  {
     slug: "css-specificity-calculator",
     title: "CSS Specificity Calculator",
     description:
@@ -464,7 +538,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "specificity", "selector", "cascade", "debug"],
     icon: Layers,
-    isNew: true,
   },
   {
     slug: "css-unit-converter",
@@ -515,6 +588,23 @@ export const toolIndex: ToolSummary[] = [
     icon: FileBracesCorner,
   },
   {
+    slug: "csv-to-sql",
+    title: "CSV to SQL Insert",
+    description:
+      "Turn CSV or spreadsheet rows into SQL INSERT statements, with an optional CREATE TABLE.",
+    category: "developer",
+    keywords: [
+      "csv to sql",
+      "csv to insert statement",
+      "generate sql insert from csv",
+      "spreadsheet to sql",
+      "csv to create table",
+    ],
+    tags: ["csv", "sql", "insert", "database", "convert", "seed"],
+    icon: Database,
+    isNew: true,
+  },
+  {
     slug: "csv-to-tsv",
     title: "CSV to TSV",
     description: "Convert comma-separated CSV into tab-separated TSV data.",
@@ -560,7 +650,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["curl", "fetch", "javascript", "http", "api", "converter", "devtools"],
     icon: SquareTerminal,
-    isNew: true,
   },
   {
     slug: "data-size-converter",
@@ -577,7 +666,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["bytes", "storage", "size", "binary", "decimal", "bits", "units"],
     icon: HardDrive,
-    isNew: true,
   },
   {
     slug: "date-difference-calculator",
@@ -626,7 +714,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["env", "dotenv", "json", "yaml", "docker", "config", "converter"],
     icon: Settings2,
-    isNew: true,
   },
   {
     slug: "exif-remover",
@@ -769,7 +856,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["gzip", "deflate", "compression", "bundle", "performance", "size"],
     icon: FileArchive,
-    isNew: true,
   },
   {
     slug: "har-file-analyzer",
@@ -785,6 +871,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["har", "network", "performance", "debugging", "developer"],
     icon: Activity,
+  },
+  {
+    slug: "hash-identifier",
+    title: "Hash Identifier",
+    description:
+      "Work out which algorithm produced a hash from its length, character set, and prefix.",
+    category: "security",
+    keywords: [
+      "hash identifier",
+      "identify hash type",
+      "what hash is this",
+      "hash type detector",
+      "hashcat mode lookup",
+    ],
+    tags: ["hash", "identify", "md5", "sha1", "bcrypt", "hashcat", "ctf", "security"],
+    icon: FingerprintPattern,
+    isNew: true,
   },
   {
     slug: "hex-encoder-decoder",
@@ -879,6 +982,23 @@ export const toolIndex: ToolSummary[] = [
     icon: CalendarPlus,
   },
   {
+    slug: "image-combiner",
+    title: "Image Combiner",
+    description:
+      "Join several images into one, side by side or stacked, with an adjustable gap.",
+    category: "image",
+    keywords: [
+      "combine images",
+      "merge photos side by side",
+      "join images into one",
+      "stack images vertically",
+      "before and after image maker",
+    ],
+    tags: ["image", "combine", "merge", "join", "collage", "canvas"],
+    icon: Combine,
+    isNew: true,
+  },
+  {
     slug: "image-compressor",
     title: "Image Compressor",
     description:
@@ -958,6 +1078,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Maximize2,
   },
   {
+    slug: "image-splitter",
+    title: "Image Splitter",
+    description:
+      "Cut one image into a grid of equal tiles and save each piece separately.",
+    category: "image",
+    keywords: [
+      "image splitter",
+      "split image into grid",
+      "instagram grid maker",
+      "cut image into tiles",
+      "divide image into parts",
+    ],
+    tags: ["image", "split", "grid", "tiles", "instagram", "crop", "canvas"],
+    icon: Grid2x2,
+    isNew: true,
+  },
+  {
     slug: "image-to-base64",
     title: "Image to Base64",
     description:
@@ -972,7 +1109,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["base64", "data uri", "image", "encode", "css", "html", "inline"],
     icon: FileImage,
-    isNew: true,
   },
   {
     slug: "image-watermark",
@@ -989,7 +1125,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["watermark", "image", "photo", "privacy", "canvas", "copyright"],
     icon: Stamp,
-    isNew: true,
   },
   {
     slug: "images-to-pdf",
@@ -1113,7 +1248,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "schema", "validation", "api", "generator", "developer"],
     icon: Braces,
-    isNew: true,
   },
   {
     slug: "json-to-csv",
@@ -1129,6 +1263,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "csv", "convert", "data"],
     icon: FileSpreadsheet,
+  },
+  {
+    slug: "json-to-go",
+    title: "JSON to Go Struct",
+    description:
+      "Turn a JSON sample into a Go struct definition with json tags, nested types, and slices.",
+    category: "developer",
+    keywords: [
+      "json to go struct",
+      "json to golang",
+      "generate go struct from json",
+      "go json tags generator",
+      "golang struct converter",
+    ],
+    tags: ["go", "golang", "json", "struct", "codegen", "types"],
+    icon: Binary,
+    isNew: true,
   },
   {
     slug: "json-to-typescript",
@@ -1253,6 +1404,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "sort", "list", "lines", "shuffle"],
     icon: ArrowDownUp,
+  },
+  {
+    slug: "list-comparer",
+    title: "List Comparer",
+    description:
+      "Compare two lists to find what is only in one, what they share, and the combined set.",
+    category: "text",
+    keywords: [
+      "compare two lists",
+      "list difference tool",
+      "find items in one list not the other",
+      "compare two columns online",
+      "list intersection tool",
+    ],
+    tags: ["list", "compare", "diff", "set", "duplicates", "intersection", "text"],
+    icon: GitCompareArrows,
+    isNew: true,
   },
   {
     slug: "list-delimiter-converter",
@@ -1398,6 +1566,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Database,
   },
   {
+    slug: "morse-code-translator",
+    title: "Morse Code Translator",
+    description:
+      "Convert text to Morse code or Morse back to text, and play the result as a tone.",
+    category: "converters",
+    keywords: [
+      "morse code translator",
+      "text to morse code",
+      "morse code decoder",
+      "morse code audio",
+      "morse code practice",
+    ],
+    tags: ["morse", "translate", "encode", "decode", "radio", "audio", "cw"],
+    icon: RadioTower,
+    isNew: true,
+  },
+  {
     slug: "nanoid-generator",
     title: "Nano ID Generator",
     description:
@@ -1428,7 +1613,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["og image", "open graph", "social", "seo", "preview", "canvas", "generator"],
     icon: PanelTop,
-    isNew: true,
   },
   {
     slug: "open-graph-preview",
@@ -1744,6 +1928,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Percent,
   },
   {
+    slug: "pkce-generator",
+    title: "OAuth PKCE Generator",
+    description:
+      "Generate an OAuth 2.0 code verifier and its S256 code challenge, or check that an existing pair matches.",
+    category: "security",
+    keywords: [
+      "pkce generator",
+      "code verifier code challenge",
+      "oauth2 pkce s256",
+      "generate code challenge",
+      "pkce tester",
+    ],
+    tags: ["oauth", "pkce", "oauth2", "openid", "auth", "sha256", "security"],
+    icon: KeySquare,
+    isNew: true,
+  },
+  {
     slug: "placeholder-image-generator",
     title: "Placeholder Image Generator",
     description:
@@ -1758,7 +1959,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["placeholder", "dummy", "mockup", "image", "svg", "prototype", "canvas"],
     icon: ImagePlus,
-    isNew: true,
   },
   {
     slug: "png-to-jpg",
@@ -1805,7 +2005,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["punycode", "idn", "domain", "phishing", "homograph", "security", "dns"],
     icon: ShieldAlert,
-    isNew: true,
   },
   {
     slug: "qr-code-generator",
@@ -1934,6 +2133,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "robots", "crawler", "googlebot", "testing", "indexing"],
     icon: ShieldQuestionMark,
+  },
+  {
+    slug: "roman-numeral-converter",
+    title: "Roman Numeral Converter",
+    description:
+      "Convert a number to Roman numerals, read a numeral back as a number, or write a full date.",
+    category: "converters",
+    keywords: [
+      "roman numeral converter",
+      "number to roman numerals",
+      "roman numerals to number",
+      "roman numeral date converter",
+      "date in roman numerals",
+    ],
+    tags: ["roman", "numerals", "convert", "date", "number", "tattoo"],
+    icon: Landmark,
+    isNew: true,
   },
   {
     slug: "schema-markup-generator",
@@ -2076,7 +2292,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["subtitle", "srt", "vtt", "webvtt", "captions", "video", "transcript"],
     icon: Captions,
-    isNew: true,
   },
   {
     slug: "subtitle-timing-shifter",
@@ -2093,7 +2308,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["subtitle", "srt", "vtt", "sync", "timing", "video", "offset"],
     icon: Clock4,
-    isNew: true,
   },
   {
     slug: "svg-optimizer",
@@ -2175,6 +2389,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Type,
   },
   {
+    slug: "text-to-speech",
+    title: "Text to Speech Reader",
+    description:
+      "Read any text aloud using the voices installed on your device, with no character limit or account.",
+    category: "text",
+    keywords: [
+      "text to speech online",
+      "read text aloud",
+      "free tts no limit",
+      "browser text to speech",
+      "listen to article",
+    ],
+    tags: ["speech", "tts", "audio", "accessibility", "reading", "voice"],
+    icon: Volume2,
+    isNew: true,
+  },
+  {
     slug: "time-duration-calculator",
     title: "Time Duration Calculator",
     description:
@@ -2250,6 +2481,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["unicode", "codepoint", "invisible", "debug", "encoding", "utf-8", "text"],
     icon: ScanText,
+  },
+  {
+    slug: "unit-converter",
+    title: "Unit Converter",
+    description:
+      "Convert length, weight, temperature, area, volume, speed, pressure, and energy units.",
+    category: "converters",
+    keywords: [
+      "unit converter",
+      "metric to imperial converter",
+      "length weight temperature converter",
+      "convert units online",
+      "measurement converter",
+    ],
+    tags: ["units", "convert", "metric", "imperial", "length", "weight", "temperature"],
+    icon: Scale,
     isNew: true,
   },
   {
@@ -2421,7 +2668,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["xml", "formatter", "beautifier", "validator", "minify", "pretty print"],
     icon: FileCode,
-    isNew: true,
   },
   {
     slug: "xml-to-json",

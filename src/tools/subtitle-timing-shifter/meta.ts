@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["subtitle", "srt", "vtt", "sync", "timing", "video", "offset"],
   icon: Clock4,
-  isNew: true,
   features: [
     "Shifts every cue by a single offset, forward or backward",
     "Side-by-side preview of original and shifted timings",

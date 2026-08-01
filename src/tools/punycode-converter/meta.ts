@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["punycode", "idn", "domain", "phishing", "homograph", "security", "dns"],
   icon: ShieldAlert,
-  isNew: true,
   features: [
     "Converts Unicode domains to punycode and xn-- labels back to Unicode",
     "Detects scripts mixed inside a single label",

@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["og image", "open graph", "social", "seo", "preview", "canvas", "generator"],
   icon: PanelTop,
-  isNew: true,
   features: [
     "Exports the standard 1200 by 630 pixel size",
     "Title wraps and auto-fits so long headlines are not cut off",

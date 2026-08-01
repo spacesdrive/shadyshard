@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["unicode", "codepoint", "invisible", "debug", "encoding", "utf-8", "text"],
   icon: ScanText,
-  isNew: true,
   features: [
     "Per character code point, hex, decimal, HTML entity, and UTF-8 byte count",
     "Names and flags invisible or confusable characters",
