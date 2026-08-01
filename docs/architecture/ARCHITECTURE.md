@@ -146,7 +146,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 147 tools' FAQs. `vite.config.ts` names the
+never downloads the other 162 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -392,12 +392,28 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   validates with `parseFromString` and then walks the resulting tree to emit
   indented output, since `XMLSerializer` does not pretty-print. It shares no
   code with `lib/xml.ts`, which converts XML to and from plain objects.
+- `speechSynthesis` (Web Speech API) -- Text to Speech Reader reads text
+  aloud through the voices installed on the visitor's operating system,
+  which is what lets it impose no character limit and keep the text on the
+  device. The voice list is read on `voiceschanged` as well as on mount,
+  since several browsers populate it asynchronously. Browsers do not expose
+  the synthesised audio stream to a page, so the tool cannot offer a
+  download and says so rather than implying otherwise. See
+  [decisions.md ADR-030](decisions.md).
+- Web Audio (`AudioContext`, `OscillatorNode`, `GainNode`) -- Morse Code
+  Translator plays a message as a sine tone by scheduling the whole sequence
+  against the audio clock up front, so dit and dah lengths stay accurate at
+  high words-per-minute settings where `setTimeout` drift would be audible.
+  Stopping closes the context rather than cancelling individual events. Same
+  ADR as above.
 
 No tool yet uses Web Workers or File System Access -- these remain
 candidates as image/file-processing tools grow heavier (a large batch image
 operation is the likely trigger for moving work off the main thread with a
 Worker). Compression Streams left that list when Gzip Size Calculator
-shipped, above. See
+shipped, and Web Speech and Web Audio joined the list of APIs actually in
+use when Text to Speech Reader and Morse Code Translator shipped, both
+above. See
 [engineering/tool-development.md](../engineering/tool-development.md) for
 the browser-first policy that governs when to reach for them, and
 [decisions.md](decisions.md) for the justified exceptions where no browser
@@ -422,7 +438,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 148
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 163
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -448,13 +464,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 148 tools across 14
+What already scales without change, now validated at 163 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 148 tools
+- Code splitting: automatic per tool and per page -- confirmed at 163 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -497,7 +513,14 @@ categories (up from the original 3):
   used here for the first time -- see section 10 and
   [decisions.md ADR-029](decisions.md)). Each of the fifteen lands under
   3 KB gzip in its own lazy chunk. Two of them share one new `lib/subtitle.ts`
-  the same way the PDF tools share `lib/pdf.ts`.
+  the same way the PDF tools share `lib/pdf.ts`. The 15-tool batch that took
+  the catalog to 163 added zero as well, and added no shared `lib/` file
+  either: the two image tools in it compose the existing `lib/image.ts`
+  helpers and CSV to SQL Insert reuses the existing `lib/csv.ts` parser, so
+  the only genuinely new capabilities are two more browser APIs
+  (`speechSynthesis` and Web Audio, see section 10 and
+  [decisions.md ADR-030](decisions.md)). Every one of the fifteen lands
+  under 3.5 KB gzip in its own lazy chunk.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -505,8 +528,10 @@ forgotten:
 - **`categories.ts` is a hand-maintained flat list**, still at 14 entries.
   The 15-tool batch that took the catalog to 148 needed no new category
   either, spreading across eight existing ones, which is the fifth batch in
-  a row to give that signal. Still fine; reconsider if subcategories or a
-  category hierarchy become necessary.
+  a row to give that signal. The 15-tool batch that took it to 163 made it
+  six in a row, spreading across seven existing categories (`developer`,
+  `security`, `text`, `converters`, `math`, `image`). Still fine; reconsider
+  if subcategories or a category hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
@@ -521,9 +546,9 @@ forgotten:
   [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
   **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
   summary only, roughly 0.2 KB gzip each rather than 0.58 KB. Measured again
-  at 148 tools it is 41.07 KB gzip, which holds that per-tool rate at
+  at 163 tools it is 42.92 KB gzip, which holds that per-tool rate at
   roughly 0.25 KB gzip each. At that rate the 65 KB budget is reached
-  somewhere around 240 tools. The next lever, if
+  somewhere around 250 tools. The next lever, if
   and when that matters, is moving the summary index itself out of the entry
   chunk (a fetched JSON index behind the search dialog, keeping only what
   the homepage renders eagerly) -- do not simply raise the budget.

@@ -10,6 +10,19 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across six existing categories, taking the catalog from 148
+  to 163: CSS Minifier and Formatter, JSON to Go Struct, and CSV to SQL
+  Insert (Developer Tools); OAuth PKCE Generator, Hash Identifier, and
+  Caesar Cipher and ROT13 (Security and Privacy); Bionic Reading Converter,
+  Text to Speech Reader, and List Comparer (Text Tools); Morse Code
+  Translator, Roman Numeral Converter, and Unit Converter (Converters);
+  Compound Interest Calculator (Math and Calculators); Image Splitter and
+  Image Combiner (Image Tools). No new dependency, no new shared `lib/`
+  file, and no new category was needed for any of them.
+- First use of the Web Speech synthesis API (`speechSynthesis`, Text to
+  Speech Reader) and of the Web Audio API (Morse Code Translator's tone
+  playback), both native rather than a dependency. See
+  [decisions.md ADR-030](docs/architecture/decisions.md).
 - Fifteen tools across eight existing categories, taking the catalog from
   133 to 148: Subtitle Converter, Subtitle Timing Shifter, and Data Size
   Converter (Converters); cURL to Fetch Converter, Gzip Size Calculator, XML

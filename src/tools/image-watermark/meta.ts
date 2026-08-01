@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["watermark", "image", "photo", "privacy", "canvas", "copyright"],
   icon: Stamp,
-  isNew: true,
   features: [
     "Nine anchor positions plus a diagonal tiled mode",
     "Adjustable text size, opacity, colour, and rotation",

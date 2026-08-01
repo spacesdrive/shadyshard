@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["subtitle", "srt", "vtt", "webvtt", "captions", "video", "transcript"],
   icon: Captions,
-  isNew: true,
   features: [
     "Converts SRT to WebVTT and WebVTT to SRT",
     "Exports a plain-text transcript with the timings removed",

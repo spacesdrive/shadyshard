@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["placeholder", "dummy", "mockup", "image", "svg", "prototype", "canvas"],
   icon: ImagePlus,
-  isNew: true,
   features: [
     "Any size up to 4000 by 4000 pixels, with common presets",
     "Custom background colour, text colour, and label",

@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["gzip", "deflate", "compression", "bundle", "performance", "size"],
   icon: FileArchive,
-  isNew: true,
   features: [
     "Real gzip and deflate compression via the browser Compression Streams API",
     "Accepts pasted text or a dropped file of any type",

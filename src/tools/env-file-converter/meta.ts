@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["env", "dotenv", "json", "yaml", "docker", "config", "converter"],
   icon: Settings2,
-  isNew: true,
   features: [
     "Converts .env to JSON, YAML, shell exports, or a Docker Compose environment list",
     "Generates a .env.example with every value blanked out",

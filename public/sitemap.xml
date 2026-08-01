@@ -116,6 +116,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/bionic-reading-converter</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/border-radius-generator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -132,6 +137,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/business-days-calculator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/caesar-cipher</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -176,6 +186,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/compound-interest-calculator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/cron-expression-parser</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -201,6 +216,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/css-minifier</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/css-specificity-calculator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -217,6 +237,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/csv-to-json</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/csv-to-sql</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -306,6 +331,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/hash-identifier</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/hex-encoder-decoder</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -336,6 +366,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/image-combiner</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/image-compressor</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -357,6 +392,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/image-resizer</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/image-splitter</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -416,6 +456,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/json-to-go</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/json-to-typescript</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -452,6 +497,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/line-sorter</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/list-comparer</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -497,6 +547,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/mock-data-generator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/morse-code-translator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -611,6 +666,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/pkce-generator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/placeholder-image-generator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -667,6 +727,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/robots-txt-tester</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/roman-numeral-converter</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -746,6 +811,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/text-to-speech</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/time-duration-calculator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -767,6 +837,11 @@
   </url>
   <url>
     <loc>https://shadyshard.spacesdrive.cc/tools/unicode-character-inspector</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shadyshard.spacesdrive.cc/tools/unit-converter</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

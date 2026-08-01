@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["xml", "formatter", "beautifier", "validator", "minify", "pretty print"],
   icon: FileCode,
-  isNew: true,
   features: [
     "Formats with 2 space, 4 space, or tab indentation",
     "Minifies XML by removing insignificant whitespace",
