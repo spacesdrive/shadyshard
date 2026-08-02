@@ -96,10 +96,14 @@ under 4 KB. Three justified exceptions, all single-tool dependencies isolated
 to their own lazy chunk and never loaded elsewhere: `sql-formatter` 73.74 KB
 gzip (`sql-formatter`, ADR-027), `qr-code-scanner` 46.80 KB gzip (`jsqr`,
 ADR-011), and `image-metadata-viewer` 36.74 KB gzip (`exifreader`, ADR-028).
-`markdown-preview` was previously a fourth at 23.30 KB gzip; `dompurify` is
-now shared by every Markdown and HTML tool and Rolldown splits it into its
-own `purify.es` chunk (22.68 KB gzip), leaving the tool's own chunk under
-1 KB. Its named budget is kept as a guard rather than a current need. The
+`markdown-preview` was previously a fourth at 23.30 KB gzip; `dompurify` and
+`marked` are now shared across the Markdown, HTML, and SVG tools and Rolldown
+splits them into their own chunks (`purify.es` 10.16 KB gzip, `marked.esm`
+11.99 KB gzip), leaving the tool's own chunk under 1 KB. The two used to be
+one 22.68 KB chunk; they separated once `dompurify` gained more consumers
+than `marked`, which is the same total bytes split so that a tool needing
+only the sanitizer no longer downloads the Markdown parser. Their named
+budgets are kept as guards rather than current needs. The
 shared `pdf` chunks (`pdf-lib` and `pdfjs-dist`, ADR-019) are the largest
 lazy assets on the site at 172.22 KB and 122.68 KB gzip, loaded only by the
 PDF Tools category.

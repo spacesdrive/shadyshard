@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["cipher", "rot13", "caesar", "decode", "encode", "ctf", "puzzle"],
   icon: RotateCw,
-  isNew: true,
   features: [
     "Encode or decode with any shift from 0 to 25",
     "ROT13 and ROT47 presets, both of which are their own inverse",

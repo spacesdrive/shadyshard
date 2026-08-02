@@ -17,7 +17,6 @@ const meta: ToolMeta = {
   ],
   tags: ["image", "split", "grid", "tiles", "instagram", "crop", "canvas"],
   icon: Grid2x2,
-  isNew: true,
   features: [
     "One-click presets for 3 x 3, 3 x 1, 2 x 2, and 1 x 3 layouts",
     "Any custom grid up to 10 rows by 10 columns",

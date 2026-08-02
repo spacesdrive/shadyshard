@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["image", "combine", "merge", "join", "collage", "canvas"],
   icon: Combine,
-  isNew: true,
   features: [
     "Join images side by side or stacked vertically",
     "Reorder or remove any image after loading it",

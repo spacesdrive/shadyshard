@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["compound", "interest", "investment", "sip", "savings", "finance", "growth"],
   icon: TrendingUp,
-  isNew: true,
   features: [
     "One-off lump sum or regular contribution modes",
     "Yearly, half-yearly, quarterly, monthly, or daily compounding",

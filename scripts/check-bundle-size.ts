@@ -34,6 +34,10 @@ const NAMED_BUDGETS_KB: Record<string, number> = {
   pdf: 200,
   "js-yaml": 20, // ADR-019
   "purify.es": 30, // dompurify, shared by every Markdown/HTML tool, ADR-012/ADR-019
+  // marked, shared by Markdown Preview and Markdown to HTML. It used to ride
+  // along in the purify.es chunk; once dompurify gained more consumers than
+  // marked, Rolldown split the two apart. Same total bytes, two chunks.
+  "marked.esm": 20, // ADR-012
 }
 const DEFAULT_BUDGET_KB = 10
 

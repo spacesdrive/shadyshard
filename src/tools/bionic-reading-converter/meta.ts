@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["reading", "bionic", "accessibility", "focus", "adhd", "dyslexia", "text"],
   icon: BookOpenText,
-  isNew: true,
   features: [
     "Adjustable fixation strength from 20 to 80 percent of each word",
     "Optional minimum word length so short words stay unemphasised",

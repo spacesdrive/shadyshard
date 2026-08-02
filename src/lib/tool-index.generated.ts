@@ -8,6 +8,7 @@ import {
   Blend,
   BookOpenCheck,
   BookOpenText,
+  BookText,
   Bot,
   Braces,
   Cake,
@@ -26,6 +27,7 @@ import {
   CodeXml,
   Columns3,
   Combine,
+  Component,
   Contact,
   Contrast,
   Crop,
@@ -33,6 +35,7 @@ import {
   Earth,
   Eraser,
   Eye,
+  EyeOff,
   FileArchive,
   FileBraces,
   FileBracesCorner,
@@ -61,8 +64,10 @@ import {
   Globe,
   Grid2x2,
   Grid3x3,
+  Group,
   HardDrive,
   Hash,
+  ImageDown,
   ImagePlus,
   KeyRound,
   KeySquare,
@@ -87,6 +92,7 @@ import {
   PanelTop,
   Percent,
   Pipette,
+  Printer,
   QrCode,
   RadioTower,
   Ratio,
@@ -100,11 +106,13 @@ import {
   ScanLine,
   ScanSearch,
   ScanText,
+  Scissors,
   Settings2,
   ShieldAlert,
   ShieldCheck,
   ShieldQuestionMark,
   Signature,
+  Signpost,
   Smartphone,
   Sparkles,
   Spline,
@@ -157,6 +165,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Ratio,
   },
   {
+    slug: "base32-encoder-decoder",
+    title: "Base32 Encoder and Decoder",
+    description:
+      "Encode and decode Base32 in the RFC 4648, base32hex, and Crockford alphabets.",
+    category: "converters",
+    keywords: [
+      "base32 encoder",
+      "base32 decoder",
+      "rfc 4648 base32",
+      "crockford base32",
+      "decode totp secret",
+    ],
+    tags: ["base32", "encode", "decode", "convert", "rfc4648", "crockford"],
+    icon: Binary,
+  },
+  {
     slug: "base64-encoder-decoder",
     title: "Base64 Encoder & Decoder",
     description:
@@ -203,7 +227,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["reading", "bionic", "accessibility", "focus", "adhd", "dyslexia", "text"],
     icon: BookOpenText,
-    isNew: true,
   },
   {
     slug: "border-radius-generator",
@@ -268,6 +291,22 @@ export const toolIndex: ToolSummary[] = [
     icon: CalendarCheck,
   },
   {
+    slug: "cache-control-builder",
+    title: "Cache-Control Header Builder",
+    description:
+      "Build a Cache-Control header from plain-language options and see exactly what each directive does.",
+    category: "developer",
+    keywords: [
+      "cache-control header generator",
+      "max-age calculator",
+      "stale-while-revalidate",
+      "http caching header builder",
+      "no-store vs no-cache",
+    ],
+    tags: ["http", "cache", "header", "cdn", "performance", "generator"],
+    icon: Gauge,
+  },
+  {
     slug: "caesar-cipher",
     title: "Caesar Cipher and ROT13",
     description:
@@ -282,7 +321,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["cipher", "rot13", "caesar", "decode", "encode", "ctf", "puzzle"],
     icon: RotateCw,
-    isNew: true,
   },
   {
     slug: "case-converter",
@@ -426,7 +464,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["compound", "interest", "investment", "sip", "savings", "finance", "growth"],
     icon: TrendingUp,
-    isNew: true,
   },
   {
     slug: "cron-expression-parser",
@@ -521,7 +558,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "minify", "format", "beautify", "stylesheet", "compress"],
     icon: Braces,
-    isNew: true,
   },
   {
     slug: "css-specificity-calculator",
@@ -602,7 +638,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["csv", "sql", "insert", "database", "convert", "seed"],
     icon: Database,
-    isNew: true,
   },
   {
     slug: "csv-to-tsv",
@@ -887,7 +922,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["hash", "identify", "md5", "sha1", "bcrypt", "hashcat", "ctf", "security"],
     icon: FingerprintPattern,
-    isNew: true,
   },
   {
     slug: "hex-encoder-decoder",
@@ -952,6 +986,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Code,
   },
   {
+    slug: "html-to-jsx",
+    title: "HTML to JSX Converter",
+    description:
+      "Convert pasted HTML into valid JSX, with attributes renamed and inline styles turned into objects.",
+    category: "developer",
+    keywords: [
+      "html to jsx",
+      "convert html to react",
+      "class to className converter",
+      "inline style to jsx object",
+      "html to react component",
+    ],
+    tags: ["html", "jsx", "react", "convert", "component", "frontend"],
+    icon: Braces,
+    isNew: true,
+  },
+  {
     slug: "html-to-markdown",
     title: "HTML to Markdown",
     description: "Convert HTML markup into clean Markdown source.",
@@ -996,7 +1047,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "combine", "merge", "join", "collage", "canvas"],
     icon: Combine,
-    isNew: true,
   },
   {
     slug: "image-compressor",
@@ -1092,7 +1142,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "split", "grid", "tiles", "instagram", "crop", "canvas"],
     icon: Grid2x2,
-    isNew: true,
   },
   {
     slug: "image-to-base64",
@@ -1279,6 +1328,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["go", "golang", "json", "struct", "codegen", "types"],
     icon: Binary,
+  },
+  {
+    slug: "json-to-python",
+    title: "JSON to Python Model",
+    description:
+      "Turn a JSON sample into Pydantic v2 models, dataclasses, or TypedDicts with inferred types.",
+    category: "developer",
+    keywords: [
+      "json to pydantic",
+      "json to python dataclass",
+      "generate pydantic model from json",
+      "json to typeddict",
+      "python model generator",
+    ],
+    tags: ["json", "python", "pydantic", "dataclass", "typeddict", "convert", "types"],
+    icon: FileCodeCorner,
     isNew: true,
   },
   {
@@ -1391,6 +1456,22 @@ export const toolIndex: ToolSummary[] = [
     icon: KeySquare,
   },
   {
+    slug: "keyword-grouper",
+    title: "Keyword Grouper",
+    description:
+      "Group a keyword export into topic clusters by the phrases the keywords share.",
+    category: "seo",
+    keywords: [
+      "keyword grouping tool",
+      "keyword clustering free",
+      "group keywords by topic",
+      "keyword list organizer",
+      "seo keyword cluster generator",
+    ],
+    tags: ["seo", "keywords", "cluster", "group", "research", "csv"],
+    icon: Group,
+  },
+  {
     slug: "line-sorter",
     title: "Line Sorter",
     description:
@@ -1420,7 +1501,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["list", "compare", "diff", "set", "duplicates", "intersection", "text"],
     icon: GitCompareArrows,
-    isNew: true,
   },
   {
     slug: "list-delimiter-converter",
@@ -1453,6 +1533,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["loan", "emi", "finance", "calculator", "interest", "amortisation"],
     icon: Landmark,
+  },
+  {
+    slug: "lqip-generator",
+    title: "LQIP Placeholder Generator",
+    description:
+      "Turn an image into a tiny blurred base64 placeholder to show while the full image loads.",
+    category: "image",
+    keywords: [
+      "lqip generator",
+      "blurred image placeholder",
+      "base64 image placeholder",
+      "blurdataurl generator",
+      "low quality image placeholder",
+    ],
+    tags: ["image", "lqip", "placeholder", "base64", "performance", "lazy loading"],
+    icon: ImageDown,
+    isNew: true,
   },
   {
     slug: "markdown-preview",
@@ -1580,7 +1677,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["morse", "translate", "encode", "decode", "radio", "audio", "cw"],
     icon: RadioTower,
-    isNew: true,
   },
   {
     slug: "nanoid-generator",
@@ -1631,6 +1727,22 @@ export const toolIndex: ToolSummary[] = [
     icon: GalleryHorizontal,
   },
   {
+    slug: "openapi-to-markdown",
+    title: "OpenAPI to Markdown",
+    description:
+      "Turn an OpenAPI or Swagger spec into readable Markdown API reference documentation.",
+    category: "developer",
+    keywords: [
+      "openapi to markdown",
+      "swagger to markdown",
+      "generate api documentation from openapi",
+      "openapi docs generator",
+      "swagger yaml to markdown",
+    ],
+    tags: ["openapi", "swagger", "markdown", "api", "documentation", "convert", "yaml"],
+    icon: BookText,
+  },
+  {
     slug: "password-generator",
     title: "Password Generator",
     description:
@@ -1679,6 +1791,22 @@ export const toolIndex: ToolSummary[] = [
     icon: FileArchive,
   },
   {
+    slug: "pdf-margin-cropper",
+    title: "PDF Margin Cropper",
+    description:
+      "Trim the white margins off every PDF page so the text fills the screen on an e-reader or tablet.",
+    category: "pdf",
+    keywords: [
+      "crop pdf margins",
+      "remove white space from pdf",
+      "pdf for kindle margins",
+      "trim pdf borders",
+      "resize pdf page content",
+    ],
+    tags: ["pdf", "crop", "margins", "ereader", "kindle", "print"],
+    icon: Crop,
+  },
+  {
     slug: "pdf-merge",
     title: "PDF Merge",
     description: "Combine multiple PDF files into one, in the order you choose.",
@@ -1723,6 +1851,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "metadata", "inspect", "document"],
     icon: FileSearch,
+  },
+  {
+    slug: "pdf-n-up",
+    title: "PDF N-up Layout",
+    description:
+      "Place 2, 4, 6, 8, 9, or 16 PDF pages on each sheet to save paper when printing.",
+    category: "pdf",
+    keywords: [
+      "pdf n-up",
+      "multiple pdf pages per sheet",
+      "2 pages per sheet pdf",
+      "pdf imposition tool",
+      "print pdf 4 pages on one page",
+    ],
+    tags: ["pdf", "print", "layout", "imposition", "n-up", "paper"],
+    icon: LayoutGrid,
+    isNew: true,
   },
   {
     slug: "pdf-page-counter",
@@ -1942,7 +2087,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["oauth", "pkce", "oauth2", "openid", "auth", "sha256", "security"],
     icon: KeySquare,
-    isNew: true,
   },
   {
     slug: "placeholder-image-generator",
@@ -1989,6 +2133,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "png", "webp", "converter"],
     icon: FileImage,
+  },
+  {
+    slug: "print-size-calculator",
+    title: "Print Size and DPI Calculator",
+    description:
+      "Work out how large an image can print at a given DPI, or how many pixels a print size needs.",
+    category: "math",
+    keywords: [
+      "print size calculator",
+      "dpi calculator",
+      "pixels to inches calculator",
+      "how big can i print my photo",
+      "ppi to print size",
+    ],
+    tags: ["print", "dpi", "ppi", "image", "photography", "calculator", "resolution"],
+    icon: Printer,
   },
   {
     slug: "punycode-converter",
@@ -2071,6 +2231,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Clock3,
   },
   {
+    slug: "redirect-map-generator",
+    title: "Redirect Map Generator",
+    description:
+      "Turn a list of old and new URLs into redirect rules for Apache, Nginx, Netlify, Vercel, Next.js, or Shopify.",
+    category: "seo",
+    keywords: [
+      "301 redirect generator",
+      "bulk redirect map",
+      "htaccess redirect generator",
+      "nginx redirect rules generator",
+      "site migration redirect list",
+    ],
+    tags: ["seo", "redirect", "migration", "htaccess", "nginx", "301", "generator"],
+    icon: Signpost,
+    isNew: true,
+  },
+  {
     slug: "regex-tester",
     title: "Regex Tester",
     description:
@@ -2149,7 +2326,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["roman", "numerals", "convert", "date", "number", "tattoo"],
     icon: Landmark,
-    isNew: true,
   },
   {
     slug: "schema-markup-generator",
@@ -2326,6 +2502,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Sparkles,
   },
   {
+    slug: "svg-to-jsx",
+    title: "SVG to React Component",
+    description:
+      "Turn an SVG file into a React component with camelCased attributes, currentColor, and forwarded props.",
+    category: "developer",
+    keywords: [
+      "svg to react",
+      "svg to jsx",
+      "svg to react component",
+      "svg currentcolor converter",
+      "icon component generator",
+    ],
+    tags: ["svg", "jsx", "react", "component", "icon", "convert"],
+    icon: Component,
+  },
+  {
     slug: "svg-to-png",
     title: "SVG to PNG Converter",
     description:
@@ -2340,6 +2532,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["svg", "png", "image", "converter", "raster"],
     icon: FileImage,
+  },
+  {
+    slug: "text-chunker",
+    title: "Text Chunker",
+    description:
+      "Split long text into overlapping chunks that fit a context window, without cutting mid-sentence.",
+    category: "text",
+    keywords: [
+      "text chunker",
+      "split text into chunks",
+      "chunk text for llm",
+      "text splitter with overlap",
+      "rag chunking tool",
+    ],
+    tags: ["text", "split", "chunk", "llm", "rag", "embedding", "context window"],
+    icon: Scissors,
   },
   {
     slug: "text-diff",
@@ -2373,6 +2581,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Lock,
   },
   {
+    slug: "text-redactor",
+    title: "Text Redactor",
+    description:
+      "Replace emails, phone numbers, card numbers, keys, and your own terms with placeholders before sharing text.",
+    category: "security",
+    keywords: [
+      "redact text online",
+      "remove pii from text",
+      "anonymize text before chatgpt",
+      "scrub sensitive data",
+      "text anonymizer",
+    ],
+    tags: ["redact", "privacy", "pii", "anonymize", "security", "llm", "mask"],
+    icon: EyeOff,
+    isNew: true,
+  },
+  {
     slug: "text-shadow-generator",
     title: "Text Shadow Generator",
     description:
@@ -2403,7 +2628,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["speech", "tts", "audio", "accessibility", "reading", "voice"],
     icon: Volume2,
-    isNew: true,
   },
   {
     slug: "time-duration-calculator",
@@ -2467,6 +2691,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Table2,
   },
   {
+    slug: "ulid-generator",
+    title: "ULID Generator",
+    description:
+      "Generate sortable 26-character ULIDs, and decode the timestamp back out of an existing one.",
+    category: "generators",
+    keywords: [
+      "ulid generator",
+      "sortable unique id",
+      "ulid decoder",
+      "uuid alternative sortable",
+      "generate ulid online",
+    ],
+    tags: ["ulid", "id", "generator", "sortable", "crockford", "uuid"],
+    icon: FingerprintPattern,
+  },
+  {
     slug: "unicode-character-inspector",
     title: "Unicode Character Inspector",
     description:
@@ -2497,7 +2737,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["units", "convert", "metric", "imperial", "length", "weight", "temperature"],
     icon: Scale,
-    isNew: true,
   },
   {
     slug: "unix-timestamp-converter",

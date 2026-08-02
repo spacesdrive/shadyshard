@@ -328,3 +328,131 @@ export async function addPageNumbers(
 
   return doc.save()
 }
+
+/** Grid shape used for each supported pages-per-sheet value. */
+export const NUP_LAYOUTS: Record<number, { columns: number; rows: number }> = {
+  2: { columns: 2, rows: 1 },
+  4: { columns: 2, rows: 2 },
+  6: { columns: 3, rows: 2 },
+  8: { columns: 4, rows: 2 },
+  9: { columns: 3, rows: 3 },
+  16: { columns: 4, rows: 4 },
+}
+
+export interface NUpOptions {
+  /** How many source pages go on one output sheet. Must be a key of NUP_LAYOUTS. */
+  perSheet: number
+  orientation: "auto" | "portrait" | "landscape"
+  /** Outer margin in points. */
+  margin: number
+  /** Space between cells in points. */
+  gutter: number
+  drawCellBorders: boolean
+}
+
+/**
+ * Lays several source pages onto each output sheet, the operation print
+ * shops call N-up imposition. Every page is scaled to fit its cell while
+ * keeping its aspect ratio, so nothing is cropped or stretched.
+ */
+export async function nUpPdf(file: File, options: NUpOptions): Promise<Uint8Array> {
+  const layout = NUP_LAYOUTS[options.perSheet]
+  if (!layout) throw new Error("That number of pages per sheet is not supported.")
+
+  const source = await loadPdf(file)
+  const sourcePages = source.getPages()
+  if (sourcePages.length === 0) throw new Error("This PDF has no pages.")
+
+  const output = await PDFDocument.create()
+  const embedded = await output.embedPages(sourcePages)
+
+  const first = sourcePages[0].getSize()
+  const shortSide = Math.min(first.width, first.height)
+  const longSide = Math.max(first.width, first.height)
+  const useLandscape =
+    options.orientation === "auto"
+      ? layout.columns > layout.rows
+      : options.orientation === "landscape"
+  const sheetWidth = useLandscape ? longSide : shortSide
+  const sheetHeight = useLandscape ? shortSide : longSide
+
+  const cellWidth =
+    (sheetWidth - 2 * options.margin - (layout.columns - 1) * options.gutter) /
+    layout.columns
+  const cellHeight =
+    (sheetHeight - 2 * options.margin - (layout.rows - 1) * options.gutter) / layout.rows
+
+  if (cellWidth <= 0 || cellHeight <= 0) {
+    throw new Error("The margin and gutter leave no room for the pages. Reduce them.")
+  }
+
+  for (let start = 0; start < embedded.length; start += options.perSheet) {
+    const sheet = output.addPage([sheetWidth, sheetHeight])
+    const slots = embedded.slice(start, start + options.perSheet)
+
+    slots.forEach((page, slotIndex) => {
+      const column = slotIndex % layout.columns
+      const row = Math.floor(slotIndex / layout.columns)
+      const cellLeft = options.margin + column * (cellWidth + options.gutter)
+      const cellBottom =
+        sheetHeight - options.margin - (row + 1) * cellHeight - row * options.gutter
+
+      if (options.drawCellBorders) {
+        sheet.drawRectangle({
+          x: cellLeft,
+          y: cellBottom,
+          width: cellWidth,
+          height: cellHeight,
+          borderWidth: 0.5,
+          borderColor: rgb(0.75, 0.75, 0.75),
+        })
+      }
+
+      const scale = Math.min(cellWidth / page.width, cellHeight / page.height)
+      sheet.drawPage(page, {
+        x: cellLeft + (cellWidth - page.width * scale) / 2,
+        y: cellBottom + (cellHeight - page.height * scale) / 2,
+        xScale: scale,
+        yScale: scale,
+      })
+    })
+  }
+
+  return output.save()
+}
+
+/** Margins to remove, in points, measured from each edge of the page. */
+export interface CropMargins {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
+
+/**
+ * Trims the given margin off every page by narrowing both the crop box and
+ * the media box. Both are set because viewers disagree about which one they
+ * honour, and an e-reader that only reads the media box would otherwise show
+ * the original margins back.
+ */
+export async function cropPdfMargins(
+  file: File,
+  margins: CropMargins,
+): Promise<Uint8Array> {
+  const doc = await loadPdf(file)
+
+  for (const page of doc.getPages()) {
+    const box = page.getMediaBox()
+    const width = box.width - margins.left - margins.right
+    const height = box.height - margins.top - margins.bottom
+    if (width <= 0 || height <= 0) {
+      throw new Error("Those margins remove the whole page. Reduce them and try again.")
+    }
+    const x = box.x + margins.left
+    const y = box.y + margins.bottom
+    page.setCropBox(x, y, width, height)
+    page.setMediaBox(x, y, width, height)
+  }
+
+  return doc.save()
+}

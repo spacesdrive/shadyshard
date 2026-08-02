@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["oauth", "pkce", "oauth2", "openid", "auth", "sha256", "security"],
   icon: KeySquare,
-  isNew: true,
   features: [
     "Generates a code verifier of any RFC 7636 length from 43 to 128 characters",
     "Derives the S256 code challenge with the Web Crypto SHA-256 digest",
