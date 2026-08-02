@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["speech", "tts", "audio", "accessibility", "reading", "voice"],
   icon: Volume2,
-  isNew: true,
   features: [
     "No character limit, no account, and no usage quota",
     "Choose any speech voice installed on your device",

@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["csv", "sql", "insert", "database", "convert", "seed"],
   icon: Database,
-  isNew: true,
   features: [
     "Generates INSERT statements for MySQL, PostgreSQL, SQLite, or SQL Server",
     "Optional CREATE TABLE with column types inferred from the data",

@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["morse", "translate", "encode", "decode", "radio", "audio", "cw"],
   icon: RadioTower,
-  isNew: true,
   features: [
     "Full ITU Morse alphabet with digits and punctuation",
     "Translates text to Morse and Morse back to text",

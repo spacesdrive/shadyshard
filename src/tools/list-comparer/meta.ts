@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["list", "compare", "diff", "set", "duplicates", "intersection", "text"],
   icon: GitCompareArrows,
-  isNew: true,
   features: [
     "Shows items only in A, only in B, in both, and the merged set",
     "Line, comma, semicolon, or whitespace separated input",

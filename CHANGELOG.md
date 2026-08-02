@@ -10,6 +10,30 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across nine existing categories, taking the catalog from 163
+  to 178: JSON to Python Model, HTML to JSX Converter, SVG to React
+  Component, Cache-Control Header Builder, and OpenAPI to Markdown
+  (Developer Tools); Text Redactor (Security and Privacy); PDF N-up Layout
+  and PDF Margin Cropper (PDF Tools); LQIP Placeholder Generator (Image
+  Tools); Redirect Map Generator and Keyword Grouper (SEO Tools); Text
+  Chunker (Text Tools); Base32 Encoder and Decoder (Converters); ULID
+  Generator (Generators); Print Size and DPI Calculator (Math and
+  Calculators). No new dependency and no new category was needed.
+- Two shared library modules, each used by two of the new tools and covered
+  by unit tests: `lib/jsx.ts` (HTML to JSX Converter, SVG to React
+  Component) and `lib/base32.ts` (Base32 Encoder and Decoder, ULID
+  Generator). `lib/pdf.ts` gained `nUpPdf` and `cropPdfMargins` for the two
+  new PDF tools.
+- [decisions.md ADR-031](docs/architecture/decisions.md) recording why the
+  Text Redactor's substitution table stays in page memory and why redaction
+  is reversible.
+
+### Changed
+
+- The homepage "New tools" section now lists the six newest tools from this
+  batch; the fifteen tools from the previous batch no longer carry the
+  `isNew` flag.
+
 - Fifteen tools across six existing categories, taking the catalog from 148
   to 163: CSS Minifier and Formatter, JSON to Go Struct, and CSV to SQL
   Insert (Developer Tools); OAuth PKCE Generator, Hash Identifier, and

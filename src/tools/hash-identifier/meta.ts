@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["hash", "identify", "md5", "sha1", "bcrypt", "hashcat", "ctf", "security"],
   icon: Fingerprint,
-  isNew: true,
   features: [
     "Identifies MD5, SHA family, NTLM, bcrypt, Argon2, and the Unix crypt formats",
     "Shows the hashcat mode number and John the Ripper format name where they apply",

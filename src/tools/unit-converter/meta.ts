@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["units", "convert", "metric", "imperial", "length", "weight", "temperature"],
   icon: Scale,
-  isNew: true,
   features: [
     "Eight categories covering length, mass, temperature, area, volume, speed, pressure, and energy",
     "Shows the result in every unit of the category, not just the one selected",

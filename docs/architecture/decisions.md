@@ -1284,3 +1284,57 @@ utterances. Morse playback schedules the entire message on one
 `AudioContext` up front, so stopping means closing the context rather than
 cancelling individual events, which is why the stop control tears down and
 recreates it.
+
+---
+
+## ADR-031: The Text Redactor's substitution table lives in page memory only, and redaction is reversible
+
+Date: 2026-08-02
+
+**Decision:** Build the Text Redactor so that each detected value is replaced
+with a stable numbered placeholder rather than a fixed mask, keep the
+placeholder-to-original table in React state for the life of the tab, and
+offer a Restore tab that swaps the real values back into text pasted in
+later. Do not persist that table to `localStorage`, `sessionStorage`, or
+anywhere else, and do not attempt to recognise names or addresses.
+
+**Reasoning:** The reason someone redacts text before pasting it into an AI
+assistant is that the text is sensitive. A tool that masked every value as
+`[REDACTED]` would destroy the relationships in the text -- the reader could
+no longer tell that two mentions of an address are the same person -- and it
+would make the assistant's reply useless, because the reply comes back
+talking about a placeholder that cannot be resolved. Stable placeholders keep
+the text coherent, and the reverse mapping is what turns a one-way scrub into
+a usable round trip.
+
+Keeping the table only in memory is the conservative half of the same
+decision. Persisting it would put a plaintext index of exactly the values the
+user considered too sensitive to share into browser storage, where it would
+outlive the task, survive a shared machine, and be readable by anything else
+running on the origin. The cost is that reloading the page loses the ability
+to restore, which the tool states plainly in its copy rather than leaving the
+user to discover.
+
+Detection is deliberately pattern-based only. Recognising a person's name in
+free text needs a language model, and every practical way to run one for this
+would mean transmitting the text somewhere, which is the exact thing the tool
+exists to avoid. A custom terms list covers names, company names, and project
+code names without pretending to do more than it does.
+
+**Alternatives considered:** A fixed `[REDACTED]` mask -- rejected; it loses
+the identity relationships that make the redacted text usable, and offers no
+way back. Persisting the substitution table so it survives a reload --
+rejected for the reason above. Shipping a small named-entity recognition
+model in WebAssembly -- rejected; megabytes of download for accuracy that
+would still miss enough names to give false confidence, which is worse than a
+tool that is clear about what it does not detect. A hosted redaction API --
+rejected outright; it inverts the tool's purpose.
+
+**Trade-offs:** Redaction is reversible by anyone holding the table, which is
+correct for the intended workflow but means the redacted text plus an open
+tab is not the same as anonymised data; the tool is for sharing text with a
+third party, not for producing a de-identified dataset. Numbered placeholders
+also leak how many distinct values of each type the text contained. Card
+numbers are only replaced when they pass the Luhn check, which avoids
+redacting order numbers but will miss a deliberately fake card number in test
+data. Names are missed unless the user adds them.

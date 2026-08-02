@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["css", "minify", "format", "beautify", "stylesheet", "compress"],
   icon: Braces,
-  isNew: true,
   features: [
     "Minifies by removing comments and collapsing whitespace",
     "Formats with a choice of 2 spaces, 4 spaces, or tabs",

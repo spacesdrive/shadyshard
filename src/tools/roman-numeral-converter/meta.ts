@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["roman", "numerals", "convert", "date", "number", "tattoo"],
   icon: Landmark,
-  isNew: true,
   features: [
     "Converts numbers from 1 to 3999 into standard subtractive form",
     "Reads a Roman numeral back and reports the number",

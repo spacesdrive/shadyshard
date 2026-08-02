@@ -13,8 +13,9 @@ by the pre-commit hook (typecheck) and available via `npm test`/
   tool resolves to a real category, every `relatedTools` override points
   at a real slug) that protect the tool-registry abstraction the "500+
   tools" scalability story depends on. `lib/secure-random.test.ts`,
-  `lib/password-strength.test.ts`, and `lib/subtitle.test.ts` cover the
-  shared crypto, heuristic, and subtitle-parsing utilities.
+  `lib/password-strength.test.ts`, `lib/subtitle.test.ts`,
+  `lib/base32.test.ts`, and `lib/jsx.test.ts` cover the shared crypto,
+  heuristic, subtitle-parsing, base32, and DOM-to-JSX utilities.
 - **Component tests** (`src/**/*.test.tsx`, Vitest + React Testing
   Library) -- render a component and interact with it via
   `@testing-library/user-event`, asserting on rendered output and
@@ -29,7 +30,7 @@ by the pre-commit hook (typecheck) and available via `npm test`/
   zero console/page errors on the same set). Runs across four Playwright
   projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`.
 
-This intentionally does not cover every one of the 148 tools individually
+This intentionally does not cover every one of the 178 tools individually
 -- see [Test coverage philosophy](#test-coverage-philosophy). It
 complements, rather than replaces, the manual
 [Chrome DevTools verification](#chrome-devtools-verification) process

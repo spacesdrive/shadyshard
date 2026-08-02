@@ -76,6 +76,12 @@ src/
     csv.ts                    Hand-rolled RFC 4180-style CSV/TSV parse/serialize
     subtitle.ts               SRT/WebVTT cue parsing, serialisation, and time
                              shifting, shared by the two subtitle tools
+    jsx.ts                    HTML/SVG attribute renaming, inline-style-to-object
+                             rewriting, and DOM-to-JSX serialisation, shared by
+                             HTML to JSX and SVG to React Component
+    base32.ts                 RFC 4648, base32hex, and Crockford base32 codecs,
+                             shared by Base32 Encoder and Decoder and ULID
+                             Generator
     xml.ts                    XML <-> plain-object conversion via native
                              DOMParser/XMLSerializer
     file-signatures.ts        Magic-byte file-signature database and hex-dump
@@ -146,7 +152,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 162 tools' FAQs. `vite.config.ts` names the
+never downloads the other 177 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -438,7 +444,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 163
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 178
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -464,19 +470,21 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 163 tools across 14
+What already scales without change, now validated at 178 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 163 tools
+- Code splitting: automatic per tool and per page -- confirmed at 178 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
   sharing one heavy dependency (`pdf-lib`/`pdfjs-dist` across 15 PDF tools)
   still produces one shared lazy vendor chunk rather than 15 duplicated
-  copies -- Rolldown dedupes it automatically.
+  copies -- Rolldown dedupes it automatically. The two PDF tools added in the
+  batch that took the catalog to 178 (PDF N-up Layout and PDF Margin Cropper)
+  join that same shared chunk rather than adding one.
 - Adding a whole new category (`css`, `seo`, `qr`, `browser` were added in
   the same change that took the catalog from 12 to 50 tools) is a single
   entry in `categories.ts` -- no routing or registry change needed. The
@@ -520,7 +528,16 @@ categories (up from the original 3):
   the only genuinely new capabilities are two more browser APIs
   (`speechSynthesis` and Web Audio, see section 10 and
   [decisions.md ADR-030](decisions.md)). Every one of the fifteen lands
-  under 3.5 KB gzip in its own lazy chunk.
+  under 3.5 KB gzip in its own lazy chunk. The 15-tool batch that took the
+  catalog to 178 added zero dependencies as well, and reused what was already
+  there: `lib/pdf.ts` gained two functions for the two new PDF tools,
+  `lib/pdf-render.ts` supplies the margin detector's page raster, `lib/csv.ts`
+  serialises the Keyword Grouper's export, `lib/image.ts` builds the LQIP
+  placeholder, and `js-yaml` parses the OpenAPI input. It added two shared
+  `lib/` files on the same two-tools-or-more rule the subtitle tools set:
+  `lib/jsx.ts` (HTML to JSX, SVG to React Component) and `lib/base32.ts`
+  (Base32 Encoder and Decoder, ULID Generator), both with their own unit
+  tests. The largest of the fifteen chunks is 3.37 KB gzip.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -530,8 +547,11 @@ forgotten:
   either, spreading across eight existing ones, which is the fifth batch in
   a row to give that signal. The 15-tool batch that took it to 163 made it
   six in a row, spreading across seven existing categories (`developer`,
-  `security`, `text`, `converters`, `math`, `image`). Still fine; reconsider
-  if subcategories or a category hierarchy become necessary.
+  `security`, `text`, `converters`, `math`, `image`), and the batch that took
+  it to 178 made it seven, spreading across nine (`developer`, `security`,
+  `pdf`, `image`, `seo`, `text`, `converters`, `generators`, `math`). Still
+  fine; reconsider if subcategories or a category hierarchy become
+  necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
@@ -546,7 +566,7 @@ forgotten:
   [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
   **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
   summary only, roughly 0.2 KB gzip each rather than 0.58 KB. Measured again
-  at 163 tools it is 42.92 KB gzip, which holds that per-tool rate at
+  at 178 tools it is 45.77 KB gzip, which holds that per-tool rate at
   roughly 0.25 KB gzip each. At that rate the 65 KB budget is reached
   somewhere around 250 tools. The next lever, if
   and when that matters, is moving the summary index itself out of the entry

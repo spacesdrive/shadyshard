@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["go", "golang", "json", "struct", "codegen", "types"],
   icon: Binary,
-  isNew: true,
   features: [
     "Generates nested inline structs for nested JSON objects",
     "Capitalises Go initialisms such as ID, URL, API, and HTTP correctly",
