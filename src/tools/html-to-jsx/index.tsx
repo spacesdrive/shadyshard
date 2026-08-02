@@ -7,7 +7,8 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { CopyButton } from "@/components/tool/CopyButton"
 import { DownloadButton } from "@/components/tool/DownloadButton"
-import { isInlineEventHandler, nodeToJsx } from "@/lib/jsx"
+import DOMPurify from "dompurify"
+import { nodeToJsx } from "@/lib/jsx"
 
 const SAMPLE = `<div class="card" style="padding: 16px; border-radius: 8px">
   <img src="/logo.png" alt="Logo" width="48">
@@ -17,14 +18,35 @@ const SAMPLE = `<div class="card" style="padding: 16px; border-radius: 8px">
   <button class="btn" onclick="submitForm()">Send</button>
 </div>`
 
-function collectDroppedHandlers(root: ParentNode): string[] {
-  const found = new Set<string>()
-  for (const element of Array.from(root.querySelectorAll("*"))) {
-    for (const attribute of Array.from(element.attributes)) {
-      if (isInlineEventHandler(attribute.name)) found.add(attribute.name)
+/**
+ * Markup is sanitized rather than parsed straight into a document. Scripts
+ * and inline handlers cannot survive the translation to JSX anyway, so
+ * removing them costs nothing and keeps pasted markup from carrying an
+ * executable payload into whatever component the output is dropped into.
+ * iframes are added back because embedding one is a legitimate reason to
+ * convert markup in the first place.
+ */
+const SANITIZE_CONFIG = {
+  RETURN_DOM: true,
+  ADD_TAGS: ["iframe", "style", "#comment"],
+  ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "target"],
+}
+
+/** Reads what the sanitizer just stripped so the tool can report it. */
+function describeRemovals(): string[] {
+  const elements = new Set<string>()
+  const attributes = new Set<string>()
+
+  for (const entry of DOMPurify.removed) {
+    const removal = entry as { element?: Node; attribute?: Attr }
+    if (removal.attribute) {
+      attributes.add(removal.attribute.name.toLowerCase())
+    } else if (removal.element && removal.element.nodeType === Node.ELEMENT_NODE) {
+      elements.add(`<${removal.element.nodeName.toLowerCase()}>`)
     }
   }
-  return [...found].sort()
+
+  return [...elements, ...attributes].sort()
 }
 
 function indentBlock(code: string, spaces: number): string {
@@ -37,7 +59,7 @@ function indentBlock(code: string, spaces: number): string {
 
 interface ConversionResult {
   code: string
-  droppedHandlers: string[]
+  removed: string[]
   error: string | null
 }
 
@@ -47,38 +69,36 @@ function convert(
   componentName: string,
   stripComments: boolean,
 ): ConversionResult {
-  const document = new DOMParser().parseFromString(html, "text/html")
-  const nodes = Array.from(document.body.childNodes)
+  const body = DOMPurify.sanitize(html, SANITIZE_CONFIG) as unknown as HTMLElement
+  const removed = describeRemovals()
 
-  const blocks = nodes
+  const blocks = Array.from(body.childNodes)
     .map((node) => nodeToJsx(node, { indentUnit: "  ", stripComments }))
     .filter(Boolean)
 
   if (blocks.length === 0) {
     return {
       code: "",
-      droppedHandlers: [],
+      removed,
       error: "No elements were found in that markup.",
     }
   }
 
-  const droppedHandlers = collectDroppedHandlers(document.body)
-
   /** JSX allows one root, so more than one top-level node needs a fragment. */
-  const body =
+  const jsx =
     blocks.length === 1
       ? blocks[0]
       : `<>\n${blocks.map((block) => indentBlock(block, 2)).join("\n")}\n</>`
 
-  if (!wrapInComponent) return { code: body, droppedHandlers, error: null }
+  if (!wrapInComponent) return { code: jsx, removed, error: null }
 
   const safeName = /^[A-Za-z_$][\w$]*$/.test(componentName) ? componentName : "Component"
   const returned =
-    blocks.length === 1 && !body.includes("\n") ? body : `(\n${indentBlock(body, 4)}\n  )`
+    blocks.length === 1 && !jsx.includes("\n") ? jsx : `(\n${indentBlock(jsx, 4)}\n  )`
 
   return {
     code: `export default function ${safeName}() {\n  return ${returned}\n}\n`,
-    droppedHandlers,
+    removed,
     error: null,
   }
 }
@@ -91,7 +111,7 @@ export default function HtmlToJsx() {
 
   const result = useMemo(() => {
     if (!html.trim()) {
-      return { code: "", droppedHandlers: [], error: null } as ConversionResult
+      return { code: "", removed: [], error: null } as ConversionResult
     }
     return convert(html, wrapInComponent, componentName, stripComments)
   }, [html, wrapInComponent, componentName, stripComments])
@@ -172,10 +192,11 @@ export default function HtmlToJsx() {
         </div>
       )}
 
-      {result.droppedHandlers.length > 0 && (
+      {result.removed.length > 0 && (
         <p className="text-muted-foreground text-sm">
-          Removed inline event handlers: {result.droppedHandlers.join(", ")}. React needs
-          a function here, so attach each one in your component instead.
+          Removed while converting: {result.removed.join(", ")}. An inline handler cannot
+          become a JSX prop, since React needs a function there, so attach those in your
+          component instead.
         </p>
       )}
 

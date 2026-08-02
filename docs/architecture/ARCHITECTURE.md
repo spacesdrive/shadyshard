@@ -533,7 +533,8 @@ categories (up from the original 3):
   there: `lib/pdf.ts` gained two functions for the two new PDF tools,
   `lib/pdf-render.ts` supplies the margin detector's page raster, `lib/csv.ts`
   serialises the Keyword Grouper's export, `lib/image.ts` builds the LQIP
-  placeholder, and `js-yaml` parses the OpenAPI input. It added two shared
+  placeholder, `js-yaml` parses the OpenAPI input, and `dompurify` sanitizes
+  the markup the two JSX converters read. It added two shared
   `lib/` files on the same two-tools-or-more rule the subtitle tools set:
   `lib/jsx.ts` (HTML to JSX, SVG to React Component) and `lib/base32.ts`
   (Base32 Encoder and Decoder, ULID Generator), both with their own unit

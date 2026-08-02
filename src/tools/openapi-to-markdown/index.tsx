@@ -23,10 +23,19 @@ function asString(value: unknown): string {
   return typeof value === "string" ? value : ""
 }
 
+/**
+ * Escapes the two characters that break a Markdown table cell. Backslashes go
+ * first: escaping pipes before backslashes would turn an input of \| into \\|,
+ * which renders as a literal backslash followed by a live cell separator.
+ */
+function escapeTableCell(text: string): string {
+  return text.replace(/\\/g, "\\\\").replace(/\|/g, "\\|")
+}
+
 /** Collapses a description to a single line so it survives inside a Markdown table cell. */
 function cell(value: unknown): string {
   const text = asString(value).replace(/\s+/g, " ").trim()
-  return text.replace(/\|/g, "\\|") || "-"
+  return escapeTableCell(text) || "-"
 }
 
 function slugify(value: string): string {
@@ -107,9 +116,11 @@ function renderParameters(reader: SpecReader, parameters: unknown[]): string[] {
   ]
   for (const parameter of rows) {
     /** Swagger 2 puts type on the parameter; OpenAPI 3 nests it under schema. */
-    const type = parameter.schema
-      ? reader.typeOf(parameter.schema)
-      : asString(parameter.type) || "-"
+    const type = escapeTableCell(
+      parameter.schema
+        ? reader.typeOf(parameter.schema)
+        : asString(parameter.type) || "-",
+    )
     lines.push(
       `| \`${cell(parameter.name)}\` | ${cell(parameter.in)} | ${type} | ${parameter.required === true ? "yes" : "no"} | ${cell(parameter.description)} |`,
     )
@@ -125,7 +136,7 @@ function renderRequestBody(reader: SpecReader, operation: Json): string[] {
     const lines = ["| Content type | Schema |", "| --- | --- |"]
     for (const [mediaType, media] of Object.entries(content)) {
       const schema = asObject(media)?.schema
-      lines.push(`| \`${mediaType}\` | ${reader.typeOf(schema)} |`)
+      lines.push(`| \`${mediaType}\` | ${escapeTableCell(reader.typeOf(schema))} |`)
     }
     const required = requestBody.required === true ? " (required)" : ""
     return [`**Request body**${required}`, "", ...lines, ""]
@@ -162,7 +173,9 @@ function renderResponses(reader: SpecReader, operation: Json): string[] {
           .filter((entry) => entry !== "-")
           .join(", ")
       : reader.typeOf(response.schema)
-    lines.push(`| \`${code}\` | ${cell(response.description)} | ${schema || "-"} |`)
+    lines.push(
+      `| \`${code}\` | ${cell(response.description)} | ${escapeTableCell(schema) || "-"} |`,
+    )
   }
   return ["**Responses**", "", ...lines, ""]
 }
@@ -195,7 +208,7 @@ function renderSchemas(reader: SpecReader, document: Json): string[] {
     )
     for (const [property, definition] of Object.entries(properties)) {
       lines.push(
-        `| \`${property}\` | ${reader.typeOf(definition)} | ${required.has(property) ? "yes" : "no"} | ${cell(asObject(definition)?.description)} |`,
+        `| \`${property}\` | ${escapeTableCell(reader.typeOf(definition))} | ${required.has(property) ? "yes" : "no"} | ${cell(asObject(definition)?.description)} |`,
       )
     }
     lines.push("")

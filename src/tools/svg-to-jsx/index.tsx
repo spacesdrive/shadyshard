@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { CopyButton } from "@/components/tool/CopyButton"
 import { DownloadButton } from "@/components/tool/DownloadButton"
 import { FileDropZone } from "@/components/tool/FileDropZone"
+import DOMPurify from "dompurify"
 import { nodeToJsx } from "@/lib/jsx"
 
 const SAMPLE = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round">
@@ -25,7 +26,35 @@ interface Options {
 
 interface ConversionResult {
   code: string
+  removed: string[]
   error: string | null
+}
+
+/**
+ * The markup is sanitized before it is parsed. An icon component has no
+ * reason to carry a script element, an inline handler, or a javascript: URL
+ * into the app that imports it, and sanitizing first also means the parser
+ * never sees raw pasted markup. use, style, and the xlink href forms are
+ * added back because icon sprites and gradients depend on them.
+ */
+const SANITIZE_CONFIG = {
+  USE_PROFILES: { svg: true, svgFilters: true },
+  ADD_TAGS: ["use", "style"],
+  ADD_ATTR: ["href", "xlink:href", "xmlns:xlink"],
+}
+
+/** Reads what the sanitizer just stripped so the tool can report it. */
+function describeRemovals(): string[] {
+  const names = new Set<string>()
+  for (const entry of DOMPurify.removed) {
+    const removal = entry as { element?: Node; attribute?: Attr }
+    if (removal.attribute) {
+      names.add(removal.attribute.name.toLowerCase())
+    } else if (removal.element && removal.element.nodeType === Node.ELEMENT_NODE) {
+      names.add(`<${removal.element.nodeName.toLowerCase()}>`)
+    }
+  }
+  return [...names].sort()
 }
 
 function indentBlock(code: string, spaces: number): string {
@@ -37,18 +66,26 @@ function indentBlock(code: string, spaces: number): string {
 }
 
 function convert(markup: string, options: Options): ConversionResult {
-  const parsed = new DOMParser().parseFromString(markup, "image/svg+xml")
-  const parseError = parsed.querySelector("parsererror")
-  if (parseError) {
-    return {
-      code: "",
-      error: `This is not valid SVG: ${parseError.textContent?.trim().split("\n")[0] ?? "the XML could not be parsed"}`,
-    }
-  }
+  const sanitized = DOMPurify.sanitize(markup, SANITIZE_CONFIG)
+  const removed = describeRemovals()
 
+  const parsed = new DOMParser().parseFromString(sanitized, "image/svg+xml")
   const root = parsed.documentElement
   if (!root || root.tagName.toLowerCase() !== "svg") {
-    return { code: "", error: "The markup must start with an <svg> element." }
+    return {
+      code: "",
+      removed,
+      error:
+        "No <svg> element was found. Check that the markup starts with an <svg> tag and that its tags are closed.",
+    }
+  }
+  if (root.children.length === 0 && root.attributes.length === 0) {
+    return {
+      code: "",
+      removed,
+      error:
+        "That SVG could not be read. A tag that is left unclosed is the usual cause.",
+    }
   }
 
   if (options.removeSize) {
@@ -85,6 +122,7 @@ function convert(markup: string, options: Options): ConversionResult {
 
   return {
     code: `${imports}${signature}\n  return (\n${indentBlock(element, 4)}\n  )\n}\n`,
+    removed,
     error: null,
   }
 }
@@ -99,7 +137,7 @@ export default function SvgToJsx() {
   const [readError, setReadError] = useState<string | null>(null)
 
   const result = useMemo(() => {
-    if (!markup.trim()) return { code: "", error: null } as ConversionResult
+    if (!markup.trim()) return { code: "", removed: [], error: null } as ConversionResult
     return convert(markup, {
       componentName,
       useCurrentColor,
@@ -230,6 +268,13 @@ export default function SvgToJsx() {
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
           <span>{readError ?? result.error}</span>
         </div>
+      )}
+
+      {result.removed.length > 0 && (
+        <p className="text-muted-foreground text-sm">
+          Removed while converting: {result.removed.join(", ")}. Script and event handling
+          cannot come along into a React component.
+        </p>
       )}
 
       <div>

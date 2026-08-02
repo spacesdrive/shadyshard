@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { AlertCircle, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -8,6 +8,9 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CopyButton } from "@/components/tool/CopyButton"
 import { FileDropZone } from "@/components/tool/FileDropZone"
 import { drawToCanvas, formatBytes, loadImageFromFile } from "@/lib/image"
+
+/** Widest the side-by-side comparison ever needs to be rendered. */
+const PREVIEW_MAX_WIDTH = 800
 
 interface Placeholder {
   dataUri: string
@@ -107,13 +110,21 @@ export default function LqipGenerator() {
   const [quality, setQuality] = useState(0.5)
   const [tab, setTab] = useState("css")
   const [error, setError] = useState<string | null>(null)
-  const [fullPreview, setFullPreview] = useState<string | null>(null)
 
-  useEffect(() => {
-    return () => {
-      if (fullPreview) URL.revokeObjectURL(fullPreview)
-    }
-  }, [fullPreview])
+  /**
+   * The comparison image is redrawn through the same canvas the placeholder
+   * uses rather than pointing at the selected file, so the page never renders
+   * bytes it has not decoded itself.
+   */
+  const fullPreview = useMemo(() => {
+    if (!image) return null
+    const width = Math.min(image.naturalWidth, PREVIEW_MAX_WIDTH)
+    const height = Math.max(
+      1,
+      Math.round((width * image.naturalHeight) / image.naturalWidth),
+    )
+    return drawToCanvas(image, width, height).toDataURL("image/jpeg", 0.85)
+  }, [image])
 
   const placeholder = useMemo(
     () => (image ? buildPlaceholder(image, width, quality) : null),
@@ -128,10 +139,6 @@ export default function LqipGenerator() {
       const loaded = await loadImageFromFile(file)
       setImage(loaded)
       setFileName(file.name)
-      setFullPreview((previous) => {
-        if (previous) URL.revokeObjectURL(previous)
-        return URL.createObjectURL(file)
-      })
     } catch (loadError) {
       setError(
         loadError instanceof Error ? loadError.message : "Could not read that image.",
@@ -143,10 +150,6 @@ export default function LqipGenerator() {
     setImage(null)
     setFileName("")
     setError(null)
-    setFullPreview((previous) => {
-      if (previous) URL.revokeObjectURL(previous)
-      return null
-    })
   }
 
   return (
@@ -250,7 +253,11 @@ export default function LqipGenerator() {
               <span className="text-sm font-medium">Full image</span>
               <div className="border-border/60 mt-2 overflow-hidden rounded-lg border">
                 {fullPreview && (
-                  <img src={fullPreview} alt={fileName} className="block h-auto w-full" />
+                  <img
+                    src={fullPreview}
+                    alt="The full image at normal quality"
+                    className="block h-auto w-full"
+                  />
                 )}
               </div>
             </div>
