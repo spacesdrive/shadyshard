@@ -7,7 +7,7 @@ const meta: ToolMeta = {
   description:
     "Paste HTML and pull every table out of it as CSV, TSV, JSON, or a Markdown table.",
   longDescription:
-    "Copying a table out of a web page usually means fighting with merged cells, nested markup, and stray whitespace. This tool parses the HTML you paste, expands every colspan and rowspan into a proper rectangular grid, and hands back clean CSV, TSV, JSON, or Markdown. If the page contains several tables you can pick which one to convert. The HTML is parsed with the browser's own parser in an inert document, so scripts in the markup never run and nothing is uploaded.",
+    "Copying a table out of a web page usually means fighting with merged cells, nested markup, and stray whitespace. This tool parses the HTML you paste, expands every colspan and rowspan into a proper rectangular grid, and hands back clean CSV, TSV, JSON, or Markdown. If the page contains several tables you can pick which one to convert. The markup is sanitized before it is read, so scripts and inline handlers are stripped rather than turned into DOM nodes, and nothing is uploaded.",
   category: "converters",
   keywords: [
     "html table to csv",
@@ -39,7 +39,7 @@ const meta: ToolMeta = {
     {
       question: "Is the HTML I paste safe to process here?",
       answer:
-        "Yes. The markup is parsed into an inert document with the browser's DOMParser, which does not execute scripts or load images, and only the text of each cell is read. Nothing is rendered and nothing leaves your browser.",
+        "Yes. The markup is run through DOMPurify first, so scripts, inline event handlers, and anything else that could execute are removed before the tables are read, and only the text of each cell is used. Nothing is rendered into the page and nothing leaves your browser.",
     },
     {
       question: "Why does my table lose formatting like links and bold text?",

@@ -556,10 +556,11 @@ categories (up from the original 3):
   took the catalog to 193 added zero dependencies too, and no shared `lib/`
   file either: `lib/csv.ts` parses and serialises for both CSV Diff and the
   HTML Table converter, `lib/hash.ts` powers Duplicate File Finder,
-  `lib/image.ts` supplies Image Redactor's canvas helpers, and the existing
-  `qrcode` dependency draws the WiFi QR code. Its only genuinely new capability
-  is the Gamepad API (see section 10 and
-  [decisions.md ADR-032](decisions.md)). The largest of those fifteen chunks is
+  `lib/image.ts` supplies Image Redactor's canvas helpers, the existing
+  `qrcode` dependency draws the WiFi QR code, and `dompurify` sanitizes the
+  markup the HTML Table converter reads, the same way the two JSX converters
+  use it. Its only genuinely new capability is the Gamepad API (see section 10
+  and [decisions.md ADR-032](decisions.md)). The largest of those fifteen chunks is
   2.91 KB gzip.
 
 What will need revisiting well before 500 tools, tracked here so it isn't

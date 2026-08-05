@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CopyButton } from "@/components/tool/CopyButton"
 import { DownloadButton } from "@/components/tool/DownloadButton"
+import DOMPurify from "dompurify"
 import { toDelimited } from "@/lib/csv"
 
 const OUTPUT_FORMATS = [
@@ -25,6 +26,21 @@ const OUTPUT_FORMATS = [
 ] as const
 
 type OutputFormat = (typeof OUTPUT_FORMATS)[number]["value"]
+
+/**
+ * Pasted markup is sanitized rather than handed straight to DOMParser, the
+ * same way the JSX converters treat it. Only cell text is ever read, so a
+ * script or an inline handler could not have run anyway, but sanitizing first
+ * means no untrusted markup is ever turned back into DOM nodes. DOMPurify's
+ * default allowlist already covers every table element and both colspan and
+ * rowspan, so nothing the converter needs is stripped.
+ */
+const SANITIZE_CONFIG = { RETURN_DOM: true }
+
+function findTables(html: string): HTMLTableElement[] {
+  const root = DOMPurify.sanitize(html, SANITIZE_CONFIG) as unknown as HTMLElement
+  return Array.from(root.querySelectorAll("table"))
+}
 
 function cellText(cell: HTMLTableCellElement): string {
   return (cell.textContent ?? "").replace(/\s+/g, " ").trim()
@@ -102,11 +118,7 @@ export default function HtmlTableConverter() {
   const [hasHeader, setHasHeader] = useState(true)
   const [repeatMerged, setRepeatMerged] = useState(true)
 
-  const tables = useMemo(() => {
-    if (!html.trim()) return []
-    const document = new DOMParser().parseFromString(html, "text/html")
-    return Array.from(document.querySelectorAll("table"))
-  }, [html])
+  const tables = useMemo(() => (html.trim() ? findTables(html) : []), [html])
 
   const activeIndex = tableIndex < tables.length ? tableIndex : 0
   const grid = useMemo(
