@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["image", "lqip", "placeholder", "base64", "performance", "lazy loading"],
   icon: ImageDown,
-  isNew: true,
   features: [
     "Adjustable placeholder width and JPEG quality with a live byte count",
     "Data URI, CSS background, HTML, and Next.js blurDataURL snippets",

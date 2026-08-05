@@ -30,6 +30,7 @@ import {
   Component,
   Contact,
   Contrast,
+  CopyCheck,
   Crop,
   Database,
   Earth,
@@ -59,6 +60,7 @@ import {
   FileXCorner,
   FingerprintPattern,
   GalleryHorizontal,
+  Gamepad2,
   Gauge,
   GitCompareArrows,
   Globe,
@@ -71,12 +73,14 @@ import {
   ImagePlus,
   KeyRound,
   KeySquare,
+  Keyboard,
   Landmark,
   Languages,
   Layers,
   LayoutGrid,
   Link,
   Link2,
+  Link2Off,
   List,
   ListTree,
   ListX,
@@ -98,6 +102,7 @@ import {
   Ratio,
   Receipt,
   Regex,
+  Replace,
   RotateCw,
   Ruler,
   Scale,
@@ -111,6 +116,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   ShieldQuestionMark,
+  Sigma,
   Signature,
   Signpost,
   Smartphone,
@@ -120,6 +126,7 @@ import {
   Square,
   SquareTerminal,
   Stamp,
+  SwatchBook,
   Table,
   Table2,
   Tags,
@@ -129,6 +136,8 @@ import {
   Type,
   Volume2,
   Weight,
+  WholeWord,
+  Wifi,
 } from "lucide-react"
 import type { ToolSummary } from "@/types/tool"
 
@@ -273,6 +282,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["browser", "info", "device", "diagnostics"],
     icon: Globe,
+  },
+  {
+    slug: "bulk-find-replace",
+    title: "Bulk Find and Replace",
+    description:
+      "Apply a whole list of find and replace rules to text at once, with plain text or regular expressions.",
+    category: "text",
+    keywords: [
+      "bulk find and replace",
+      "multiple find replace online",
+      "batch text replacement tool",
+      "regex find and replace",
+      "replace many words at once",
+    ],
+    tags: ["text", "replace", "regex", "bulk", "editing"],
+    icon: Replace,
   },
   {
     slug: "business-days-calculator",
@@ -450,6 +475,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Palette,
   },
   {
+    slug: "color-shade-generator",
+    title: "Color Shade Generator",
+    description:
+      "Turn one brand color into an eleven-step tint and shade scale, ready to paste into CSS or Tailwind.",
+    category: "color",
+    keywords: [
+      "color shade generator",
+      "tailwind color palette generator",
+      "tint and shade scale",
+      "css color variables generator",
+      "oklch color scale",
+    ],
+    tags: ["color", "palette", "tailwind", "design system", "oklch"],
+    icon: SwatchBook,
+  },
+  {
     slug: "compound-interest-calculator",
     title: "Compound Interest Calculator",
     description:
@@ -592,6 +633,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Ruler,
   },
   {
+    slug: "csv-diff",
+    title: "CSV Diff",
+    description:
+      "Compare two CSV exports row by row to see which rows were added, removed, and which cells changed.",
+    category: "developer",
+    keywords: [
+      "csv diff",
+      "compare two csv files",
+      "csv comparison tool",
+      "find changed rows between exports",
+      "csv row difference checker",
+    ],
+    tags: ["csv", "diff", "compare", "data", "spreadsheet"],
+    icon: GitCompareArrows,
+  },
+  {
     slug: "csv-splitter",
     title: "CSV Splitter",
     description:
@@ -719,6 +776,38 @@ export const toolIndex: ToolSummary[] = [
     icon: CalendarRange,
   },
   {
+    slug: "descriptive-statistics-calculator",
+    title: "Descriptive Statistics Calculator",
+    description:
+      "Paste a list of numbers to get mean, median, mode, standard deviation, quartiles, and outliers.",
+    category: "math",
+    keywords: [
+      "descriptive statistics calculator",
+      "mean median mode calculator",
+      "standard deviation calculator",
+      "quartile and iqr calculator",
+      "outlier detection calculator",
+    ],
+    tags: ["statistics", "mean", "median", "standard deviation", "outliers"],
+    icon: Sigma,
+  },
+  {
+    slug: "duplicate-file-finder",
+    title: "Duplicate File Finder",
+    description:
+      "Select files to hash them locally and group the ones with identical contents, whatever they are named.",
+    category: "security",
+    keywords: [
+      "duplicate file finder",
+      "find duplicate files by hash",
+      "compare files by checksum",
+      "identical file detector",
+      "find duplicate photos offline",
+    ],
+    tags: ["files", "duplicates", "hash", "sha-256", "privacy"],
+    icon: CopyCheck,
+  },
+  {
     slug: "email-header-analyzer",
     title: "Email Header Analyzer",
     description:
@@ -844,6 +933,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["css", "flexbox", "layout", "generator"],
     icon: Columns3,
+  },
+  {
+    slug: "gamepad-tester",
+    title: "Gamepad Tester",
+    description:
+      "Test every button, trigger, and stick on a connected controller, and measure analogue stick drift.",
+    category: "browser",
+    keywords: [
+      "gamepad tester",
+      "controller test online",
+      "stick drift test",
+      "test xbox controller",
+      "check playstation controller buttons",
+    ],
+    tags: ["gamepad", "controller", "hardware", "test", "drift"],
+    icon: Gamepad2,
+    isNew: true,
   },
   {
     slug: "gradient-generator",
@@ -986,6 +1092,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Code,
   },
   {
+    slug: "html-table-converter",
+    title: "HTML Table to CSV, JSON, and Markdown",
+    description:
+      "Paste HTML and pull every table out of it as CSV, TSV, JSON, or a Markdown table.",
+    category: "converters",
+    keywords: [
+      "html table to csv",
+      "html table to json",
+      "convert html table to markdown",
+      "extract table from html",
+      "scrape table into excel",
+    ],
+    tags: ["html", "table", "csv", "json", "markdown"],
+    icon: Table2,
+  },
+  {
     slug: "html-to-jsx",
     title: "HTML to JSX Converter",
     description:
@@ -1000,7 +1122,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["html", "jsx", "react", "convert", "component", "frontend"],
     icon: Braces,
-    isNew: true,
   },
   {
     slug: "html-to-markdown",
@@ -1110,6 +1231,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["color", "palette", "image", "design", "hex"],
     icon: Pipette,
+  },
+  {
+    slug: "image-redactor",
+    title: "Image Redactor",
+    description:
+      "Black out, blur, or pixelate parts of a screenshot before you share it, without uploading the file.",
+    category: "image",
+    keywords: [
+      "redact screenshot online",
+      "blur part of an image",
+      "pixelate sensitive information",
+      "black out text in a picture",
+      "hide personal data in screenshot",
+    ],
+    tags: ["image", "redact", "blur", "pixelate", "privacy"],
+    icon: EyeOff,
+    isNew: true,
   },
   {
     slug: "image-resizer",
@@ -1252,6 +1390,22 @@ export const toolIndex: ToolSummary[] = [
     icon: GitCompareArrows,
   },
   {
+    slug: "json-flattener",
+    title: "JSON Flattener",
+    description:
+      "Flatten nested JSON into dot-notation keys, or rebuild the nested structure from flat keys.",
+    category: "developer",
+    keywords: [
+      "json flattener",
+      "flatten nested json",
+      "json to dot notation",
+      "unflatten json keys",
+      "json key path converter",
+    ],
+    tags: ["json", "flatten", "dot notation", "config", "i18n"],
+    icon: Braces,
+  },
+  {
     slug: "json-formatter",
     title: "JSON Formatter",
     description: "Format, validate, and minify JSON with instant error highlighting.",
@@ -1344,7 +1498,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "python", "pydantic", "dataclass", "typeddict", "convert", "types"],
     icon: FileCodeCorner,
-    isNew: true,
   },
   {
     slug: "json-to-typescript",
@@ -1456,6 +1609,23 @@ export const toolIndex: ToolSummary[] = [
     icon: KeySquare,
   },
   {
+    slug: "keyboard-tester",
+    title: "Keyboard Tester",
+    description:
+      "Press every key to check which ones register, with live key codes and stuck-key detection.",
+    category: "browser",
+    keywords: [
+      "keyboard tester",
+      "test keyboard keys online",
+      "check for stuck keys",
+      "key code viewer",
+      "keyboard not working test",
+    ],
+    tags: ["keyboard", "hardware", "test", "keycode", "input"],
+    icon: Keyboard,
+    isNew: true,
+  },
+  {
     slug: "keyword-grouper",
     title: "Keyword Grouper",
     description:
@@ -1519,6 +1689,23 @@ export const toolIndex: ToolSummary[] = [
     icon: List,
   },
   {
+    slug: "llms-txt-generator",
+    title: "llms.txt Generator",
+    description:
+      "Build a valid llms.txt file that tells AI crawlers and assistants what your site is and which pages matter.",
+    category: "seo",
+    keywords: [
+      "llms.txt generator",
+      "create llms txt file",
+      "ai crawler file",
+      "llms txt format example",
+      "aeo file for language models",
+    ],
+    tags: ["llms.txt", "ai", "seo", "crawler", "markdown"],
+    icon: Bot,
+    isNew: true,
+  },
+  {
     slug: "loan-emi-calculator",
     title: "Loan EMI Calculator",
     description:
@@ -1549,7 +1736,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "lqip", "placeholder", "base64", "performance", "lazy loading"],
     icon: ImageDown,
-    isNew: true,
   },
   {
     slug: "markdown-preview",
@@ -1693,6 +1879,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["nanoid", "id", "generator", "identifier"],
     icon: Hash,
+  },
+  {
+    slug: "number-to-words",
+    title: "Number to Words Converter",
+    description:
+      "Spell out any number in English words, including cheque and invoice wording for several currencies.",
+    category: "converters",
+    keywords: [
+      "number to words",
+      "amount in words converter",
+      "cheque amount in words",
+      "rupees in words",
+      "spell out numbers in english",
+    ],
+    tags: ["number", "words", "currency", "cheque", "invoice"],
+    icon: WholeWord,
   },
   {
     slug: "og-image-generator",
@@ -1867,7 +2069,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "print", "layout", "imposition", "n-up", "paper"],
     icon: LayoutGrid,
-    isNew: true,
   },
   {
     slug: "pdf-page-counter",
@@ -2245,7 +2446,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "redirect", "migration", "htaccess", "nginx", "301", "generator"],
     icon: Signpost,
-    isNew: true,
   },
   {
     slug: "regex-tester",
@@ -2342,6 +2542,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "schema", "json-ld", "structured data", "generator", "rich results"],
     icon: Braces,
+  },
+  {
+    slug: "security-txt-generator",
+    title: "security.txt Generator",
+    description:
+      "Build an RFC 9116 security.txt file so researchers know where to report a vulnerability.",
+    category: "security",
+    keywords: [
+      "security.txt generator",
+      "rfc 9116 security txt",
+      "vulnerability disclosure contact file",
+      "well-known security txt",
+      "responsible disclosure file",
+    ],
+    tags: ["security.txt", "disclosure", "rfc9116", "vulnerability", "policy"],
+    icon: ShieldCheck,
   },
   {
     slug: "serp-snippet-preview",
@@ -2595,7 +2811,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["redact", "privacy", "pii", "anonymize", "security", "llm", "mask"],
     icon: EyeOff,
-    isNew: true,
   },
   {
     slug: "text-shadow-generator",
@@ -2786,6 +3001,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Link2,
   },
   {
+    slug: "url-tracking-remover",
+    title: "URL Tracking Parameter Remover",
+    description:
+      "Strip utm, fbclid, gclid, and other tracking parameters from a whole list of URLs at once.",
+    category: "security",
+    keywords: [
+      "remove utm parameters",
+      "url tracking parameter remover",
+      "strip fbclid gclid from links",
+      "clean url before sharing",
+      "bulk url cleaner",
+    ],
+    tags: ["url", "tracking", "privacy", "utm", "cleaner"],
+    icon: Link2Off,
+    isNew: true,
+  },
+  {
     slug: "user-agent-parser",
     title: "User Agent Parser",
     description: "Parse a user agent string into browser, engine, OS, and device type.",
@@ -2860,6 +3092,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "webp", "png", "converter"],
     icon: FileImage,
+  },
+  {
+    slug: "wifi-qr-code-generator",
+    title: "WiFi QR Code Generator",
+    description:
+      "Turn a network name and password into a scannable WiFi QR code that joins the network automatically.",
+    category: "qr",
+    keywords: [
+      "wifi qr code generator",
+      "share wifi password qr code",
+      "guest wifi qr code",
+      "wifi qr code for printing",
+      "scan to connect wifi",
+    ],
+    tags: ["wifi", "qr", "network", "password", "guest"],
+    icon: Wifi,
+    isNew: true,
   },
   {
     slug: "word-counter",

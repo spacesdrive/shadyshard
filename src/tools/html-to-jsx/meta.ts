@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["html", "jsx", "react", "convert", "component", "frontend"],
   icon: Braces,
-  isNew: true,
   features: [
     "Renames class, for, tabindex, and every hyphenated attribute to its JSX form",
     "Rewrites inline style strings as React style objects",
