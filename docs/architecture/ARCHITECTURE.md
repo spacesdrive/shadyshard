@@ -152,7 +152,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 177 tools' FAQs. `vite.config.ts` names the
+never downloads the other 192 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -413,6 +413,20 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   Stopping closes the context rather than cancelling individual events. Same
   ADR as above.
 
+- Gamepad API (`navigator.getGamepads`, polled from `requestAnimationFrame`)
+  -- Gamepad Tester reads button, trigger, and axis state directly from a
+  connected controller, and its drift test accumulates the largest resting
+  axis reading over a timed window. The API is poll-only, with no input
+  event to subscribe to, so an animation frame loop is the correct shape
+  rather than a workaround. `Gamepad.vibrationActuator.playEffect` drives
+  the optional rumble test where the browser exposes it. See
+  [decisions.md ADR-032](decisions.md).
+- `KeyboardEvent.code` and `KeyboardEvent.location` -- Keyboard Tester marks
+  physical keys on a layout independently of the active keyboard layout,
+  which is what makes it a hardware test rather than a character test. It
+  deliberately never calls `preventDefault`, so Tab and browser shortcuts
+  keep working while the tool is open.
+
 No tool yet uses Web Workers or File System Access -- these remain
 candidates as image/file-processing tools grow heavier (a large batch image
 operation is the likely trigger for moving work off the main thread with a
@@ -444,7 +458,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 178
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 193
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -470,13 +484,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 178 tools across 14
+What already scales without change, now validated at 193 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 178 tools
+- Code splitting: automatic per tool and per page -- confirmed at 193 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -538,7 +552,15 @@ categories (up from the original 3):
   `lib/` files on the same two-tools-or-more rule the subtitle tools set:
   `lib/jsx.ts` (HTML to JSX, SVG to React Component) and `lib/base32.ts`
   (Base32 Encoder and Decoder, ULID Generator), both with their own unit
-  tests. The largest of the fifteen chunks is 3.37 KB gzip.
+  tests. The largest of the fifteen chunks is 3.37 KB gzip. The 15-tool batch that
+  took the catalog to 193 added zero dependencies too, and no shared `lib/`
+  file either: `lib/csv.ts` parses and serialises for both CSV Diff and the
+  HTML Table converter, `lib/hash.ts` powers Duplicate File Finder,
+  `lib/image.ts` supplies Image Redactor's canvas helpers, and the existing
+  `qrcode` dependency draws the WiFi QR code. Its only genuinely new capability
+  is the Gamepad API (see section 10 and
+  [decisions.md ADR-032](decisions.md)). The largest of those fifteen chunks is
+  2.91 KB gzip.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -550,9 +572,11 @@ forgotten:
   six in a row, spreading across seven existing categories (`developer`,
   `security`, `text`, `converters`, `math`, `image`), and the batch that took
   it to 178 made it seven, spreading across nine (`developer`, `security`,
-  `pdf`, `image`, `seo`, `text`, `converters`, `generators`, `math`). Still
-  fine; reconsider if subcategories or a category hierarchy become
-  necessary.
+  `pdf`, `image`, `seo`, `text`, `converters`, `generators`, `math`), and the
+  batch that took it to 193 made it eight, spreading across ten (`browser`,
+  `qr`, `converters`, `math`, `color`, `developer`, `image`, `seo`, `text`,
+  `security`). Still fine; reconsider if subcategories or a category
+  hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or
@@ -567,8 +591,8 @@ forgotten:
   [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
   **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
   summary only, roughly 0.2 KB gzip each rather than 0.58 KB. Measured again
-  at 178 tools it is 45.77 KB gzip, which holds that per-tool rate at
-  roughly 0.25 KB gzip each. At that rate the 65 KB budget is reached
+  at 193 tools it is 49.79 KB gzip, which holds that per-tool rate at
+  roughly 0.26 KB gzip each. At that rate the 65 KB budget is reached
   somewhere around 250 tools. The next lever, if
   and when that matters, is moving the summary index itself out of the entry
   chunk (a fetched JSON index behind the search dialog, keeping only what

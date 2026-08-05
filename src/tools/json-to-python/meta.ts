@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["json", "python", "pydantic", "dataclass", "typeddict", "convert", "types"],
   icon: FileCode2,
-  isNew: true,
   features: [
     "Pydantic v2 BaseModel, dataclass, or TypedDict output",
     "Nested objects become their own named classes",

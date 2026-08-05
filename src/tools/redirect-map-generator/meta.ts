@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["seo", "redirect", "migration", "htaccess", "nginx", "301", "generator"],
   icon: Signpost,
-  isNew: true,
   features: [
     "Apache, Nginx, Netlify, Vercel, Next.js, Caddy, and Shopify CSV output",
     "Accepts comma, tab, or whitespace separated pairs pasted from a spreadsheet",

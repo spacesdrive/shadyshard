@@ -1338,3 +1338,58 @@ also leak how many distinct values of each type the text contained. Card
 numbers are only replaced when they pass the Luhn check, which avoids
 redacting order numbers but will miss a deliberately fake card number in test
 data. Names are missed unless the user adds them.
+
+---
+
+## ADR-032: Gamepad API and raw keyboard events for the hardware testers, no dependency
+
+Date: 2026-08-05
+
+**Decision:** Build Gamepad Tester on the browser's Gamepad API polled from
+`requestAnimationFrame`, and Keyboard Tester on `KeyboardEvent.code` and
+`KeyboardEvent.location`, adding no dependency for either. Keyboard Tester
+never calls `preventDefault`, and both tools state in their own copy what the
+platform will not let them observe rather than implying full coverage.
+
+**Reasoning:** These are the same shape of decision as ADR-029 and ADR-030:
+the capability is already in the runtime, and a library would only wrap it.
+The Gamepad API is deliberately poll-only, with no input event to subscribe
+to, so an animation frame loop reading `navigator.getGamepads()` is the
+intended usage rather than a workaround, and it gives the per-frame sampling
+the drift test needs. `KeyboardEvent.code` identifies the physical key
+independently of the active keyboard layout, which is exactly the difference
+between a hardware test and a character test: a key that types the wrong
+character still reports the right `code`, and a key that reports nothing is a
+genuine fault.
+
+Not cancelling key events is the load-bearing part of the keyboard tool.
+Cancelling them would let the page test Tab, Ctrl+T, and similar
+combinations, at the cost of trapping keyboard users inside the tool and
+breaking browser navigation. The trade is not worth it, so those keys are
+listed as untestable instead. The same honesty applies to the gamepad tool:
+Fn and media keys, and the vibration actuator on browsers that do not expose
+one, are reported as unavailable rather than silently absent.
+
+**Alternatives considered:** A gamepad wrapper library such as
+`gamecontroller.js` -- rejected; it adds a dependency to normalise controller
+layouts that the API's own `mapping` field already reports, and normalising
+further would mean shipping a device database that goes stale. A `setInterval`
+poll instead of `requestAnimationFrame` -- rejected; it either samples slower
+than the display refresh, which loses short button presses, or wastes work
+while the tab is hidden, whereas animation frames stop on their own.
+Cancelling key events to capture browser shortcuts -- rejected for the
+accessibility reason above. Rendering the keyboard layout from a device
+database so it matches non-US keyboards exactly -- rejected; keys outside the
+standard layout are listed by their `code` in a separate panel instead, which
+is honest about what is drawn without maintaining layout data.
+
+**Trade-offs:** Keyboard Tester cannot test any combination the operating
+system or browser claims first, so a full-board test still needs a native
+tool for those few keys. The drawn layout is US ANSI, so an ISO or
+non-US keyboard has keys that register correctly but appear only in the
+"keys outside this layout" panel. Gamepad Tester depends on the browser
+recognising the controller at all, and Safari's Gamepad support lags
+Chromium's, so some controllers report an unmapped button order there. The
+rumble test is unavailable wherever the browser does not expose
+`vibrationActuator`, and the tool hides the control rather than offering one
+that silently does nothing.

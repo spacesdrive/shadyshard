@@ -10,6 +10,19 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across ten existing categories, taking the catalog from 178
+  to 193: Keyboard Tester and Gamepad Tester (Browser and System Info); WiFi
+  QR Code Generator (QR Code Tools); HTML Table to CSV, JSON, and Markdown
+  and Number to Words Converter (Converters); Descriptive Statistics
+  Calculator (Math and Calculators); Color Shade Generator (Color Tools);
+  JSON Flattener and CSV Diff (Developer Tools); Image Redactor (Image
+  Tools); llms.txt Generator (SEO Tools); Bulk Find and Replace (Text
+  Tools); security.txt Generator, URL Tracking Parameter Remover, and
+  Duplicate File Finder (Security and Privacy). No new dependency, no new
+  shared library module, and no new category was needed.
+- [decisions.md ADR-032](docs/architecture/decisions.md) recording why the
+  Gamepad API is polled from an animation frame, why Keyboard Tester never
+  cancels key events, and why neither tool takes a dependency.
 - Fifteen tools across nine existing categories, taking the catalog from 163
   to 178: JSON to Python Model, HTML to JSX Converter, SVG to React
   Component, Cache-Control Header Builder, and OpenAPI to Markdown
@@ -27,13 +40,6 @@ process this file is maintained under.
 - [decisions.md ADR-031](docs/architecture/decisions.md) recording why the
   Text Redactor's substitution table stays in page memory and why redaction
   is reversible.
-
-### Changed
-
-- The homepage "New tools" section now lists the six newest tools from this
-  batch; the fifteen tools from the previous batch no longer carry the
-  `isNew` flag.
-
 - Fifteen tools across six existing categories, taking the catalog from 148
   to 163: CSS Minifier and Formatter, JSON to Go Struct, and CSV to SQL
   Insert (Developer Tools); OAuth PKCE Generator, Hash Identifier, and
@@ -93,6 +99,10 @@ process this file is maintained under.
 
 ### Changed
 
+- The homepage "New tools" section now lists Gamepad Tester, Image Redactor,
+  Keyboard Tester, llms.txt Generator, URL Tracking Parameter Remover, and
+  WiFi QR Code Generator; the six tools flagged in the previous batch no
+  longer carry the `isNew` flag.
 - Removed the `isNew` flag from the fifteen tools added in the previous
   batch, so the homepage "New tools" section surfaces the current batch.
 - Tool metadata is split into an eagerly-loaded summary and a lazily-loaded

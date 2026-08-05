@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["redact", "privacy", "pii", "anonymize", "security", "llm", "mask"],
   icon: EyeOff,
-  isNew: true,
   features: [
     "Detects emails, phone numbers, IP and MAC addresses, cards, IBANs, JWTs, API keys, and URLs",
     "Custom term list for names, company names, and project code names",

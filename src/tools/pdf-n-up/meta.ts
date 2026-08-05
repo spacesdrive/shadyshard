@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["pdf", "print", "layout", "imposition", "n-up", "paper"],
   icon: LayoutGrid,
-  isNew: true,
   features: [
     "2, 4, 6, 8, 9, or 16 pages per sheet",
     "Automatic, portrait, or landscape sheet orientation",
