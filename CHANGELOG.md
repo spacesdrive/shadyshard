@@ -10,6 +10,32 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across seven existing categories, taking the catalog from 193
+  to 208: XPath Tester, CSS Selector Tester, JSON Patch Generator, IEEE 754
+  Floating Point Converter, and Bitwise Calculator (Developer Tools); Line
+  Break Remover, Tabs to Spaces Converter, and Line Prefix and Suffix Adder
+  (Text Tools); TOML to JSON Converter and Fixed Width to CSV Converter
+  (Converters); SRI Hash Generator (Security and Privacy); Barcode Generator
+  (Generators); Microphone Tester and Webcam Tester (Browser and System Info);
+  HTML Link Extractor (SEO Tools). No new category was needed.
+- `lib/html-document.ts`, shared by XPath Tester, CSS Selector Tester, and
+  HTML Link Extractor, with unit tests.
+- `hashBytesBase64` in `lib/hash.ts`, for the base64 digest form Subresource
+  Integrity requires.
+- Two dependencies, each used by exactly one tool and confined to that tool's
+  lazy chunk: `jsbarcode` for Barcode Generator
+  ([ADR-034](docs/architecture/decisions.md)) and `smol-toml` for the TOML
+  converter ([ADR-035](docs/architecture/decisions.md)).
+- [decisions.md ADR-033](docs/architecture/decisions.md) recording why the
+  selector-testing tools parse pasted markup without sanitizing it first.
+
+### Changed
+
+- The "New tools" section on the homepage now surfaces Barcode Generator,
+  Line Break Remover, Microphone Tester, SRI Hash Generator, TOML to JSON
+  Converter, and XPath Tester; the previous batch's `isNew` flags were
+  cleared now that fifteen tools have shipped after them.
+
 - Fifteen tools across ten existing categories, taking the catalog from 178
   to 193: Keyboard Tester and Gamepad Tester (Browser and System Info); WiFi
   QR Code Generator (QR Code Tools); HTML Table to CSV, JSON, and Markdown

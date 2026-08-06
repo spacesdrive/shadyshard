@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["wifi", "qr", "network", "password", "guest"],
   icon: Wifi,
-  isNew: true,
   features: [
     "Builds a standards-compliant WIFI payload for phone cameras",
     "Escapes special characters in network names and passwords",

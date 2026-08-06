@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["url", "tracking", "privacy", "utm", "cleaner"],
   icon: Link2Off,
-  isNew: true,
   features: [
     "Removes the utm family plus click identifiers from the major ad networks",
     "Handles a whole list of URLs in one pass",

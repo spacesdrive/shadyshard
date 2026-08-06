@@ -1393,3 +1393,121 @@ Chromium's, so some controllers report an unmapped button order there. The
 rumble test is unavailable wherever the browser does not expose
 `vibrationActuator`, and the tool hides the control rather than offering one
 that silently does nothing.
+
+---
+
+## ADR-033: Selector-testing tools parse pasted markup without sanitizing it
+
+Date: 2026-08-06
+
+**Decision:** XPath Tester, CSS Selector Tester, and HTML Link Extractor parse
+pasted markup with `DOMParser` directly, through a shared
+`lib/html-document.ts`, rather than passing it through DOMPurify first the way
+Markdown Preview, the JSX converters, and HTML Table Converter do.
+
+**Reasoning:** Those existing tools sanitize because they turn the markup back
+into rendered output, so anything that survives sanitizing is something a
+browser will act on. These three do the opposite: they report facts about the
+markup exactly as written, and every match is rendered as React text, which
+React escapes. Sanitizing first would silently delete the elements and
+attributes people most often write selectors against. `script[src]`,
+`a[onclick]`, and `[data-testid]` are exactly the selectors someone is
+debugging, and a tool that answers "no matches" because DOMPurify removed the
+element before the query ran is not merely unhelpful, it is wrong in a way the
+user cannot see. A document from `DOMParser.parseFromString` has no browsing
+context: scripts in it do not execute, resources in it are not fetched, and it
+is never adopted into the live page.
+
+**Alternatives considered:** Sanitizing and accepting the wrong answers --
+rejected, because reporting a selector as matching nothing when it matches is
+the one failure a selector tester must not have. Sanitizing with a permissive
+allowlist that keeps scripts and event handlers -- rejected; it is the same
+risk profile as not sanitizing, with an allowlist to maintain and a false
+sense of a safety net. Rendering matches as live markup in a sandboxed iframe
+-- rejected as unnecessary; showing serialised markup as text answers the
+question and adds no execution surface at all.
+
+**Trade-offs:** These three tools now diverge from the project's otherwise
+uniform "sanitize pasted markup" habit, which is a thing a future contributor
+could read as an oversight rather than a decision. The comment at the top of
+`lib/html-document.ts` and this entry are what make it legible. The guarantee
+depends on consumers continuing to render matches as text; a future feature
+that renders a match as HTML would need to sanitize at that point.
+
+---
+
+## ADR-034: jsbarcode for Barcode Generator
+
+Date: 2026-08-06
+
+**Decision:** Add `jsbarcode` (3.12.3) as a dependency for Barcode Generator,
+which supports Code 128, EAN-13, EAN-8, UPC-A, Code 39, ITF-14, and MSI, and
+renders into an SVG element the tool downloads directly or rasterises to PNG
+through a canvas.
+
+**Reasoning:** There is no browser API for barcode generation, so this is the
+same category of exception as `qrcode` in ADR-011. Barcode symbologies are not
+one algorithm but a family: each has its own character set, its own start,
+stop, and guard patterns, and its own check digit rule, and getting any of
+them subtly wrong produces an image that looks like a barcode and fails at a
+scanner, which is the worst possible failure mode because it is invisible
+until someone tries to use it in the physical world. That is a strong argument
+for a library that has been checked against real scanners for a decade rather
+than a hand-rolled encoder. jsbarcode is actively maintained (3.12.3, January
+2026), has roughly 900,000 weekly npm downloads, has no runtime dependencies,
+and exposes a validity callback the tool uses to reject a malformed EAN-13
+before drawing anything.
+
+**Alternatives considered:** `bwip-js` -- rejected; it covers over 100
+symbologies via a port of the Barcode Writer in Pure PostScript, which is
+excellent and considerably larger than a general-purpose generator needs, and
+the seven formats offered here cover the realistic uses. Hand-rolling Code 128
+and EAN-13 -- rejected for the silent-failure reason above. A server-rendered
+barcode service -- rejected outright; it would send the value being encoded
+off the machine, which is the opposite of what the catalog is for.
+
+**Trade-offs:** The tool's chunk is 12.68 KB gzip, above the 10 KB default
+budget, so `scripts/check-bundle-size.ts` carries a named 20 KB entry for it,
+the same way `qr-code-scanner` and `sql-formatter` do. Nobody who does not open
+this one page downloads it. jsbarcode ships CommonJS with no ESM build, so it
+relies on Vite's interop rather than being tree-shaken; since the tool offers
+every format the library provides, there is nothing to shake out anyway. The
+types come from `@types/jsbarcode`, which lags the library, so a future option
+added upstream may need a type update before it can be used here.
+
+---
+
+## ADR-035: smol-toml for the TOML converter
+
+Date: 2026-08-06
+
+**Decision:** Add `smol-toml` (1.7.1) as a dependency for TOML to JSON
+Converter, using its `parse` and `stringify` for both directions.
+
+**Reasoning:** TOML is a real grammar, not a format a regular expression can
+handle: multi-line basic and literal strings, dotted keys, inline tables,
+arrays of tables, and four distinct date and time types all interact, and the
+1.0 specification's rules about which tables may be redefined are the sort of
+thing a hand-rolled parser gets almost right and then corrupts someone's
+`Cargo.toml` with. The project already accepts this argument for YAML
+(`js-yaml`, ADR-019). smol-toml is the most-downloaded TOML parser on npm, was
+last published within the past month, tracks TOML 1.1, and is measurably the
+fastest of the maintained options; it also serialises, which is what makes the
+reverse direction possible without a second dependency.
+
+**Alternatives considered:** `@iarna/toml` -- rejected; its last release was
+six years ago and it targets TOML 1.0.0-rc.1. `@ltd/j-toml` -- rejected; it is
+maintained but substantially slower on both parse and stringify, with a larger
+API surface than this needs. Hand-rolling a parser -- rejected for the
+correctness reason above. Converting only in the TOML to JSON direction to
+avoid needing a serialiser -- rejected; the reverse direction is roughly half
+of what people actually want from this tool, and smol-toml supplies it for no
+extra bytes.
+
+**Trade-offs:** The converter's chunk is 5.60 KB gzip, within the default
+budget and confined to that one tool's lazy chunk. Round-tripping is lossy in
+one visible way: TOML dates become ISO strings in JSON, and converting that
+JSON back to TOML yields strings, because nothing in the JSON marks them as
+dates. The tool's own FAQ says so rather than leaving it to be discovered.
+Large TOML integers come back as BigInt, which `JSON.stringify` rejects, so the
+tool passes a replacer that renders them as strings.

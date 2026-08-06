@@ -4,6 +4,7 @@ import {
   Activity,
   Aperture,
   ArrowDownUp,
+  Barcode,
   Binary,
   Blend,
   BookOpenCheck,
@@ -12,10 +13,12 @@ import {
   Bot,
   Braces,
   Cake,
+  Calculator,
   CalendarCheck,
   CalendarClock,
   CalendarPlus,
   CalendarRange,
+  Camera,
   Captions,
   CaseSensitive,
   ChartColumn,
@@ -32,6 +35,7 @@ import {
   Contrast,
   CopyCheck,
   Crop,
+  Crosshair,
   Database,
   Earth,
   Eraser,
@@ -43,6 +47,7 @@ import {
   FileCode,
   FileCodeCorner,
   FileCog,
+  FileDiff,
   FileDigit,
   FileImage,
   FileInput,
@@ -82,6 +87,8 @@ import {
   Link2,
   Link2Off,
   List,
+  ListIndentIncrease,
+  ListPlus,
   ListTree,
   ListX,
   Lock,
@@ -89,6 +96,7 @@ import {
   MailSearch,
   Map,
   Maximize2,
+  Mic,
   Minimize,
   Minimize2,
   Network,
@@ -104,6 +112,7 @@ import {
   Regex,
   Replace,
   RotateCw,
+  Route,
   Ruler,
   Scale,
   Scaling,
@@ -131,6 +140,7 @@ import {
   Table2,
   Tags,
   TextSearch,
+  TextWrap,
   Timer,
   TrendingUp,
   Type,
@@ -172,6 +182,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["aspect ratio", "calculator", "image", "video", "dimensions", "design"],
     icon: Ratio,
+  },
+  {
+    slug: "barcode-generator",
+    title: "Barcode Generator",
+    description:
+      "Create Code 128, EAN-13, UPC-A, Code 39, and ITF-14 barcodes and download them as SVG or PNG.",
+    category: "generators",
+    keywords: [
+      "barcode generator",
+      "code 128 barcode online",
+      "ean 13 generator",
+      "upc barcode maker",
+      "free barcode svg download",
+    ],
+    tags: ["barcode", "code128", "ean13", "upc", "generator", "svg"],
+    icon: Barcode,
+    isNew: true,
   },
   {
     slug: "base32-encoder-decoder",
@@ -236,6 +263,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["reading", "bionic", "accessibility", "focus", "adhd", "dyslexia", "text"],
     icon: BookOpenText,
+  },
+  {
+    slug: "bitwise-calculator",
+    title: "Bitwise Calculator",
+    description:
+      "Apply AND, OR, XOR, NOT, and shifts to two integers and see the result in binary, hex, and decimal.",
+    category: "developer",
+    keywords: [
+      "bitwise calculator",
+      "bitwise and or xor online",
+      "bit shift calculator",
+      "binary hex bitwise operations",
+      "bitmask calculator",
+    ],
+    tags: ["bitwise", "binary", "hex", "bitmask", "developer", "calculator"],
+    icon: Calculator,
   },
   {
     slug: "border-radius-generator",
@@ -601,6 +644,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Braces,
   },
   {
+    slug: "css-selector-tester",
+    title: "CSS Selector Tester",
+    description:
+      "Check what a CSS selector matches in pasted HTML before you put it in a scraper or a stylesheet.",
+    category: "developer",
+    keywords: [
+      "css selector tester",
+      "test css selector online",
+      "queryselectorall tester",
+      "css selector for scraping",
+      "check selector matches html",
+    ],
+    tags: ["css", "selector", "html", "scraping", "testing", "queryselector"],
+    icon: Crosshair,
+  },
+  {
     slug: "css-specificity-calculator",
     title: "CSS Specificity Calculator",
     description:
@@ -919,6 +978,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Weight,
   },
   {
+    slug: "fixed-width-to-csv",
+    title: "Fixed Width to CSV Converter",
+    description:
+      "Split fixed width column data into CSV, TSV, or JSON by column widths you set or it detects.",
+    category: "converters",
+    keywords: [
+      "fixed width to csv",
+      "convert fixed width text file",
+      "parse column positions to csv",
+      "mainframe report to csv",
+      "fixed width parser online",
+    ],
+    tags: ["fixed width", "csv", "tsv", "json", "converter", "columns"],
+    icon: Columns3,
+  },
+  {
     slug: "flexbox-playground",
     title: "Flexbox Playground",
     description:
@@ -949,7 +1024,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["gamepad", "controller", "hardware", "test", "drift"],
     icon: Gamepad2,
-    isNew: true,
   },
   {
     slug: "gradient-generator",
@@ -1092,6 +1166,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Code,
   },
   {
+    slug: "html-link-extractor",
+    title: "HTML Link Extractor",
+    description:
+      "Pull every link out of pasted HTML with its anchor text, rel value, and internal or external status.",
+    category: "seo",
+    keywords: [
+      "html link extractor",
+      "extract all links from html",
+      "anchor text extractor",
+      "internal external link audit",
+      "get href list from page source",
+    ],
+    tags: ["seo", "links", "anchor text", "audit", "html", "nofollow"],
+    icon: Link2,
+  },
+  {
     slug: "html-table-converter",
     title: "HTML Table to CSV, JSON, and Markdown",
     description:
@@ -1152,6 +1242,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["calendar", "ics", "icalendar", "event", "generator"],
     icon: CalendarPlus,
+  },
+  {
+    slug: "ieee-754-converter",
+    title: "IEEE 754 Floating Point Converter",
+    description:
+      "Convert a decimal number to its IEEE 754 sign, exponent, and mantissa bits, or decode bits back to a number.",
+    category: "developer",
+    keywords: [
+      "ieee 754 converter",
+      "float to hex converter",
+      "floating point binary representation",
+      "decode float bits",
+      "single and double precision converter",
+    ],
+    tags: ["ieee754", "float", "binary", "hex", "developer", "numbers"],
+    icon: Binary,
   },
   {
     slug: "image-combiner",
@@ -1247,7 +1353,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "redact", "blur", "pixelate", "privacy"],
     icon: EyeOff,
-    isNew: true,
   },
   {
     slug: "image-resizer",
@@ -1327,6 +1432,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "image", "convert", "document"],
     icon: FileInput,
+  },
+  {
+    slug: "indentation-converter",
+    title: "Tabs to Spaces Converter",
+    description:
+      "Convert indentation between tabs and spaces at any tab width, without touching the rest of the line.",
+    category: "text",
+    keywords: [
+      "tabs to spaces converter",
+      "spaces to tabs online",
+      "convert indentation",
+      "change tab width in code",
+      "fix mixed indentation",
+    ],
+    tags: ["indentation", "tabs", "spaces", "code", "formatting", "whitespace"],
+    icon: ListIndentIncrease,
   },
   {
     slug: "invisible-character-remover",
@@ -1435,6 +1556,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "developer", "minifier", "compression"],
     icon: Minimize2,
+  },
+  {
+    slug: "json-patch-generator",
+    title: "JSON Patch Generator",
+    description:
+      "Compare two JSON documents and generate the RFC 6902 patch that turns one into the other.",
+    category: "developer",
+    keywords: [
+      "json patch generator",
+      "rfc 6902",
+      "json diff to patch",
+      "json pointer path",
+      "generate patch from two json files",
+    ],
+    tags: ["json", "patch", "diff", "rfc6902", "api", "developer"],
+    icon: FileDiff,
   },
   {
     slug: "json-schema-generator",
@@ -1623,7 +1760,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["keyboard", "hardware", "test", "keycode", "input"],
     icon: Keyboard,
-    isNew: true,
   },
   {
     slug: "keyword-grouper",
@@ -1640,6 +1776,39 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "keywords", "cluster", "group", "research", "csv"],
     icon: Group,
+  },
+  {
+    slug: "line-break-remover",
+    title: "Line Break Remover",
+    description:
+      "Strip the hard line breaks out of pasted text while keeping real paragraph breaks intact.",
+    category: "text",
+    keywords: [
+      "remove line breaks",
+      "delete line breaks from text",
+      "unwrap text copied from pdf",
+      "join wrapped lines",
+      "remove newlines online",
+    ],
+    tags: ["text", "line breaks", "newlines", "pdf", "formatting", "cleanup"],
+    icon: TextWrap,
+    isNew: true,
+  },
+  {
+    slug: "line-prefix-suffix-adder",
+    title: "Line Prefix and Suffix Adder",
+    description:
+      "Add text to the start or end of every line, with optional numbering and blank-line handling.",
+    category: "text",
+    keywords: [
+      "add prefix to each line",
+      "add suffix to every line",
+      "wrap lines with text",
+      "add line numbers to text",
+      "bulk edit list of lines",
+    ],
+    tags: ["text", "lines", "prefix", "suffix", "numbering", "bulk edit"],
+    icon: ListPlus,
   },
   {
     slug: "line-sorter",
@@ -1703,7 +1872,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["llms.txt", "ai", "seo", "crawler", "markdown"],
     icon: Bot,
-    isNew: true,
   },
   {
     slug: "loan-emi-calculator",
@@ -1815,6 +1983,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["seo", "meta tags", "open graph", "twitter card"],
     icon: Tags,
+  },
+  {
+    slug: "microphone-tester",
+    title: "Microphone Tester",
+    description:
+      "Check that your microphone works, see its live input level, and pick between connected devices.",
+    category: "browser",
+    keywords: [
+      "microphone test",
+      "mic test online",
+      "check if microphone is working",
+      "audio input level meter",
+      "test headset mic in browser",
+    ],
+    tags: ["microphone", "audio", "hardware", "test", "browser", "input"],
+    icon: Mic,
+    isNew: true,
   },
   {
     slug: "mime-type-inspector",
@@ -2670,6 +2855,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Database,
   },
   {
+    slug: "sri-hash-generator",
+    title: "SRI Hash Generator",
+    description:
+      "Generate a Subresource Integrity hash for a local script or stylesheet and get the ready-made tag.",
+    category: "security",
+    keywords: [
+      "sri hash generator",
+      "subresource integrity hash",
+      "generate integrity attribute",
+      "sha384 integrity for script tag",
+      "cdn script integrity check",
+    ],
+    tags: ["sri", "integrity", "security", "hash", "cdn", "subresource"],
+    icon: ShieldCheck,
+    isNew: true,
+  },
+  {
     slug: "subtitle-converter",
     title: "Subtitle Converter",
     description:
@@ -2876,6 +3078,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Earth,
   },
   {
+    slug: "toml-json-converter",
+    title: "TOML to JSON Converter",
+    description:
+      "Convert TOML configuration to JSON and back, with dates, tables, and arrays of tables handled correctly.",
+    category: "converters",
+    keywords: [
+      "toml to json converter",
+      "json to toml",
+      "convert cargo.toml to json",
+      "pyproject.toml converter",
+      "toml parser online",
+    ],
+    tags: ["toml", "json", "config", "converter", "cargo", "pyproject"],
+    icon: FileCodeCorner,
+    isNew: true,
+  },
+  {
     slug: "totp-code-generator",
     title: "TOTP Code Generator",
     description:
@@ -3015,7 +3234,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["url", "tracking", "privacy", "utm", "cleaner"],
     icon: Link2Off,
-    isNew: true,
   },
   {
     slug: "user-agent-parser",
@@ -3079,6 +3297,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Contact,
   },
   {
+    slug: "webcam-tester",
+    title: "Webcam Tester",
+    description:
+      "Check your camera works, see its live preview, and read the resolution and frame rate it is actually delivering.",
+    category: "browser",
+    keywords: [
+      "webcam test",
+      "camera test online",
+      "check if webcam is working",
+      "test camera in browser",
+      "webcam resolution and fps check",
+    ],
+    tags: ["webcam", "camera", "video", "hardware", "test", "browser"],
+    icon: Camera,
+  },
+  {
     slug: "webp-to-png",
     title: "WebP to PNG",
     description:
@@ -3108,7 +3342,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["wifi", "qr", "network", "password", "guest"],
     icon: Wifi,
-    isNew: true,
   },
   {
     slug: "word-counter",
@@ -3171,6 +3404,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["xml", "json", "convert", "data"],
     icon: Braces,
+  },
+  {
+    slug: "xpath-tester",
+    title: "XPath Tester",
+    description:
+      "Run an XPath expression against pasted HTML or XML and see every node it matches.",
+    category: "developer",
+    keywords: [
+      "xpath tester",
+      "test xpath expression online",
+      "xpath evaluator",
+      "xpath for web scraping",
+      "selenium locator tester",
+    ],
+    tags: ["xpath", "xml", "html", "scraping", "selector", "testing"],
+    icon: Route,
+    isNew: true,
   },
   {
     slug: "yaml-to-json",

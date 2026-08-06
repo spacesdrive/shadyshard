@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["image", "redact", "blur", "pixelate", "privacy"],
   icon: EyeOff,
-  isNew: true,
   features: [
     "Drag to select any area, or enter exact coordinates for keyboard use",
     "Black box, blur, and pixelate modes with adjustable strength",
