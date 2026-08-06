@@ -92,10 +92,14 @@ an eagerly-loaded summary and a lazily-loaded detail
 from the entry chunk; each tool now also ships a `<slug>-meta-*.js` chunk of
 0.5 to 1.5 KB gzip, fetched only when that tool's page opens, in parallel
 with the tool's own component chunk. Most per-tool component chunks stay
-under 4 KB. Three justified exceptions, all single-tool dependencies isolated
+under 4 KB. Five justified exceptions, all single-tool dependencies isolated
 to their own lazy chunk and never loaded elsewhere: `sql-formatter` 73.74 KB
 gzip (`sql-formatter`, ADR-027), `qr-code-scanner` 46.80 KB gzip (`jsqr`,
-ADR-011), and `image-metadata-viewer` 36.74 KB gzip (`exifreader`, ADR-028).
+ADR-011), `image-metadata-viewer` 36.74 KB gzip (`exifreader`, ADR-028),
+`barcode-generator` 12.68 KB gzip (`jsbarcode`, ADR-034), and
+`toml-json-converter` 5.60 KB gzip (`smol-toml`, ADR-035). Only the first four
+need a named entry in `scripts/check-bundle-size.ts`; the TOML converter fits
+inside the 10 KB default.
 `markdown-preview` was previously a fourth at 23.30 KB gzip; `dompurify` and
 `marked` are now shared across the Markdown, HTML, and SVG tools and Rolldown
 splits them into their own chunks (`purify.es` 10.16 KB gzip, `marked.esm`

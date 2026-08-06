@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["gamepad", "controller", "hardware", "test", "drift"],
   icon: Gamepad2,
-  isNew: true,
   features: [
     "Live button, trigger, and axis readings for any connected controller",
     "Left and right stick position visualisers",

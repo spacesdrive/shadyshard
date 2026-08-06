@@ -86,8 +86,14 @@ src/
                              DOMParser/XMLSerializer
     file-signatures.ts        Magic-byte file-signature database and hex-dump
                              formatter, shared by the file-inspection tools
-    hash.ts                    Shared Web Crypto hashing (hashText/hashFile),
-                             used by both text- and file-hashing tools
+    hash.ts                    Shared Web Crypto hashing (hashText/hashFile,
+                             plus hashBytesBase64 for Subresource Integrity),
+                             used by the text-, file-, and SRI-hashing tools
+    html-document.ts          DOMParser wrappers returning an inert HTML or XML
+                             document, plus node serialisation, shared by XPath
+                             Tester, CSS Selector Tester, and HTML Link
+                             Extractor. Deliberately does not sanitize, see
+                             decisions.md ADR-033
 
   types/
     tool.ts                   ToolSummary, ToolDetail, ToolMeta, ToolCategory, ToolFaq
@@ -152,7 +158,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 192 tools' FAQs. `vite.config.ts` names the
+never downloads the other 207 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -364,7 +370,15 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   `URL.createObjectURL`) -- `components/tool/FileDropZone.tsx`, shared by
   every Image Tools entry
 - `navigator.mediaDevices.getUserMedia` -- QR Code Scanner's live camera
-  capture, decoded frame-by-frame via canvas + `jsQR`
+  capture, decoded frame-by-frame via canvas + `jsQR`; Webcam Tester's preview,
+  which reads the negotiated resolution and frame rate back from
+  `MediaStreamTrack.getSettings()`; and Microphone Tester's input, analysed
+  through a Web Audio `AnalyserNode` (`getFloatTimeDomainData`) for the level
+  meter and waveform. Neither tester records or retains anything: the stream is
+  read frame by frame and the tracks are stopped on unmount.
+  `navigator.mediaDevices.enumerateDevices` backs both device pickers, and
+  reports unnamed devices until permission has been granted once, which the
+  tools say rather than hide.
 - `navigator.clipboard.readText` -- Clipboard Inspector, with a manual-paste
   fallback since clipboard read requires a permission prompt some browsers
   may deny
@@ -394,6 +408,13 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   same way as the other `Intl` APIs above: native segmentation instead of a
   dependency, with a spread-over-the-string fallback where it is
   unavailable.
+- `document.evaluate` (native XPath 1.0 engine) and `querySelectorAll` --
+  XPath Tester and CSS Selector Tester run expressions against an inert
+  `DOMParser` document rather than shipping a selector engine. Both report the
+  engine's own syntax error rather than an empty result, which is the
+  difference between a typo and a wrong answer. See
+  [decisions.md ADR-033](decisions.md) for why this one family of tools parses
+  pasted markup without sanitizing it first.
 - `DOMParser` for pretty-printing, not only conversion -- XML Formatter
   validates with `parseFromString` and then walks the resulting tree to emit
   indented output, since `XMLSerializer` does not pretty-print. It shares no
@@ -439,8 +460,9 @@ the browser-first policy that governs when to reach for them, and
 [decisions.md](decisions.md) for the justified exceptions where no browser
 API exists at all: `qrcode`/`jsQR` (QR tools), `marked`/`dompurify`
 (Markdown Preview, Markdown to HTML, HTML to Markdown), `turndown` (HTML to
-Markdown), `js-yaml` (YAML converters), and `pdf-lib`/`pdfjs-dist` (the PDF
-Tools category, ADR-019).
+Markdown), `js-yaml` (YAML converters), `pdf-lib`/`pdfjs-dist` (the PDF
+Tools category, ADR-019), `jsbarcode` (Barcode Generator, ADR-034), and
+`smol-toml` (TOML to JSON Converter, ADR-035).
 
 `pdfjs-dist`'s worker script is imported as a local asset
 (`pdfjs-dist/build/pdf.worker.mjs?url`, `lib/pdf-render.ts`) rather than
@@ -458,7 +480,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 193
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 208
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -484,13 +506,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 193 tools across 14
+What already scales without change, now validated at 208 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 193 tools
+- Code splitting: automatic per tool and per page -- confirmed at 208 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -561,7 +583,20 @@ categories (up from the original 3):
   markup the HTML Table converter reads, the same way the two JSX converters
   use it. Its only genuinely new capability is the Gamepad API (see section 10
   and [decisions.md ADR-032](decisions.md)). The largest of those fifteen chunks is
-  2.91 KB gzip.
+  2.91 KB gzip. The 15-tool batch that took the catalog to 208 is the first in
+  several to add dependencies again, and it added two, both used by exactly one
+  tool: `jsbarcode` (ADR-034) lands in `barcode-generator-*.js` at 12.68 KB gzip
+  and `smol-toml` (ADR-035) in `toml-json-converter-*.js` at 5.60 KB gzip, and
+  neither is downloaded by anyone who does not open those two pages. The other
+  thirteen added nothing: `lib/csv.ts` serialises for both Fixed Width to CSV
+  and HTML Link Extractor, `lib/hash.ts` gained one base64 digest function for
+  the SRI generator, `lib/image.ts` rasterises the barcode to PNG, and the rest
+  are built on browser APIs already available. It added one shared `lib/` file
+  on the same two-tools-or-more rule the subtitle tools set:
+  `lib/html-document.ts` (XPath Tester, CSS Selector Tester, HTML Link
+  Extractor), with its own unit tests. Its genuinely new capabilities are the
+  native XPath engine and `getUserMedia` used for device testing rather than
+  scanning, both in section 10.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -576,7 +611,9 @@ forgotten:
   `pdf`, `image`, `seo`, `text`, `converters`, `generators`, `math`), and the
   batch that took it to 193 made it eight, spreading across ten (`browser`,
   `qr`, `converters`, `math`, `color`, `developer`, `image`, `seo`, `text`,
-  `security`). Still fine; reconsider if subcategories or a category
+  `security`), and the batch that took it to 208 made it nine, spreading across
+  seven (`developer`, `text`, `converters`, `security`, `generators`,
+  `browser`, `seo`). Still fine; reconsider if subcategories or a category
   hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
@@ -592,9 +629,9 @@ forgotten:
   [decisions.md ADR-026](decisions.md)) brought the entry chunk down to
   **34.34 KB gzip at 118 tools**, and the remaining per-tool cost is now the
   summary only, roughly 0.2 KB gzip each rather than 0.58 KB. Measured again
-  at 193 tools it is 49.79 KB gzip, which holds that per-tool rate at
-  roughly 0.26 KB gzip each. At that rate the 65 KB budget is reached
-  somewhere around 250 tools. The next lever, if
+  at 208 tools it is 52.58 KB gzip, which holds that per-tool rate at
+  roughly 0.25 KB gzip each. At that rate the 65 KB budget is reached
+  somewhere around 255 tools. The next lever, if
   and when that matters, is moving the summary index itself out of the entry
   chunk (a fetched JSON index behind the search dialog, keeping only what
   the homepage renders eagerly) -- do not simply raise the budget.

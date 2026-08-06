@@ -17,6 +17,18 @@ export async function hashBytes(
   return bytesToHex(digest)
 }
 
+/**
+ * Base64 rather than hex, which is the encoding Subresource Integrity uses in
+ * an integrity attribute.
+ */
+export async function hashBytesBase64(
+  data: BufferSource,
+  algorithm: HashAlgorithm,
+): Promise<string> {
+  const digest = await crypto.subtle.digest(algorithm, data)
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+}
+
 export async function hashText(text: string, algorithm: HashAlgorithm): Promise<string> {
   return hashBytes(new TextEncoder().encode(text), algorithm)
 }

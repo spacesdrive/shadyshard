@@ -28,6 +28,7 @@ const NAMED_BUDGETS_KB: Record<string, number> = {
   "markdown-preview": 30, // marked + dompurify, ADR-012
   "sql-formatter": 90, // sql-formatter, ADR-027
   "image-metadata-viewer": 45, // exifreader, ADR-028
+  "barcode-generator": 20, // jsbarcode, ADR-034
   index: 65, // app entry -- eager meta.ts loading grows this with catalog size, see ARCHITECTURE.md §13
   // pdf-lib and pdfjs-dist both produce a Rolldown chunk Rolldown names
   // "pdf" by content, so they share this one budget key -- ADR-019.

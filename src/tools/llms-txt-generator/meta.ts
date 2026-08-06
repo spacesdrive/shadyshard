@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["llms.txt", "ai", "seo", "crawler", "markdown"],
   icon: Bot,
-  isNew: true,
   features: [
     "Builds the heading, summary, and link sections the specification defines",
     "Supports the reserved Optional section for lower-priority pages",

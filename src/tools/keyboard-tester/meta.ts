@@ -18,7 +18,6 @@ const meta: ToolMeta = {
   ],
   tags: ["keyboard", "hardware", "test", "keycode", "input"],
   icon: Keyboard,
-  isNew: true,
   features: [
     "Full layout that marks every key as you press it",
     "Live key, code, keyCode, and left or right location readout",
