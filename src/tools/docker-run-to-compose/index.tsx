@@ -29,7 +29,10 @@ function needsQuoting(value: string): boolean {
   if (value === "") return true
   if (/^\s|\s$/.test(value)) return true
   if (/^(true|false|null|yes|no|on|off|~)$/i.test(value)) return true
-  if (/^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/.test(value)) return true
+  // The fractional part is written as an optional group beginning with the
+  // dot, not as \d+\.?\d*, so the two digit runs cannot both claim the same
+  // digits and backtrack quadratically on a long numeric-looking value.
+  if (/^[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?$/.test(value)) return true
   if (/^[&*!|>%@`#{}[\],"'?]/.test(value)) return true
   if (/^[-+]?\d+(:\d+)+$/.test(value)) return true
   return /:\s/.test(value) || value.includes(" #")

@@ -38,12 +38,16 @@ function convertInline(text: string): string {
 
   let result = text
   result = result.replace(/`([^`]+)`/g, (_, code: string) => park(`{{${code}}}`))
+  // The label class excludes an opening bracket as well as a closing one, and
+  // an optional title has to begin with whitespace the URL run cannot match.
+  // Both keep these linear: written as [^\]]+ and [^)\s]+[^)]*, a long run of
+  // brackets or a parenthesis that never closes backtracks quadratically.
   result = result.replace(
-    /!\[([^\]]*)\]\(([^)\s]+)[^)]*\)/g,
+    /!\[([^\][]*)\]\(\s*([^)\s]+)(?:\s+[^)]*)?\)/g,
     (_, alt: string, url: string) => park(alt ? `!${url}|alt=${alt}!` : `!${url}!`),
   )
   result = result.replace(
-    /\[([^\]]+)\]\(([^)\s]+)[^)]*\)/g,
+    /\[([^\][]+)\]\(\s*([^)\s]+)(?:\s+[^)]*)?\)/g,
     (_, label: string, url: string) => park(`[${label}|${url}]`),
   )
   result = result.replace(/\*\*([^*]+)\*\*/g, (_, inner: string) => park(`*${inner}*`))
@@ -54,8 +58,15 @@ function convertInline(text: string): string {
   return result.replace(/\ue000(\d+)\ue000/g, (_, index: string) => parked[Number(index)])
 }
 
+/**
+ * A separator row is made only of pipes, dashes, colons, and spaces, and has
+ * at least one dash. Expressed as one character class plus a substring check
+ * rather than as a pattern with two overlapping quantifiers, which backtracks
+ * quadratically on a long line of dashes that turns out not to match.
+ */
 function isTableSeparator(line: string): boolean {
-  return /^\s*\|?[\s:-]*-[\s|:-]*\|?\s*$/.test(line) && line.includes("-")
+  const trimmed = line.trim()
+  return trimmed.includes("-") && /^[|\s:-]+$/.test(trimmed)
 }
 
 function tableCells(line: string): string[] {
