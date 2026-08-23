@@ -1511,3 +1511,56 @@ JSON back to TOML yields strings, because nothing in the JSON marks them as
 dates. The tool's own FAQ says so rather than leaving it to be discovered.
 Large TOML integers come back as BigInt, which `JSON.stringify` rejects, so the
 tool passes a replacer that renders them as strings.
+
+## ADR-036: File container format for File Encrypter
+
+Date: 2026-08-23
+
+**Decision:** File Encrypter reuses the cryptographic parameters ADR-024 set
+for Text Encrypter (PBKDF2-SHA256 at 310,000 iterations over a per-file
+16-byte random salt, AES-256-GCM under a per-file 12-byte random nonce, all
+from Web Crypto with no dependency) but writes a binary container rather than
+a Base64 string: an 8-byte ASCII marker `SSENC001`, then the salt, then the
+nonce, then the ciphertext. The plaintext that gets encrypted is not the file
+alone but a 2-byte big-endian name length, the UTF-8 filename, and then the
+file bytes, so the original name is restored on decrypt. Encrypted files are
+given the extension `.ssenc`.
+
+**Reasoning:** The parameters are the same problem ADR-024 already solved, and
+diverging from them would mean two different answers to one question in the
+same catalog. What is genuinely new is that a file, unlike a pasted message,
+has a name that is itself sensitive: an encrypted `2026-redundancies.xlsx`
+leaks its contents in its filename. Putting the name inside the ciphertext
+rather than in the header is what makes the encrypted copy reveal nothing,
+and it costs two bytes plus the name. Binary rather than Base64 because a
+file is downloaded rather than copied, so the 33 percent size increase Base64
+costs buys nothing here. The marker exists so that decrypting the wrong file
+produces "this is not a file produced by this tool" instead of "the password
+is wrong", which are different problems for the user to act on; it is checked
+before the password is even used. GCM authenticates the whole container, so a
+truncated or edited file fails to decrypt rather than yielding corrupt output.
+
+**Alternatives considered:** Reusing the Text Encrypter Base64 format
+unchanged -- rejected; it has nowhere to carry the filename, and Base64 makes
+a large file needlessly larger. Storing the filename in the clear in the
+header -- rejected for the leak described above. A standard container such as
+an encrypted ZIP or an OpenPGP message -- rejected; both need a dependency,
+which the browser-first policy in
+[tool-development.md](../engineering/tool-development.md#browser-first-philosophy)
+only accepts where no browser API can do the job, and Web Crypto can. A
+version byte and embedded KDF parameters -- rejected on the same grounds
+ADR-024 rejected them, with the marker's trailing digits available if the
+format ever does need to change. Streaming through `TransformStream` so
+arbitrarily large files work -- rejected for now; AES-GCM authenticates a
+single message, so streaming means splitting into independently
+authenticated chunks, which is a real format design rather than an
+implementation detail, and the whole-file-in-memory approach covers the sizes
+people actually encrypt by hand.
+
+**Trade-offs:** The file is held in memory twice over during encryption (the
+plaintext payload and the ciphertext), so the practical ceiling is device
+memory rather than a stated limit; an allocation failure is caught and
+reported as such rather than left to hang. The format is ours, so a file
+encrypted here can only be decrypted here, which the tool's FAQ states
+plainly along with the advice to keep the original if long-term access
+matters. Nothing recovers a forgotten password, by construction.

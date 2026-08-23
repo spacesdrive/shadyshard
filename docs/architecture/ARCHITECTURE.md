@@ -68,7 +68,11 @@ src/
     image.ts                  Canvas load/draw/convert helpers, formatBytes
     download.ts                downloadBlob/downloadText helpers
     pdf.ts                    pdf-lib helpers: load/merge/split/rotate/reorder/
-                             delete pages, metadata read/strip, images-to-PDF
+                             delete pages, metadata read/strip, images-to-PDF,
+                             N-up imposition, margin cropping, page resizing,
+                             and a labelled contact sheet. Every pdf-lib
+                             consumer goes through this file, which is what
+                             keeps pdf-lib in one predictable chunk
     pdf-render.ts             pdfjs-dist helpers: lazy-loaded page rendering to
                              canvas/PNG, text extraction
     page-range.ts             Parses "1-3,5,8-9" page-range input, shared by
@@ -158,7 +162,7 @@ throws immediately, naming the missing slugs and the command to fix it,
 rather than silently dropping a tool from navigation.
 
 Both `index.tsx` and `meta.ts` ship as their own lazy chunks, so a visitor
-never downloads the other 207 tools' FAQs. `vite.config.ts` names the
+never downloads the other 222 tools' FAQs. `vite.config.ts` names the
 metadata chunks `<slug>-meta-*.js` so the bundle-size report stays readable
 (every one of them would otherwise be called `meta`).
 
@@ -442,6 +446,20 @@ toggle supports light/dark/system. Font is Geist Variable, self-hosted via
   rather than a workaround. `Gamepad.vibrationActuator.playEffect` drives
   the optional rumble test where the browser exposes it. See
   [decisions.md ADR-032](decisions.md).
+- Fullscreen API (`Element.requestFullscreen`, `document.exitFullscreen`,
+  `fullscreenchange`) -- Dead Pixel Tester, which has to cover the whole panel
+  edge to edge for a faulty pixel to be visible at all. The request is made
+  from an effect rather than the click handler so the surface is already
+  committed at full size, and the `fullscreenchange` listener is what returns
+  the tool to its normal state when the visitor leaves with Escape. A browser
+  that refuses the request is told to the user rather than left to look
+  broken.
+- `StereoPannerNode` and `OscillatorNode.frequency.exponentialRampToValueAtTime`
+  -- Speaker Tester routes a synthesised sine tone to one channel or both, and
+  runs its sweep by ramping the oscillator against the audio clock rather than
+  by scheduling steps. Gain is ramped over 30 ms at each end so no test starts
+  or stops with a click. Browsers do not let a page choose the output device,
+  which the tool says rather than implying otherwise.
 - `KeyboardEvent.code` and `KeyboardEvent.location` -- Keyboard Tester marks
   physical keys on a layout independently of the active keyboard layout,
   which is what makes it a hardware test rather than a character test. It
@@ -480,7 +498,7 @@ posture the rest of the app follows.
   `vendor-motion` (framer-motion), `vendor-search` (Fuse.js), separate from
   the app chunk and from each lazy-loaded page/tool chunk. A
   `chunkFileNames` function renames each tool's lazily-loaded `meta.ts`
-  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 208
+  chunk to `<slug>-meta-*.js`, since Rolldown would otherwise name all 223
   of them after the file's basename.
 - **Hosting:** Cloudflare Pages, project `shadyshard`, static output from
   `dist/`. Client-side routing requires the host to fall back to
@@ -506,13 +524,13 @@ justification in the PR/commit description.
 
 ## 13. Scalability notes for 500+ tools
 
-What already scales without change, now validated at 208 tools across 14
+What already scales without change, now validated at 223 tools across 14
 categories (up from the original 3):
 
 - Adding a tool: two files, zero hand-edited registrations, per docs/engineering/tool-development.md.
 - Routing, sitemap, search index, related tools, and the generated summary
   index: all derived, not hand-maintained.
-- Code splitting: automatic per tool and per page -- confirmed at 208 tools
+- Code splitting: automatic per tool and per page -- confirmed at 223 tools
   that per-tool-chunk size stays small and independent of catalog size
   (adding another tool does not inflate an existing tool's chunk). The
   33-tool PDF & Document Tools batch also confirmed that a handful of tools
@@ -596,7 +614,26 @@ categories (up from the original 3):
   `lib/html-document.ts` (XPath Tester, CSS Selector Tester, HTML Link
   Extractor), with its own unit tests. Its genuinely new capabilities are the
   native XPath engine and `getUserMedia` used for device testing rather than
-  scanning, both in section 10.
+  scanning, both in section 10. The 15-tool batch that took the catalog to 223
+  went back to adding no dependency at all, and added no shared `lib/` file
+  either. It reused what was already there: `lib/pdf.ts` gained two functions
+  (`resizePdfPages` for PDF Page Resizer and `contactSheetPdf` for Bulk QR Code
+  Generator), `lib/csv.ts` parses the QR batch input, `lib/html-document.ts`
+  parses for Heading Structure Checker, `lib/file-signatures.ts` identifies what
+  Base64 to File decoded, `lib/image.ts` supplies `formatBytes`, and the
+  existing `qrcode` dependency draws the codes. Its genuinely new capabilities
+  are the Fullscreen API and `StereoPannerNode`, both in section 10. The largest
+  of the fifteen chunks is 4.33 KB gzip.
+
+  This batch also moved where `pdf-lib` lands. Bulk QR Code Generator is the
+  first tool outside the PDF category to need it, which changed the set of
+  entry points `pdf-lib` is reachable from and split it out of the single
+  chunk it used to share with `pdfjs-dist`. Rolldown now emits two chunks it
+  both names by content as `pdf-*.js`, 173.39 KB and 122.68 KB gzip, so they
+  continue to share the one `pdf` budget key in
+  `scripts/check-bundle-size.ts` and both sit under it. The tool reaches
+  `pdf-lib` through `lib/pdf.ts` like every other consumer rather than
+  importing it directly, which is what keeps that grouping predictable.
 
 What will need revisiting well before 500 tools, tracked here so it isn't
 forgotten:
@@ -613,8 +650,10 @@ forgotten:
   `qr`, `converters`, `math`, `color`, `developer`, `image`, `seo`, `text`,
   `security`), and the batch that took it to 208 made it nine, spreading across
   seven (`developer`, `text`, `converters`, `security`, `generators`,
-  `browser`, `seo`). Still fine; reconsider if subcategories or a category
-  hierarchy become necessary.
+  `browser`, `seo`), and the batch that took it to 223 made it ten, spreading
+  across eight (`developer`, `security`, `text`, `seo`, `browser`,
+  `converters`, `qr`, `pdf`). Still fine; reconsider if subcategories or a
+  category hierarchy become necessary.
 - **`Header` hard-codes `categories.slice(0, 5)`** in the desktop nav. This
   is a deliberate simplification for a small catalog, not a scalable nav;
   revisit with a real navigation/mega-menu design once category count or

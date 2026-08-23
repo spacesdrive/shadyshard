@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The text is processed by JavaScript in your browser and never sent to a server.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

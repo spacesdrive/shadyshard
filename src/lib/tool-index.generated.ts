@@ -32,6 +32,7 @@ import {
   Combine,
   Component,
   Contact,
+  Container,
   Contrast,
   CopyCheck,
   Crop,
@@ -49,9 +50,11 @@ import {
   FileCog,
   FileDiff,
   FileDigit,
+  FileDown,
   FileImage,
   FileInput,
   FileKey,
+  FileLock,
   FileMinus,
   FileMinusCorner,
   FileOutput,
@@ -67,6 +70,7 @@ import {
   GalleryHorizontal,
   Gamepad2,
   Gauge,
+  GitCommitHorizontal,
   GitCompareArrows,
   Globe,
   Grid2x2,
@@ -74,6 +78,7 @@ import {
   Group,
   HardDrive,
   Hash,
+  Heading,
   ImageDown,
   ImagePlus,
   KeyRound,
@@ -99,6 +104,7 @@ import {
   Mic,
   Minimize,
   Minimize2,
+  Monitor,
   Network,
   Palette,
   PanelTop,
@@ -130,6 +136,7 @@ import {
   Signpost,
   Smartphone,
   Sparkles,
+  SpellCheck,
   Spline,
   Split,
   Square,
@@ -198,7 +205,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["barcode", "code128", "ean13", "upc", "generator", "svg"],
     icon: Barcode,
-    isNew: true,
   },
   {
     slug: "base32-encoder-decoder",
@@ -231,6 +237,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["base64", "encoding", "developer", "converter"],
     icon: Binary,
+  },
+  {
+    slug: "base64-to-file",
+    title: "Base64 to File Converter",
+    description:
+      "Decode a Base64 string or data URI back into a downloadable file, with the real type read from its bytes.",
+    category: "converters",
+    keywords: [
+      "base64 to file",
+      "base64 to pdf converter",
+      "decode data uri to file",
+      "base64 decode download",
+      "convert base64 string to image file",
+    ],
+    tags: ["base64", "decode", "file", "data-uri", "converter", "download"],
+    icon: FileDown,
   },
   {
     slug: "binary-converter",
@@ -341,6 +363,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "replace", "regex", "bulk", "editing"],
     icon: Replace,
+  },
+  {
+    slug: "bulk-qr-code-generator",
+    title: "Bulk QR Code Generator",
+    description:
+      "Generate a QR code for every line of a list or CSV, then download the whole set as a printable PDF sheet.",
+    category: "qr",
+    keywords: [
+      "bulk qr code generator",
+      "qr codes from csv list",
+      "batch qr code printable sheet",
+      "generate many qr codes at once",
+      "qr code labels for inventory",
+    ],
+    tags: ["qr", "bulk", "csv", "labels", "printing", "generator"],
+    icon: QrCode,
+    isNew: true,
   },
   {
     slug: "business-days-calculator",
@@ -548,6 +587,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["compound", "interest", "investment", "sip", "savings", "finance", "growth"],
     icon: TrendingUp,
+  },
+  {
+    slug: "conventional-commit-builder",
+    title: "Conventional Commit Builder",
+    description:
+      "Build a valid Conventional Commits message from a form, with live checks on subject length and format.",
+    category: "developer",
+    keywords: [
+      "conventional commits generator",
+      "commit message format",
+      "breaking change footer",
+      "semantic commit message builder",
+      "commitlint format helper",
+    ],
+    tags: ["git", "commit", "conventional-commits", "changelog", "semver", "developer"],
+    icon: GitCommitHorizontal,
   },
   {
     slug: "cron-expression-parser",
@@ -835,6 +890,23 @@ export const toolIndex: ToolSummary[] = [
     icon: CalendarRange,
   },
   {
+    slug: "dead-pixel-tester",
+    title: "Dead Pixel Tester",
+    description:
+      "Fill the screen with solid test colours to find dead, stuck, and hot pixels on a monitor or phone.",
+    category: "browser",
+    keywords: [
+      "dead pixel test",
+      "stuck pixel checker",
+      "monitor test full screen colours",
+      "check new monitor for faulty pixels",
+      "screen pixel test online",
+    ],
+    tags: ["monitor", "screen", "display", "hardware", "test", "pixels"],
+    icon: Monitor,
+    isNew: true,
+  },
+  {
     slug: "descriptive-statistics-calculator",
     title: "Descriptive Statistics Calculator",
     description:
@@ -849,6 +921,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["statistics", "mean", "median", "standard deviation", "outliers"],
     icon: Sigma,
+  },
+  {
+    slug: "docker-run-to-compose",
+    title: "Docker Run to Compose Converter",
+    description:
+      "Turn a long docker run command into a compose.yaml service definition, flag by flag.",
+    category: "developer",
+    keywords: [
+      "docker run to docker compose",
+      "convert docker run command",
+      "compose yaml generator",
+      "docker compose converter",
+      "docker run flags to compose keys",
+    ],
+    tags: ["docker", "compose", "yaml", "devops", "converter", "containers"],
+    icon: Container,
+    isNew: true,
   },
   {
     slug: "duplicate-file-finder",
@@ -929,6 +1018,23 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["image", "favicon", "icon", "generator"],
     icon: Grid2x2,
+  },
+  {
+    slug: "file-encrypter",
+    title: "File Encrypter",
+    description:
+      "Encrypt any file with a password using AES-256-GCM, entirely in your browser, and decrypt it back later.",
+    category: "security",
+    keywords: [
+      "encrypt file with password",
+      "aes 256 gcm file encryption browser",
+      "decrypt file online no upload",
+      "password protect a file locally",
+      "client side file encryption",
+    ],
+    tags: ["encryption", "aes", "privacy", "security", "file", "password"],
+    icon: FileLock,
+    isNew: true,
   },
   {
     slug: "file-hash-generator",
@@ -1104,6 +1210,22 @@ export const toolIndex: ToolSummary[] = [
     icon: FingerprintPattern,
   },
   {
+    slug: "heading-structure-checker",
+    title: "Heading Structure Checker",
+    description:
+      "Paste HTML to see its heading outline and catch skipped levels, missing h1 tags, and empty headings.",
+    category: "seo",
+    keywords: [
+      "heading structure checker",
+      "h1 h2 hierarchy validator",
+      "skipped heading level checker",
+      "html heading outline tool",
+      "accessibility heading audit",
+    ],
+    tags: ["seo", "accessibility", "headings", "html", "audit", "wcag"],
+    icon: Heading,
+  },
+  {
     slug: "hex-encoder-decoder",
     title: "HEX Encoder & Decoder",
     description: "Convert text to hexadecimal and back, using UTF-8 byte encoding.",
@@ -1227,6 +1349,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["html", "markdown", "convert", "document"],
     icon: FileText,
+  },
+  {
+    slug: "iban-validator",
+    title: "IBAN Validator",
+    description:
+      "Check an IBAN's country, length, and check digits offline, and see the correct check digits when they are wrong.",
+    category: "developer",
+    keywords: [
+      "iban validator",
+      "check iban number",
+      "iban checksum mod 97",
+      "validate bank account number offline",
+      "iban format by country",
+    ],
+    tags: ["iban", "banking", "validation", "checksum", "finance", "privacy"],
+    icon: Landmark,
   },
   {
     slug: "ics-event-generator",
@@ -1481,6 +1619,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Network,
   },
   {
+    slug: "ipv6-address-expander",
+    title: "IPv6 Address Expander",
+    description:
+      "Expand an IPv6 address to its full form, compress it to RFC 5952 canonical form, and get its reverse DNS pointer.",
+    category: "developer",
+    keywords: [
+      "ipv6 expander",
+      "compress ipv6 address",
+      "ipv6 canonical form rfc 5952",
+      "ipv6 reverse dns ip6.arpa",
+      "expand shortened ipv6",
+    ],
+    tags: ["ipv6", "network", "dns", "address", "networking", "converter"],
+    icon: Network,
+  },
+  {
     slug: "jpg-to-png",
     title: "JPG to PNG",
     description: "Convert a JPG image to lossless PNG format, right in your browser.",
@@ -1635,6 +1789,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["json", "python", "pydantic", "dataclass", "typeddict", "convert", "types"],
     icon: FileCodeCorner,
+  },
+  {
+    slug: "json-to-rust",
+    title: "JSON to Rust Struct",
+    description:
+      "Generate serde-ready Rust structs from a JSON sample, with nested types and snake_case renames.",
+    category: "developer",
+    keywords: [
+      "json to rust struct",
+      "serde struct generator",
+      "rust deserialize json",
+      "json to rust serde",
+      "generate rust types from json",
+    ],
+    tags: ["json", "rust", "serde", "converter", "codegen", "types"],
+    icon: Braces,
   },
   {
     slug: "json-to-typescript",
@@ -1792,7 +1962,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["text", "line breaks", "newlines", "pdf", "formatting", "cleanup"],
     icon: TextWrap,
-    isNew: true,
   },
   {
     slug: "line-prefix-suffix-adder",
@@ -1953,6 +2122,22 @@ export const toolIndex: ToolSummary[] = [
     icon: FileCode,
   },
   {
+    slug: "markdown-to-jira",
+    title: "Markdown to Jira Converter",
+    description:
+      "Convert Markdown into Jira wiki markup, including headings, tables, code blocks, and nested lists.",
+    category: "converters",
+    keywords: [
+      "markdown to jira",
+      "jira wiki markup converter",
+      "convert markdown for jira ticket",
+      "markdown to confluence markup",
+      "jira formatting from markdown",
+    ],
+    tags: ["markdown", "jira", "converter", "wiki-markup", "atlassian", "text"],
+    icon: FileTypeCorner,
+  },
+  {
     slug: "markdown-toc-generator",
     title: "Markdown TOC Generator",
     description:
@@ -1999,7 +2184,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["microphone", "audio", "hardware", "test", "browser", "input"],
     icon: Mic,
-    isNew: true,
   },
   {
     slug: "mime-type-inspector",
@@ -2331,6 +2515,22 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["pdf", "reorder", "pages", "document"],
     icon: ArrowDownUp,
+  },
+  {
+    slug: "pdf-page-resizer",
+    title: "PDF Page Resizer",
+    description:
+      "Rescale every page of a PDF to A4, Letter, or another standard size without cropping the content.",
+    category: "pdf",
+    keywords: [
+      "resize pdf pages",
+      "change pdf page size to a4",
+      "convert pdf letter to a4",
+      "scale pdf pages without upload",
+      "pdf page size converter",
+    ],
+    tags: ["pdf", "resize", "a4", "letter", "print", "page-size"],
+    icon: Scaling,
   },
   {
     slug: "pdf-page-rotator",
@@ -2729,6 +2929,23 @@ export const toolIndex: ToolSummary[] = [
     icon: Braces,
   },
   {
+    slug: "security-headers-analyzer",
+    title: "Security Headers Analyzer",
+    description:
+      "Grade a set of pasted HTTP response headers against the standard security headers, without needing a public URL.",
+    category: "security",
+    keywords: [
+      "security headers checker",
+      "analyze http response headers",
+      "content security policy checker",
+      "hsts x-frame-options referrer-policy audit",
+      "security headers for internal site",
+    ],
+    tags: ["http", "headers", "security", "csp", "hsts", "audit"],
+    icon: ShieldCheck,
+    isNew: true,
+  },
+  {
     slug: "security-txt-generator",
     title: "security.txt Generator",
     description:
@@ -2823,6 +3040,22 @@ export const toolIndex: ToolSummary[] = [
     icon: Link,
   },
   {
+    slug: "speaker-tester",
+    title: "Speaker Tester",
+    description:
+      "Play a test tone through the left channel, the right channel, or both, plus a frequency sweep.",
+    category: "browser",
+    keywords: [
+      "speaker test online",
+      "left right audio channel test",
+      "stereo test tone",
+      "headphone channel checker",
+      "frequency sweep test browser",
+    ],
+    tags: ["audio", "speakers", "headphones", "hardware", "test", "stereo"],
+    icon: Volume2,
+  },
+  {
     slug: "spf-dmarc-record-checker",
     title: "SPF and DMARC Record Checker",
     description:
@@ -2869,7 +3102,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["sri", "integrity", "security", "hash", "cdn", "subresource"],
     icon: ShieldCheck,
-    isNew: true,
   },
   {
     slug: "subtitle-converter",
@@ -2984,6 +3216,23 @@ export const toolIndex: ToolSummary[] = [
     icon: GitCompareArrows,
   },
   {
+    slug: "text-encoding-repair",
+    title: "Text Encoding Repair",
+    description:
+      "Fix mojibake, the garbled text you get when UTF-8 is read as Latin-1 or Windows-1252.",
+    category: "text",
+    keywords: [
+      "fix mojibake",
+      "repair garbled characters",
+      "utf-8 read as latin-1 fix",
+      "double encoded utf-8 repair",
+      "fix weird characters in csv export",
+    ],
+    tags: ["encoding", "mojibake", "utf-8", "text", "repair", "unicode"],
+    icon: SpellCheck,
+    isNew: true,
+  },
+  {
     slug: "text-encrypter",
     title: "Text Encrypter",
     description:
@@ -3092,7 +3341,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["toml", "json", "config", "converter", "cargo", "pyproject"],
     icon: FileCodeCorner,
-    isNew: true,
   },
   {
     slug: "totp-code-generator",
@@ -3420,7 +3668,6 @@ export const toolIndex: ToolSummary[] = [
     ],
     tags: ["xpath", "xml", "html", "scraping", "selector", "testing"],
     icon: Route,
-    isNew: true,
   },
   {
     slug: "yaml-to-json",

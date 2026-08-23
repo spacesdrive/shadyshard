@@ -10,6 +10,21 @@ process this file is maintained under.
 
 ### Added
 
+- Fifteen tools across eight existing categories, taking the catalog from 208
+  to 223: Docker Run to Compose Converter, JSON to Rust Struct, IPv6 Address
+  Expander, Conventional Commit Builder, and IBAN Validator (Developer Tools);
+  File Encrypter and Security Headers Analyzer (Security and Privacy); Text
+  Encoding Repair (Text Tools); Heading Structure Checker (SEO Tools); Dead
+  Pixel Tester and Speaker Tester (Browser and System Info); Markdown to Jira
+  Converter and Base64 to File Converter (Converters); Bulk QR Code Generator
+  (QR Code Tools); PDF Page Resizer (PDF Tools). No new category and no new
+  dependency were needed.
+- `resizePdfPages` and `contactSheetPdf` in `lib/pdf.ts`, for PDF Page Resizer
+  and for the printable sheet Bulk QR Code Generator produces.
+- [decisions.md ADR-036](docs/architecture/decisions.md) recording File
+  Encrypter's container format, which encrypts the original filename alongside
+  the contents.
+
 - Fifteen tools across seven existing categories, taking the catalog from 193
   to 208: XPath Tester, CSS Selector Tester, JSON Patch Generator, IEEE 754
   Floating Point Converter, and Bitwise Calculator (Developer Tools); Line
@@ -31,6 +46,14 @@ process this file is maintained under.
 
 ### Changed
 
+- The "New tools" section on the homepage now surfaces Bulk QR Code Generator,
+  Dead Pixel Tester, Docker Run to Compose Converter, File Encrypter, Security
+  Headers Analyzer, and Text Encoding Repair; the previous batch's `isNew`
+  flags were cleared now that fifteen tools have shipped after them.
+- `pdf-lib` now lands in its own Rolldown chunk rather than sharing one with
+  `pdfjs-dist`, because Bulk QR Code Generator is the first consumer outside
+  the PDF category. Both chunks are still named `pdf-*.js` by content and
+  stay under the existing shared budget.
 - The "New tools" section on the homepage now surfaces Barcode Generator,
   Line Break Remover, Microphone Tester, SRI Hash Generator, TOML to JSON
   Converter, and XPath Tester; the previous batch's `isNew` flags were

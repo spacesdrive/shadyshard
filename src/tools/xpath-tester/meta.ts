@@ -48,7 +48,6 @@ const meta: ToolMeta = {
         "Yes. Expressions such as count(//a) or string-length(//title) return a number, and the result is shown as a single value with its result type labelled.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

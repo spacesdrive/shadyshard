@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "If the meter responds, the microphone and the browser are working, so the problem is downstream: the wrong input selected inside the call application, that application muted, or the operating system's own input volume set very low.",
     },
   ],
-  isNew: true,
 }
 
 export default meta
