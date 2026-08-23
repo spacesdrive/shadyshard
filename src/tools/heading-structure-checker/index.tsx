@@ -27,6 +27,18 @@ interface Outline {
   counts: number[]
 }
 
+/**
+ * A heading's text as a reader and a screen reader would perceive it. Script
+ * and style contents are part of textContent but are never rendered, so a
+ * heading holding an inline script would otherwise be reported as having text
+ * when it visibly has none.
+ */
+function headingText(element: Element): string {
+  const clone = element.cloneNode(true) as Element
+  for (const hidden of clone.querySelectorAll("script, style, template")) hidden.remove()
+  return (clone.textContent ?? "").replace(/\s+/g, " ").trim()
+}
+
 function analyse(markup: string): Outline {
   const document = parseHtml(markup)
   const elements = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"))
@@ -37,7 +49,7 @@ function analyse(markup: string): Outline {
   for (const element of elements) {
     const level = Number(element.tagName.slice(1))
     counts[level - 1]++
-    const text = (element.textContent ?? "").replace(/\s+/g, " ").trim()
+    const text = headingText(element)
     const problems: string[] = []
 
     if (text === "") {
