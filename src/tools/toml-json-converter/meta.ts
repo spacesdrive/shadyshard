@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. Parsing and serialising both happen in your browser. A config file containing an API token or an internal URL never leaves your machine.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

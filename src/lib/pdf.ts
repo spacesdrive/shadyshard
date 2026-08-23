@@ -456,3 +456,146 @@ export async function cropPdfMargins(
 
   return doc.save()
 }
+
+/** Standard paper sizes in PDF points, always given portrait side up. */
+export const PAPER_SIZES: Record<
+  string,
+  { label: string; width: number; height: number }
+> = {
+  a3: { label: "A3", width: 841.89, height: 1190.55 },
+  a4: { label: "A4", width: 595.28, height: 841.89 },
+  a5: { label: "A5", width: 419.53, height: 595.28 },
+  letter: { label: "US Letter", width: 612, height: 792 },
+  legal: { label: "US Legal", width: 612, height: 1008 },
+  tabloid: { label: "Tabloid", width: 792, height: 1224 },
+}
+
+export interface ResizeOptions {
+  /** Portrait width and height in points, before orientation is applied. */
+  width: number
+  height: number
+  orientation: "auto" | "portrait" | "landscape"
+  /** "fit" keeps the aspect ratio and centres the page; "stretch" fills it. */
+  mode: "fit" | "stretch"
+}
+
+/**
+ * Redraws every page onto a new page of the target size. This scales the
+ * content rather than only changing the page boxes, which is the difference
+ * between a page that prints correctly on A4 and one that a printer has to
+ * shrink again on the way out.
+ */
+export async function resizePdfPages(
+  file: File,
+  options: ResizeOptions,
+): Promise<Uint8Array> {
+  const source = await loadPdf(file)
+  const sourcePages = source.getPages()
+  if (sourcePages.length === 0) throw new Error("This PDF has no pages.")
+
+  const output = await PDFDocument.create()
+  const embedded = await output.embedPages(sourcePages)
+  const shortSide = Math.min(options.width, options.height)
+  const longSide = Math.max(options.width, options.height)
+
+  for (let index = 0; index < embedded.length; index++) {
+    const original = sourcePages[index].getSize()
+    const useLandscape =
+      options.orientation === "auto"
+        ? original.width > original.height
+        : options.orientation === "landscape"
+    const targetWidth = useLandscape ? longSide : shortSide
+    const targetHeight = useLandscape ? shortSide : longSide
+
+    const page = output.addPage([targetWidth, targetHeight])
+    const embeddedPage = embedded[index]
+    const scaleX = targetWidth / embeddedPage.width
+    const scaleY = targetHeight / embeddedPage.height
+    const scale = options.mode === "stretch" ? null : Math.min(scaleX, scaleY)
+    const drawnWidth = scale === null ? targetWidth : embeddedPage.width * scale
+    const drawnHeight = scale === null ? targetHeight : embeddedPage.height * scale
+
+    page.drawPage(embeddedPage, {
+      x: (targetWidth - drawnWidth) / 2,
+      y: (targetHeight - drawnHeight) / 2,
+      xScale: scale ?? scaleX,
+      yScale: scale ?? scaleY,
+    })
+  }
+
+  return output.save()
+}
+
+export interface SheetEntry {
+  /** A PNG data URI, which pdf-lib embeds directly. */
+  dataUrl: string
+  caption: string
+}
+
+const SHEET_MARGIN = 36
+const SHEET_COLUMNS = 3
+const SHEET_ROWS = 4
+const SHEET_CAPTION_SIZE = 8
+
+/** Shortens a caption until it fits the cell, adding a trailing ellipsis. */
+function fitCaption(
+  caption: string,
+  measure: (text: string) => number,
+  maxWidth: number,
+): string {
+  if (measure(caption) <= maxWidth) return caption
+  let text = caption
+  while (text.length > 1 && measure(`${text}...`) > maxWidth) text = text.slice(0, -1)
+  return `${text}...`
+}
+
+/**
+ * Lays labelled images out on A4 sheets for printing, twelve to a page.
+ * Captions are reduced to printable ASCII first, because pdf-lib's standard
+ * fonts throw rather than substitute on a character they cannot encode.
+ */
+export async function contactSheetPdf(entries: SheetEntry[]): Promise<Uint8Array> {
+  if (entries.length === 0) throw new Error("There is nothing to lay out.")
+
+  const doc = await PDFDocument.create()
+  const font = await doc.embedFont(StandardFonts.Helvetica)
+  const [pageWidth, pageHeight] = [595.28, 841.89]
+  const cellWidth = (pageWidth - SHEET_MARGIN * 2) / SHEET_COLUMNS
+  const cellHeight = (pageHeight - SHEET_MARGIN * 2) / SHEET_ROWS
+  const imageSize = Math.min(cellWidth, cellHeight - SHEET_CAPTION_SIZE * 2) - 12
+  const perPage = SHEET_COLUMNS * SHEET_ROWS
+
+  for (let index = 0; index < entries.length; index++) {
+    const slot = index % perPage
+    const page =
+      slot === 0
+        ? doc.addPage([pageWidth, pageHeight])
+        : doc.getPage(doc.getPageCount() - 1)
+
+    const cellLeft = SHEET_MARGIN + (slot % SHEET_COLUMNS) * cellWidth
+    const cellBottom =
+      pageHeight - SHEET_MARGIN - (Math.floor(slot / SHEET_COLUMNS) + 1) * cellHeight
+
+    const image = await doc.embedPng(entries[index].dataUrl)
+    page.drawImage(image, {
+      x: cellLeft + (cellWidth - imageSize) / 2,
+      y: cellBottom + cellHeight - imageSize - SHEET_CAPTION_SIZE,
+      width: imageSize,
+      height: imageSize,
+    })
+
+    const caption = fitCaption(
+      entries[index].caption.replace(/[^\x20-\x7e]/g, "?"),
+      (text) => font.widthOfTextAtSize(text, SHEET_CAPTION_SIZE),
+      cellWidth - 12,
+    )
+    page.drawText(caption, {
+      x: cellLeft + (cellWidth - font.widthOfTextAtSize(caption, SHEET_CAPTION_SIZE)) / 2,
+      y: cellBottom + cellHeight - imageSize - SHEET_CAPTION_SIZE * 2.5,
+      size: SHEET_CAPTION_SIZE,
+      font,
+    })
+  }
+
+  return doc.save()
+}

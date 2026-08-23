@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The file is read with the File API and hashed with crypto.subtle in your browser, so it never leaves your machine. That is what makes this usable for a private build artifact.",
     },
   ],
-  isNew: true,
 }
 
 export default meta

@@ -47,7 +47,6 @@ const meta: ToolMeta = {
         "No. The barcode is drawn in your browser and the value you type never leaves it, which matters when the value is an internal asset tag or an unreleased product code.",
     },
   ],
-  isNew: true,
 }
 
 export default meta
